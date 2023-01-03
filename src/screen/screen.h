@@ -17,6 +17,9 @@ class Screen
 
         void Clear(u_int32_t color);
 
+        void setTextColor(u_int32_t color);
+        void drawString();
+
     private:
 
         TFT_eSPI tft;

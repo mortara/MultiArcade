@@ -20,3 +20,8 @@ void Screen::Clear()
 {
 
 }
+
+void Screen::setTextColor(u_int16_t color)
+{
+    tft.setTextColor(color);
+}
