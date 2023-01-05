@@ -1,27 +1,21 @@
 #include "menu.h"
+#include "config.h"
 
-
-void Menu::Setup(int _num)
+void Menu::Setup()
 {
-    _numItems = _num;
-    _items = new String[_num];
+  
 }
 
-void Menu::AddItem(int index, String item)
+void Menu::Render(TFT_eSPI tft)
 {
-    _items[index] = item;
-}
-
-void Menu::Render(Screen screen)
-{
-    for(int i = 0; i < _numItems; i++)
+    for(int i = 0; i < 4; i++)
     {
         if(i == _currentIndex)
-            tft.setTextColor(WHITE);
-        else
             tft.setTextColor(BLUE);
+        else
+            tft.setTextColor(WHITE);
 
-        tft.drawString(_items[i], 20, 20 + i * 10 , 2);
+        tft.drawString(_items[i], 20, 20 + i * 12 , 2);
     }
 }
 

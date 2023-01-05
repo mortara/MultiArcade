@@ -1,4 +1,5 @@
-#include "../screen/screen.h"
+#include <Arduino.h>
+#include <TFT_eSPI.h>
 
 class GameObject
 {
@@ -15,6 +16,6 @@ class GameObject
         ~GameObject();
 
         void Move(double d);
-        void Render(Screen* _screen);
+        void Render(TFT_eSPI _screen);
 
 };
