@@ -1,25 +1,54 @@
 #include "menu.h"
-#include "config.h"
+#include "../general/config.h"
 
-void Menu::Setup()
+void Menu::Setup(TFT_eSPI screen, RotaryEncoder *p1)
 {
-  
+    _tft = screen;
+    _player1paddle = p1;
 }
 
-void Menu::Render(TFT_eSPI tft)
+int Menu::Loop()
 {
-    for(int i = 0; i < 4; i++)
+    int cm = 0;
+    int cc = _player1paddle->Counter;
+   
+    if(_lastCounter != cc)
     {
-        if(i == _currentIndex)
-            tft.setTextColor(BLUE);
+        if(cc > _lastCounter)
+            cm = 1;
         else
-            tft.setTextColor(WHITE);
+            cm = -1;
 
-        tft.drawString(_items[i], 20, 20 + i * 12 , 2);
+        //_screen.drawString("Counter: " + String(cc) + ", SW: " + String(_rotary->SW), 10, 100 , 2);
+
+        _lastCounter = cc;
+
     }
-}
 
-void Menu::MoveSelection(int i)
-{
-    _currentIndex = i;
+    if(cm != 0 || _firsttime) 
+    {
+        _currentIndex += cm;
+        if(_currentIndex > (_gamecount-1))
+            _currentIndex = 0;
+
+        if(_currentIndex < 0)
+            _currentIndex = (_gamecount-1);
+
+        for(int i = 0; i < _gamecount; i++)
+        {
+            if(i == _currentIndex)
+                _tft.setTextColor(BLUE);
+            else
+                _tft.setTextColor(WHITE);
+
+            _tft.drawString(_items[i], 20, 20 + i * 12 , 2);
+        }
+        _firsttime = false;
+        delay(10);
+    }
+
+    if(_player1paddle->SW == 0)
+        return _currentIndex;
+
+    return -1;
 }

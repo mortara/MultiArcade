@@ -4,18 +4,18 @@
 class GameObject
 {
     public:
-        double X;
-        double Y;
-        double w;
-        double h;
+        float X;
+        float Y;
+        float w;
+        float h;
 
-        double vX;
-        double vY;
+        float vX;
+        float vY;
 
         GameObject();
         ~GameObject();
 
-        void Move(double d);
+        void Move(float d);
         void Render(TFT_eSPI _screen);
 
 };

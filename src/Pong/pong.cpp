@@ -3,62 +3,13 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-#define BLACK 0x0000
-#define WHITE 0xFFFF
-#define GREY  0x5AEB
+#include "../general/config.h"
+#include "pong.h"
 
-TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
-
-int16_t h = 124;
-int16_t w = 156;
-
-int dly = 10;
-
-int16_t paddle_h = 25;
-int16_t paddle_w = 2;
-
-int16_t lpaddle_x = 0;
-int16_t rpaddle_x = w - paddle_w;
-
-int16_t lpaddle_y = 0;
-int16_t rpaddle_y = h - paddle_h;
-
-int16_t lpaddle_d = 1;
-int16_t rpaddle_d = -1;
-
-int16_t lpaddle_ball_t = w - w / 4;
-int16_t rpaddle_ball_t = w / 4;
-
-int16_t target_y = 0;
-
-int16_t ball_x = 2;
-int16_t ball_y = 2;
-int16_t oldball_x = 2;
-int16_t oldball_y = 2;
-
-int16_t ball_dx = 1;
-int16_t ball_dy = 1;
-
-int16_t ball_w = 4;
-int16_t ball_h = 4;
-
-int16_t dashline_h = 4;
-int16_t dashline_w = 2;
-int16_t dashline_n = h / dashline_h;
-int16_t dashline_x = w / 2 - 1;
-int16_t dashline_y = dashline_h / 2;
-
-int16_t lscore = 12;
-int16_t rscore = 4;
-
-
-
-
-
-void midline() {
+void Pong::midline() {
 
   // If the ball is not on the line then don't redraw the line
-  if ((ball_x<dashline_x-ball_w) && (ball_x > dashline_x+dashline_w)) return;
+  if (((int)ball_x<dashline_x-ball_w) && ((int)ball_x > dashline_x+dashline_w)) return;
 
   tft.startWrite();
 
@@ -73,7 +24,7 @@ void midline() {
   tft.endWrite();
 }
 
-void lpaddle() {
+void Pong::lpaddle() {
   
   if (lpaddle_d == 1) {
     tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, 1, BLACK);
@@ -97,31 +48,42 @@ void lpaddle() {
   tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
 }
 
-void rpaddle() {
+void Pong::rpaddle(bool player) {
   
-  if (rpaddle_d == 1) {
-    tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, 1, BLACK);
+  if (rpaddle_d > 0) {
+    tft.fillRect(rpaddle_x, (int)rpaddle_y, paddle_w, (int)rpaddle_d, BLACK);
   } 
-  else if (rpaddle_d == -1) {
-    tft.fillRect(rpaddle_x, rpaddle_y + paddle_h - 1, paddle_w, 1, BLACK);
+  else if (rpaddle_d < 0) {
+    tft.fillRect(rpaddle_x, (int)rpaddle_y + paddle_h + (int)rpaddle_d, paddle_w, (int)-rpaddle_d, BLACK);
   }
 
-  rpaddle_y = rpaddle_y + rpaddle_d;
+  rpaddle_y = rpaddle_y + rpaddle_d ;
+  
+  if(!player)
+  {
+    if (ball_dx == -1) rpaddle_d = 0;
+    else {
+      if ((int)rpaddle_y + paddle_h / 2 == target_y) rpaddle_d = 0;
+      else if ((int)rpaddle_y + paddle_h / 2 > target_y) rpaddle_d = -1;
+      else rpaddle_d = 1;
+    }
+  }
+  else
+  {
+    int paddle1count =  _player1paddle->Counter;
+   
+    rpaddle_d = (paddle1count - _player1LastpaddleCount) * rpaddle_v ;
 
-  if (ball_dx == -1) rpaddle_d = 0;
-  else {
-    if (rpaddle_y + paddle_h / 2 == target_y) rpaddle_d = 0;
-    else if (rpaddle_y + paddle_h / 2 > target_y) rpaddle_d = -1;
-    else rpaddle_d = 1;
+    _player1LastpaddleCount = paddle1count;
   }
 
-  if (rpaddle_y + paddle_h >= h && rpaddle_d == 1) rpaddle_d = 0;
-  else if (rpaddle_y <= 0 && rpaddle_d == -1) rpaddle_d = 0;
+  if ((int)rpaddle_y + paddle_h >= h && rpaddle_d == 1) rpaddle_d = 0;
+    else if ((int)rpaddle_y <= 0 && rpaddle_d == -1) rpaddle_d = 0;
 
-  tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
+  tft.fillRect(rpaddle_x, (int)rpaddle_y, paddle_w, paddle_h, WHITE);
 }
 
-void calc_target_y() {
+void Pong::calc_target_y() {
   int16_t target_x;
   int16_t reflections;
   int16_t y;
@@ -145,49 +107,62 @@ void calc_target_y() {
   }
 }
 
-void ball() {
-  ball_x = ball_x + ball_dx;
-  ball_y = ball_y + ball_dy;
+void Pong::ball(float elapsed) {
+    ball_x = ball_x + ball_dx * elapsed * ball_vmul;
+    ball_y = ball_y + ball_dy * elapsed * ball_vmul;
 
-  if (ball_dx == -1 && ball_x == paddle_w && ball_y + ball_h >= lpaddle_y && ball_y <= lpaddle_y + paddle_h) {
-    ball_dx = ball_dx * -1;
-    dly = random(5); // change speed of ball after paddle contact
-    calc_target_y(); 
-  } else if (ball_dx == 1 && ball_x + ball_w == w - paddle_w && ball_y + ball_h >= rpaddle_y && ball_y <= rpaddle_y + paddle_h) {
-    ball_dx = ball_dx * -1;
-    dly = random(5); // change speed of ball after paddle contact
-    calc_target_y();
-  } else if ((ball_dx == 1 && ball_x >= w) || (ball_dx == -1 && ball_x + ball_w < 0)) {
-    dly = 5;
-  }
+    if (ball_dx < 0.0 && (int)ball_x == paddle_w && (int)ball_y + ball_h >= lpaddle_y && (int)ball_y <= lpaddle_y + paddle_h) {
+      ball_dx = ball_dx * -1.0;
+      
+      calc_target_y(); 
+    } else if (ball_dx > 0.0 && (int)ball_x + ball_w == w - paddle_w && (int)ball_y + ball_h >= rpaddle_y && (int)ball_y <= rpaddle_y + paddle_h) {
+      ball_dx = ball_dx * -1.0;
+      
+      calc_target_y();
+    } 
 
-  if (ball_y > h - ball_w || ball_y < 0) {
-    ball_dy = ball_dy * -1;
-    ball_y += ball_dy; // Keep in bounds
-  }
+    if ((int)ball_y > h - ball_w || (int)ball_y < 0) {
+      ball_dy = ball_dy * -1.0;
+      ball_y += ball_dy; // Keep in bounds
+    }
 
-  //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
-  tft.drawRect(oldball_x, oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
-  tft.fillRect(   ball_x,    ball_y, ball_w, ball_h, WHITE);
-  oldball_x = ball_x;
-  oldball_y = ball_y;
+    if ((int)ball_x > w)
+    {
+        ball_x = 2;
+        ball_y = lpaddle_y + (paddle_h / 2);
+    }
+
+    //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
+    tft.drawRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
+    tft.fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
+    oldball_x = ball_x;
+    oldball_y = ball_y;
 }
 
-void ploop() {
-  // put your main code here, to run repeatedly:
-  delay(dly);
+void Pong::Loop() {
 
-  lpaddle();
-  rpaddle();
+    long time = millis();
+    double elapsed = (double)(time - _lastLoop) / 1000.0;
 
-  midline();
+    lpaddle();
+    rpaddle(true);
 
-  ball();
+    midline();
+
+    ball(elapsed);
+
+    _lastLoop = time;
 }
 
-void initgame() {
+void Pong::Setup(TFT_eSPI screen, RotaryEncoder *player1) {
+  tft = screen;
+  _player1paddle = player1;
+
   lpaddle_y = random(0, h - paddle_h);
   rpaddle_y = random(0, h - paddle_h);
+
+  player1->Counter = 0;
+  _player1LastpaddleCount = 0;
 
   // ball is placed on the center of the left paddle
   ball_y = lpaddle_y + (paddle_h / 2);
@@ -195,29 +170,7 @@ void initgame() {
   calc_target_y();
 
   midline();
-
-  tft.fillRect(0,h-26,w,h-1,BLACK);
-
-  tft.setTextDatum(TC_DATUM);
-  tft.setTextColor(WHITE);
-  tft.drawString("TFT_eSPI example", w/2, h-26 , 2);
-}
-
-void psetup() {
-  // put your setup code here, to run once:
-
-  randomSeed(analogRead(0)*analogRead(1));
-   
-  tft.init();
-
-  tft.setRotation(1);
-
   tft.fillScreen(BLACK);
-  
-  initgame();
-
-  tft.setTextColor(WHITE, BLACK);
-
-  delay(2000);
+  _lastLoop = millis();
 
 }

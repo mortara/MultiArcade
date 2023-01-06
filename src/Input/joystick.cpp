@@ -17,8 +17,11 @@ void Joystick::Setup()
 void Joystick::Loop()
 {
     // read X and Y analog values
-    X = analogRead(VRX_PIN);
-    Y = analogRead(VRY_PIN);
+    long x = analogRead(VRX_PIN);
+    long y = analogRead(VRY_PIN);
+
+    X = map(x, 0,4095, -127, 127);
+    Y = map(y, 0,4095 ,-127, 127);
 
     SW = digitalRead(SW_PIN);
 }
