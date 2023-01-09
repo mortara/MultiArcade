@@ -11,6 +11,7 @@ class RotaryEncoder
         
         int Counter = 0;
         int SW = 0;
+        int SW2 = 0;
 
     private:
         void readAB();

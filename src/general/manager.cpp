@@ -44,7 +44,7 @@ void Manager::Loop()
             {
                 case 0:
                     CurrentGame = 1;
-                    _asteroids = Asteroids();
+                    _asteroids = AsteroidsGame();
                     _asteroids.Setup(_screen);
                     break;
                 case 1:

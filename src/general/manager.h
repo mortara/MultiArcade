@@ -5,7 +5,7 @@
 #include <SPI.h>
 #include "menu.h"
 #include "config.h"
-#include "Asteroids/asteroids.h"
+#include "Asteroids/asteroids_game.h"
 #include "Pong/pong.h"
 
 class Manager
@@ -16,11 +16,7 @@ class Manager
         Menu _menu;
         TFT_eSPI _screen;
 
-        
-
-        
-
-        Asteroids _asteroids;
+        AsteroidsGame _asteroids;
         Pong _pong;
 
     public:

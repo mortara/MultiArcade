@@ -7,11 +7,8 @@
 void Joystick::Setup()
 {
     pinMode(VRX_PIN, INPUT);
-
     pinMode(VRY_PIN, INPUT);
-
     pinMode(SW_PIN, INPUT_PULLUP);
-
 }
 
 void Joystick::Loop()

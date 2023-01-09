@@ -3,15 +3,14 @@
 #define CLK_PIN  16 // ESP32 pin GIOP36 (ADC0) connected to VRX pin
 #define DT_PIN  17 // ESP32 pin GIOP39 (ADC0) connected to VRY pin
 #define SW_PIN   5 // ESP32 pin GIOP17 connected to SW  pin
+#define SW_PIN2   21
 
 void RotaryEncoder::Setup()
 {
     pinMode(CLK_PIN, INPUT_PULLUP);
-
     pinMode(DT_PIN, INPUT_PULLUP);
-
     pinMode(SW_PIN, INPUT_PULLUP);
-
+    pinMode(SW_PIN2, INPUT_PULLUP);
 }
 
 void RotaryEncoder::Loop()
@@ -20,13 +19,12 @@ void RotaryEncoder::Loop()
     readAB();
 
     SW = digitalRead(SW_PIN);
+    SW2 = digitalRead(SW_PIN2);
 }
 
 void RotaryEncoder::readAB()
 {
   //noInterrupts();                                               //disable interrupts
-
-    
                                                        //fast MCU
   _currValueAB  = digitalRead(CLK_PIN) << 1;
   _currValueAB |= digitalRead(DT_PIN);

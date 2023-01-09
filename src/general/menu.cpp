@@ -9,8 +9,8 @@ void Menu::Setup(TFT_eSPI screen, RotaryEncoder *p1)
 
 int Menu::Loop()
 {
-    int cm = 0;
-    int cc = _player1paddle->Counter;
+    int16_t cm = 0;
+    int16_t cc = _player1paddle->Counter;
    
     if(_lastCounter != cc)
     {
@@ -47,7 +47,7 @@ int Menu::Loop()
         delay(10);
     }
 
-    if(_player1paddle->SW == 0)
+    if(_player1paddle->SW == 0 || _player1paddle->SW2 == 0)
         return _currentIndex;
 
     return -1;
