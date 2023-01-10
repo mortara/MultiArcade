@@ -6,11 +6,13 @@ class Ship : public GameObject
 {
     public:
         void Setup(RotaryEncoder *playerpaddle);
-        void Control();
+        bool Control();
 
     private:
         RotaryEncoder *_rotary;
         int16_t _lastCount;
 
-        float _acceleration = 5;
+        float _acceleration = 35;
+        float _rotationspeed = 10;
+        
 };

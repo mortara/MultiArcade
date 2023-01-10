@@ -1,52 +1,124 @@
 #include "asteroids_game.h"
 #include "../general/config.h"
 
-void AsteroidsGame::Setup(TFT_eSPI screen)
+void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_height, int16_t screen_width)
 {
+    h = screen_width;
+    w = screen_height;
+
     _tft = screen;
     _tft.fillScreen(BLACK);
 
-    _bullets = new Bullet[_numBullets];
-    for(int i = 0; i < _numBullets; i++)
+    _rotary = player1paddle;
+
+    _ship = new Ship();
+    _ship->Setup(_rotary);
+    _ship->Position.X = 80;
+    _ship->Position.Y = 64;
+
+    for(int i = 0; i < 6; i++)
     {
-        _bullets[i] = Bullet();
-        _bullets[i].Enabled = 0;
+        Asteroid *ast = new Asteroid();
+        ast->Setup(3);
+        _objects.push_back(ast);
     }
 
-    _asteroids = new Asteroid[_numAsteroids];
-    for(int i = 0; i < _numAsteroids; i++)
-    {
-        _asteroids[i] = Asteroid();
-        _asteroids[i].Enabled = 0;
-    }
+    Serial.print("Asteroids initialized!");
 }
 
 void AsteroidsGame::Loop()
 {
     long time = millis();
     double elapsed = (double)(time - _lastLoop) / 1000.0;
+    _lastshot += elapsed;
 
-    _ship.Control();
-    _ship.Move(elapsed);
-    _ship.Render(_tft);
+    bool fire = _ship->Control();
+    _ship->Move(elapsed);
+    _ship->Render(_tft);
 
-    for(int i = 0; i < _numAsteroids; i++)
+    OutOfBoundsCheck(_ship);
+
+    for (GameObject *obj : _objects)
     {
-        if(_asteroids[i].Enabled)
-        {
-            _asteroids[i].Move(elapsed);
-            _asteroids[i].Render(_tft);
-        }
+        obj->Move(elapsed);
+        obj->Render(_tft);      
+        OutOfBoundsCheck(obj);
+
+        if(obj->ObjectType == 3)
+            GameObject *coll = CollisionCheck(obj);
     }
 
-    for(int i = 0; i < _numBullets; i++)
+    if(fire && _lastshot >= _reloadtime)
     {
-        if(_bullets[i].Enabled)
-        {
-            _bullets[i].Move(elapsed);
-            _bullets[i].Render(_tft);
-        }
+        Bullet *bullet = new Bullet();
+        bullet->Setup(_ship);
+        _objects.push_back(bullet);
+        _lastshot = 0;
     }
+
+    for (GameObject *obj : _removedobjects)
+    {
+        obj->RemoveFromScreen(_tft);
+        _objects.remove(obj);
+    }
+
+    _removedobjects.clear();
 
     _lastLoop = time;
+
+    //_tft.drawString("ShipPos: " + String(_ship->X) + ", " + String(_ship->Y) + " ", 10, 10 , 2);
+}
+
+void AsteroidsGame::OutOfBoundsCheck(GameObject *go)
+{
+    // Nothing happens when object leaves the screen
+    if(go->OutOfBoundsMethod == 0)
+        return;
+
+    // When leaving the screen on one side, the object will return to screen on the other
+    if(go->OutOfBoundsMethod == 1)
+    {
+        int16_t margin = 8;
+
+        if((go->Position.X - go->w - margin) > w && go->vX > 0)
+            go->Position.X = 0 - 2 * margin;
+
+        if((go->Position.Y - go->h - margin) > h && go->vY > 0)
+            go->Position.Y = 0 - 2 * margin;
+        
+        if((go->Position.X + go->w + margin) < 0 && go->vX < 0)
+            go->Position.X = w + 2 * margin;
+
+        if((go->Position.Y + go->h + margin) < 0 && go->vY < 0)
+            go->Position.Y = h + 2 * margin;
+    }
+
+    // When leaving the screen, object will be deleted
+    if(go->OutOfBoundsMethod == 2)
+    {
+        int16_t margin = 8;
+ 
+        if((go->Position.X - go->w - margin) > w || (go->Position.Y - go->h - margin) > h || (go->Position.X + go->w + margin) < 0 || (go->Position.Y + go->h + margin) < 0)
+            _removedobjects.push_back(go);
+
+    }
+}
+
+GameObject* AsteroidsGame::CollisionCheck(GameObject *go)
+{
+    for (GameObject *obj : _objects)
+    {
+        if(obj->ObjectType != 2)
+            continue;
+
+        float distance = go->Position.Distance(obj->Position);
+        if(distance < 8)
+        {
+            _removedobjects.push_back(go);
+            _removedobjects.push_back(obj);
+            return obj;
+        }
+    }
+
+    return NULL;
 }

@@ -4,5 +4,8 @@
 class Bullet: public GameObject
 {
     public:
-        void CollisionCheck();
+        void Setup(GameObject *start);     
+
+    private:
+        float _speed = 100;  
 };

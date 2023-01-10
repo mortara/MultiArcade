@@ -8,6 +8,9 @@ TFT_eSPI Manager::Setup()
 
     CurrentGame = 0;
 
+    Width = 160;
+    Height = 128;
+
     //_stick = Joystick();
     //_stick.Setup();
 
@@ -45,7 +48,7 @@ void Manager::Loop()
                 case 0:
                     CurrentGame = 1;
                     _asteroids = AsteroidsGame();
-                    _asteroids.Setup(_screen);
+                    _asteroids.Setup(_screen, _rotary, Width, Height);
                     break;
                 case 1:
                     CurrentGame = 2;

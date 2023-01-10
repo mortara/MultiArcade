@@ -15,6 +15,8 @@ class Manager
         RotaryEncoder *_rotary;
         Menu _menu;
         TFT_eSPI _screen;
+        int16_t Width;
+        int16_t Height;
 
         AsteroidsGame _asteroids;
         Pong _pong;

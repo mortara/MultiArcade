@@ -5,43 +5,75 @@ void GameObject::Setup(int16_t num, VectorF *points)
 {
     _numPoints = num;
     _points = points;
+    _rotatedpoints = new VectorF[_numPoints] {};
+    Rold = 1;
 }
 
 void GameObject::Move(float d)
 {
-    Xold = X;
-    Yold = Y;
-
     vX += aX * d;
     vY += aY * d;
 
-    X = X + vX * d;
-    Y = Y + vY * d;
+    Position.X = Position.X + vX * d;
+    Position.Y = Position.Y + vY * d;
+
+    Rotation = Rotation + vR * d;
+}
+
+void GameObject::RemoveFromScreen(TFT_eSPI tft)
+{
+    if(_numPoints > 0)
+        RenderLines(tft, BLACK, Xold, Yold, Rold);
+        //tft.fillCircle((int16_t)Xold, (int16_t)Yold, Size * 5, BLACK);
+    else
+        tft.drawPixel((int16_t)Xold, (int16_t)Yold, BLACK);
 }
 
 void GameObject::Render(TFT_eSPI tft)
 {
-    if(Enabled == 0 || _numPoints == 0)
+    //tft.fillRect(   X,    Y, 5, 5, WHITE);
+    if((int)Position.X == (int)Xold && (int)Position.Y == (int)Yold && (int)Rold == (int)Rotation)
         return;
 
-    RenderLines(tft, BLACK, Xold, Yold);
-    RenderLines(tft, WHITE, X, Y);
+    RemoveFromScreen(tft);
+
+    Rold = Rotation;
+    Xold = Position.X;
+    Yold = Position.Y;
+
+    if(_numPoints == 0)
+    {
+        tft.drawPixel((int16_t)Xold, (int16_t)Yold, WHITE);
+    }
+    else
+    {
+        RenderLines(tft, WHITE, Position.X, Position.Y, Rotation);
+    }
 }
 
-void GameObject::RenderLines(TFT_eSPI tft, int16_t color, float cx, float cy)
+void GameObject::RenderLines(TFT_eSPI tft, int16_t color, float cx, float cy, float rotation)
 {
-    
-    int xs = (int)(cx + _points[0].X);
-    int ys = (int)(cy + _points[0].Y);
+    float rads = rotation / 360.0f * 2.0f * PI; 
+    VectorF rotatedstartpoint = _points[0].GetRotated(rads);
 
-    for(int i = 0; i < _numPoints; i++)
+    int32_t xs = (int32_t)(cx + rotatedstartpoint.X * Size);
+    int32_t ys = (int32_t)(cy + rotatedstartpoint.Y * Size);
+
+    int32_t xc = xs;
+    int32_t yc = ys;
+
+    for(int i = 1; i < _numPoints; i++)
     {
-        int xt = (int)(cx + _points[i].X);
-        int yt = (int)(cy + _points[i].Y);
+        VectorF rotatedpoint = _points[i].GetRotated(rads);
 
-        tft.drawLine(xs,ys,xt,yt, WHITE);
+        int32_t xt = (int32_t)(cx + rotatedpoint.X * Size);
+        int32_t yt = (int32_t)(cy + rotatedpoint.Y * Size);
 
-        xs = xt;
-        ys = yt;
+        tft.drawLine(xc,yc,xt,yt, color);
+
+        xc = xt;
+        yc = yt;
     }
+
+    tft.drawLine(xc,yc,xs, ys, color);
 }

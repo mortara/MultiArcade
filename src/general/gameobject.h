@@ -10,10 +10,11 @@ class GameObject
 {
     public:
 
-        float X;
-        float Y;
-        float w;
-        float h;
+        VectorF Position;
+       
+        float Size = 1;
+        float w = 1;
+        float h = 1;
 
         float aX;
         float aY;
@@ -21,23 +22,32 @@ class GameObject
         float vX;
         float vY;
 
-        float Xold;
-        float Yold;
-
         float Rotation;
+        float vR;
 
-        int16_t Enabled;
+        int16_t OutOfBoundsMethod = 0;
+        int16_t ObjectType;
 
-        void Setup(int16_t numpoints, float *points);
+        void Setup(int16_t numpoints, VectorF *points);
         void Move(float d);
         void Render(TFT_eSPI _screen);
-
+        void RemoveFromScreen(TFT_eSPI _screen);
+      
     private:
         
         int16_t _numPoints = 0;
-        float *_points;
+        VectorF *_points;
+        VectorF *_rotatedpoints;
 
-        void RenderLines(TFT_eSPI screen, int16_t color, float cx, float cy);
+        void RenderLines(TFT_eSPI screen, int16_t color, float cx, float cy, float rotation);
+
+        float c;
+        float s;
+
+        float Xold;
+        float Yold;
+        float Rold;
+        
 };
 
 #endif
