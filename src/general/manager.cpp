@@ -15,7 +15,7 @@ TFT_eSPI Manager::Setup()
     //_stick.Setup();
 
     _rotary = new RotaryEncoder();
-    _rotary->Setup();
+    _rotary->Setup(CLK1_PIN, DT1_PIN, SW1_PIN, SW1_PIN2, true);
 
     _screen = TFT_eSPI();
     _screen.init();

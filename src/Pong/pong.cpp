@@ -9,7 +9,8 @@
 void Pong::midline() {
 
   // If the ball is not on the line then don't redraw the line
-  if (((int)ball_x<dashline_x-ball_w) && ((int)ball_x > dashline_x+dashline_w)) return;
+  if ((( (int16_t)ball_x < (dashline_x-ball_w) ) || ( (int16_t)ball_x > (dashline_x+dashline_w))) && !firstloop) 
+    return;
 
   tft.startWrite();
 
@@ -24,63 +25,56 @@ void Pong::midline() {
   tft.endWrite();
 }
 
-void Pong::lpaddle() {
+void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y) {
   
-  if (lpaddle_d == 1) {
-    tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, 1, BLACK);
+  bool redraw = true;
+  if (d > 0) {
+    tft.fillRect(x, (int)y, paddle_w, (int)d, BLACK);
   } 
-  else if (lpaddle_d == -1) {
-    tft.fillRect(lpaddle_x, lpaddle_y + paddle_h - 1, paddle_w, 1, BLACK);
+  else if (d < 0) {
+    tft.fillRect(x, (int)y + paddle_h + (int)d, paddle_w, (int)-d, BLACK);
   }
-
-  lpaddle_y = lpaddle_y + lpaddle_d;
-
-  if (ball_dx == 1) lpaddle_d = 0;
-  else {
-    if (lpaddle_y + paddle_h / 2 == target_y) lpaddle_d = 0;
-    else if (lpaddle_y + paddle_h / 2 > target_y) lpaddle_d = -1;
-    else lpaddle_d = 1;
+  else
+  {
+    redraw = false;
   }
-
-  if (lpaddle_y + paddle_h >= h && lpaddle_d == 1) lpaddle_d = 0;
-  else if (lpaddle_y <= 0 && lpaddle_d == -1) lpaddle_d = 0;
-
-  tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
-}
-
-void Pong::rpaddle(bool player) {
   
-  if (rpaddle_d > 0) {
-    tft.fillRect(rpaddle_x, (int)rpaddle_y, paddle_w, (int)rpaddle_d, BLACK);
-  } 
-  else if (rpaddle_d < 0) {
-    tft.fillRect(rpaddle_x, (int)rpaddle_y + paddle_h + (int)rpaddle_d, paddle_w, (int)-rpaddle_d, BLACK);
-  }
-
-  rpaddle_y = rpaddle_y + rpaddle_d ;
+  y = y + d ;
   
   if(!player)
   {
-    if (ball_dx == -1) rpaddle_d = 0;
+    if ((leftside && ball_dx > 0) || (!leftside && ball_dx < 0)) 
+      d = 0;
     else {
-      if ((int)rpaddle_y + paddle_h / 2 == target_y) rpaddle_d = 0;
-      else if ((int)rpaddle_y + paddle_h / 2 > target_y) rpaddle_d = -1;
-      else rpaddle_d = 1;
+      if ((int)y + paddle_h / 2 == target_y) 
+        d = 0;
+      else if ((int)y + paddle_h / 2 > target_y) 
+        d = -1;
+      else 
+        d = 1;
     }
   }
   else
   {
-    int paddle1count =  _player1paddle->Counter;
-   
-    rpaddle_d = (paddle1count - _player1LastpaddleCount) * rpaddle_v ;
-
-    _player1LastpaddleCount = paddle1count;
+    if(!leftside)
+    {
+      int paddle1count =  _player1paddle->Counter;  
+      d = (paddle1count - _player1LastpaddleCount) * rpaddle_v ;
+      _player1LastpaddleCount = paddle1count;
+    }
+    else
+    {
+      int paddle2count =  _player2paddle->Counter;  
+      d = (paddle2count - _player2LastpaddleCount) * lpaddle_v ;
+      _player2LastpaddleCount = paddle2count;
+    }
   }
 
-  if ((int)rpaddle_y + paddle_h >= h && rpaddle_d == 1) rpaddle_d = 0;
-    else if ((int)rpaddle_y <= 0 && rpaddle_d == -1) rpaddle_d = 0;
+  if ((int)y + paddle_h >= h && d == 1) d = 0;
+    else if ((int)y <= 0 && d == -1) d = 0;
 
-  tft.fillRect(rpaddle_x, (int)rpaddle_y, paddle_w, paddle_h, WHITE);
+  if(redraw || firstloop)
+    tft.fillRect((int)x, (int)y, paddle_w, paddle_h, WHITE);
 }
 
 void Pong::calc_target_y() {
@@ -113,11 +107,9 @@ void Pong::ball(float elapsed) {
 
     if (ball_dx < 0.0 && (int)ball_x == paddle_w && (int)ball_y + ball_h >= lpaddle_y && (int)ball_y <= lpaddle_y + paddle_h) {
       ball_dx = ball_dx * -1.0;
-      
       calc_target_y(); 
     } else if (ball_dx > 0.0 && (int)ball_x + ball_w == w - paddle_w && (int)ball_y + ball_h >= rpaddle_y && (int)ball_y <= rpaddle_y + paddle_h) {
-      ball_dx = ball_dx * -1.0;
-      
+      ball_dx = ball_dx * -1.0; 
       calc_target_y();
     } 
 
@@ -130,27 +122,70 @@ void Pong::ball(float elapsed) {
     {
         ball_x = 2;
         ball_y = lpaddle_y + (paddle_h / 2);
+
+        if(singleplayer)
+        {
+          lscore -=1;
+          if(lscore == 0)
+          {
+            // GameOver
+          }
+        }
+        else
+        {
+          lscore++;
+        }
     }
 
-    //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
-    tft.drawRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
-    tft.fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
-    oldball_x = ball_x;
-    oldball_y = ball_y;
+    if ((int)ball_x < 0 && !singleplayer)
+    {
+        ball_x = rpaddle_x -2;
+        ball_y = rpaddle_x + (paddle_h / 2);
+        rscore++;
+    }
+
+    if(oldball_x != ball_x || oldball_y != ball_y || firstloop)
+    {
+      //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
+      tft.fillRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
+      tft.fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
+      oldball_x = ball_x;
+      oldball_y = ball_y;
+    }
+}
+
+void Pong::scores()
+{
+    if(singleplayer)
+    {
+        tft.drawString("Level: " + String(rscore) , 90, 2 , 2);
+    }
 }
 
 void Pong::Loop() {
 
     long time = millis();
-    double elapsed = (double)(time - _lastLoop) / 1000.0;
+    float elapsed = (double)(time - _lastLoop) / 1000.0;
 
-    lpaddle();
-    rpaddle(true);
-
+    paddle(false, true, lpaddle_d, lpaddle_x, lpaddle_y);
+    paddle(true, false, rpaddle_d, rpaddle_x, rpaddle_y);
     midline();
-
     ball(elapsed);
+    scores();
 
+    if(singleplayer)
+    {
+      currentleveltime += elapsed;
+      if(currentleveltime >= maxleveltime)
+      {
+          currentleveltime -= maxleveltime;
+          rscore++;
+          ball_dx *= 1.1;
+          ball_dy *= 1.1;
+      }
+    }
+
+    firstloop = false;
     _lastLoop = time;
 }
 
@@ -169,8 +204,10 @@ void Pong::Setup(TFT_eSPI screen, RotaryEncoder *player1) {
   
   calc_target_y();
 
-  midline();
   tft.fillScreen(BLACK);
   _lastLoop = millis();
 
+  singleplayer = true;
+  rscore = 1;
+  lscore = 3;
 }

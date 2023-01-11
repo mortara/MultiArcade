@@ -44,7 +44,7 @@ int Menu::Loop()
             _tft.drawString(_items[i], 20, 20 + i * 12 , 2);
         }
         _firsttime = false;
-        delay(10);
+        delay(50);
     }
 
     if(_player1paddle->SW == 0 || _player1paddle->SW2 == 0)

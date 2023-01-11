@@ -45,7 +45,28 @@ void AsteroidsGame::Loop()
         OutOfBoundsCheck(obj);
 
         if(obj->ObjectType == 3)
+        {
             GameObject *coll = CollisionCheck(obj);
+            if(coll != NULL && coll->ObjectType == 2)
+            {
+                Asteroid *ast = (Asteroid *)coll;
+                int s = ast->Sizeclass;
+
+                if(s > 1)
+                {
+                    for(int i = 0; i < s; i++)
+                    {
+                        Asteroid *asn = new Asteroid();
+                        asn->Setup(s-1);
+                        asn->Position.X = ast->Position.X;
+                        asn->Position.Y = ast->Position.Y;
+                        asn->vX *= 1.5f;
+                        asn->vY *= 1.5f;
+                        _objects.push_back(asn);
+                    }
+                }
+            }
+        }
     }
 
     if(fire && _lastshot >= _reloadtime)

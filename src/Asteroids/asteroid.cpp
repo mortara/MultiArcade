@@ -2,7 +2,7 @@
 
 void Asteroid::Setup(int s)
 {
-    sizeclass = s;
+    Sizeclass = s;
     OutOfBoundsMethod = 1;
     ObjectType = 2;
     int points = s * 4;
@@ -29,8 +29,8 @@ void Asteroid::Setup(int s)
     Position.X = random(160);
     Position.Y = random(128);
 
-    vX = random(10);
-    vY = random(10);
+    vX = random(20);
+    vY = random(20);
 
     vR = random(30);
 

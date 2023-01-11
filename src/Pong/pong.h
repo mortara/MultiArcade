@@ -10,10 +10,8 @@ class Pong
 
         TFT_eSPI tft;
 
-        int16_t h = 124;
-        int16_t w = 156;
-
-        int dly = 10;
+        int16_t h = 128;
+        int16_t w = 160;
 
         int16_t paddle_h = 25;
         int16_t paddle_w = 2;
@@ -21,15 +19,14 @@ class Pong
         int16_t lpaddle_x = 0;
         int16_t rpaddle_x = w - paddle_w;
 
-        int16_t lpaddle_y = 0;
+        float lpaddle_y = 0;
         float rpaddle_y = h - paddle_h;
 
-        int16_t lpaddle_d = 1;
+        float lpaddle_d = 1;
         float rpaddle_d = -1;
-        float rpaddle_v = 2.0;
 
-        int16_t lpaddle_ball_t = w - w / 4;
-        int16_t rpaddle_ball_t = w / 4;
+        float rpaddle_v = 2.0;
+        float lpaddle_v = 2.0;
 
         int16_t target_y = 0;
 
@@ -51,15 +48,23 @@ class Pong
         int16_t dashline_x = w / 2 - 1;
         int16_t dashline_y = dashline_h / 2;
 
+        bool singleplayer;
         int16_t lscore = 0;
         int16_t rscore = 0;
+
+        bool firstloop = true;
+        float maxleveltime = 10; 
+        float currentleveltime = 0;
 
         long _player1LastpaddleCount;
         RotaryEncoder *_player1paddle;
 
+        long _player2LastpaddleCount;
+        RotaryEncoder *_player2paddle;
+
         void midline();
-        void lpaddle();
-        void rpaddle(bool player);
+        void paddle(bool player, bool leftside, float &d, int16_t x, float &y);
+        void scores();
         void calc_target_y();
         void ball(float elapsed);
 
