@@ -18,7 +18,7 @@ class AsteroidsGame
 
         RotaryEncoder *_rotary;
         Ship *_ship;
-        float _reloadtime = 0.5;
+        float _reloadtime = 0.3;
         float _lastshot = 0;
 
         std::list<GameObject *> _objects;
@@ -27,6 +27,11 @@ class AsteroidsGame
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
 
+        int score = 0;
+        int level = 0;
+
+        void scores();
+        void StartLevel(int l);
     public:
         void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_height, int16_t screen_width);
         void Loop();

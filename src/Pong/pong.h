@@ -21,6 +21,8 @@ class Pong
 
         float lpaddle_y = 0;
         float rpaddle_y = h - paddle_h;
+        float lpaddle_y_old = 0;
+        float rpaddle_y_old = h - paddle_h;
 
         float lpaddle_d = 1;
         float rpaddle_d = -1;
@@ -63,12 +65,13 @@ class Pong
         RotaryEncoder *_player2paddle;
 
         void midline();
-        void paddle(bool player, bool leftside, float &d, int16_t x, float &y);
+        void paddle(bool player, bool leftside, float &d, int16_t x, float &y, float &y_old);
         void scores();
         void calc_target_y();
         void ball(float elapsed);
 
     public:
         void Setup(TFT_eSPI screen, RotaryEncoder *player1);
+        void Setup(TFT_eSPI screen, RotaryEncoder *player1, RotaryEncoder *player2);
         void Loop();
 };

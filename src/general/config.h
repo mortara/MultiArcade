@@ -12,6 +12,12 @@
     #define SW1_PIN 5 
     #define SW1_PIN2 21
 
+    // Player 2 paddle
+    #define CLK2_PIN 25 
+    #define DT2_PIN 26
+    #define SW2_PIN 27 
+    #define SW2_PIN2 14
+
     #define CONFIGFILE_H
     
 #endif

@@ -25,20 +25,20 @@ void Pong::midline() {
   tft.endWrite();
 }
 
-void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y) {
+void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, float &y_old) {
   
   bool redraw = true;
-  if (d > 0) {
-    tft.fillRect(x, (int)y, paddle_w, (int)d, BLACK);
+  if (y != y_old )
+  {
+    tft.fillRect(x, (int)y_old, paddle_w, (int)paddle_h, BLACK);
   } 
-  else if (d < 0) {
-    tft.fillRect(x, (int)y + paddle_h + (int)d, paddle_w, (int)-d, BLACK);
-  }
   else
   {
     redraw = false;
   }
   
+  y_old = y;
+
   y = y + d ;
   
   if(!player)
@@ -49,9 +49,9 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y) {
       if ((int)y + paddle_h / 2 == target_y) 
         d = 0;
       else if ((int)y + paddle_h / 2 > target_y) 
-        d = -1;
+        d = -0.2;
       else 
-        d = 1;
+        d = 0.2;
     }
   }
   else
@@ -70,8 +70,10 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y) {
     }
   }
 
-  if ((int)y + paddle_h >= h && d == 1) d = 0;
-    else if ((int)y <= 0 && d == -1) d = 0;
+  if ((int)y + paddle_h >= h && d > 0) 
+    d = 0;
+  else if ((int)y <= 0 && d < 0) 
+    d = 0;
 
   if(redraw || firstloop)
     tft.fillRect((int)x, (int)y, paddle_w, paddle_h, WHITE);
@@ -139,8 +141,8 @@ void Pong::ball(float elapsed) {
 
     if ((int)ball_x < 0 && !singleplayer)
     {
-        ball_x = rpaddle_x -2;
-        ball_y = rpaddle_x + (paddle_h / 2);
+        ball_x = rpaddle_x - 4;
+        ball_y = rpaddle_y + (paddle_h / 2);
         rscore++;
     }
 
@@ -160,6 +162,12 @@ void Pong::scores()
     {
         tft.drawString("Level: " + String(rscore) , 90, 2 , 2);
     }
+    else
+    {
+        tft.drawString("P1: " + String(lscore) , 10, 2 , 2);
+        tft.drawString("P2: " + String(rscore) , 120, 2 , 2);
+
+    }
 }
 
 void Pong::Loop() {
@@ -167,8 +175,12 @@ void Pong::Loop() {
     long time = millis();
     float elapsed = (double)(time - _lastLoop) / 1000.0;
 
-    paddle(false, true, lpaddle_d, lpaddle_x, lpaddle_y);
-    paddle(true, false, rpaddle_d, rpaddle_x, rpaddle_y);
+    if(singleplayer)
+      paddle(false, true, lpaddle_d, lpaddle_x, lpaddle_y, lpaddle_y_old);
+    else
+      paddle(true, true, lpaddle_d, lpaddle_x, lpaddle_y, lpaddle_y_old);
+
+    paddle(true, false, rpaddle_d, rpaddle_x, rpaddle_y, rpaddle_y_old);
     midline();
     ball(elapsed);
     scores();
@@ -210,4 +222,29 @@ void Pong::Setup(TFT_eSPI screen, RotaryEncoder *player1) {
   singleplayer = true;
   rscore = 1;
   lscore = 3;
+}
+
+void Pong::Setup(TFT_eSPI screen, RotaryEncoder *player1, RotaryEncoder *player2) {
+  tft = screen;
+  _player1paddle = player1;
+  _player2paddle = player2;
+
+  lpaddle_y = random(0, h - paddle_h);
+  rpaddle_y = random(0, h - paddle_h);
+
+  player1->Counter = 0;
+  _player1LastpaddleCount = 0;
+
+  player2->Counter = 0;
+  _player2LastpaddleCount = 0;
+
+  // ball is placed on the center of the left paddle
+  ball_y = lpaddle_y + (paddle_h / 2);
+  
+  tft.fillScreen(BLACK);
+  _lastLoop = millis();
+
+  singleplayer = false;
+  rscore = 0;
+  lscore = 0;
 }

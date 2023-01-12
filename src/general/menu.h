@@ -13,8 +13,8 @@ class Menu
         TFT_eSPI _tft;
         RotaryEncoder *_player1paddle;
 
-        int16_t _gamecount = 4;
-        String _items[4] = { "Asteroids", "1 Player Pong","Breakout", "Space Invaders" };
+        int16_t _gamecount = 5;
+        String _items[5] = { "Asteroids", "1 Player Pong", "2 Player Pong","Breakout", "Space Invaders" };
 
     public:
         void Setup(TFT_eSPI screen, RotaryEncoder *player1);

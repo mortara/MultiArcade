@@ -16,14 +16,34 @@ void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t
     _ship->Position.X = 80;
     _ship->Position.Y = 64;
 
-    for(int i = 0; i < 6; i++)
+    
+    Serial.print("Asteroids initialized!");
+}
+
+void AsteroidsGame::StartLevel(int l)
+{
+    level = l;
+
+    int numa = 3 + l;
+    _objects.clear();
+    for(int i = 0; i < numa; i++)
     {
         Asteroid *ast = new Asteroid();
-        ast->Setup(3);
+        int sc = 3; // We want Size 3 asteroids
+
+        if(random(60) < l)
+            sc = 4;         // but sometimes size 4 ones. the higher the level, the more size 4 asteroids are coming
+
+        ast->Setup(sc, w, h);
         _objects.push_back(ast);
     }
 
-    Serial.print("Asteroids initialized!");
+}
+
+void AsteroidsGame::scores()
+{
+    _tft.drawString("Level: " + String(level) + "   Score: " + String(score) , 10, 2 , 2);
+    
 }
 
 void AsteroidsGame::Loop()
@@ -52,12 +72,12 @@ void AsteroidsGame::Loop()
                 Asteroid *ast = (Asteroid *)coll;
                 int s = ast->Sizeclass;
 
-                if(s > 1)
+                if(s > 2)
                 {
                     for(int i = 0; i < s; i++)
                     {
                         Asteroid *asn = new Asteroid();
-                        asn->Setup(s-1);
+                        asn->Setup(s-1, w, h);
                         asn->Position.X = ast->Position.X;
                         asn->Position.Y = ast->Position.Y;
                         asn->vX *= 1.5f;
@@ -85,6 +105,21 @@ void AsteroidsGame::Loop()
 
     _removedobjects.clear();
 
+    int asteroidsleft = 0;
+    for (GameObject *obj : _objects)
+    {
+        if(obj->ObjectType == 2)
+        asteroidsleft++;
+    }
+
+    if(asteroidsleft == 0)
+    {
+        score += level * 5;
+        StartLevel(level + 1);
+    }
+
+    scores();
+
     _lastLoop = time;
 
     //_tft.drawString("ShipPos: " + String(_ship->X) + ", " + String(_ship->Y) + " ", 10, 10 , 2);
@@ -101,23 +136,23 @@ void AsteroidsGame::OutOfBoundsCheck(GameObject *go)
     {
         int16_t margin = 8;
 
-        if((go->Position.X - go->w - margin) > w && go->vX > 0)
-            go->Position.X = 0 - 2 * margin;
+        if((go->Position.X - go->w - 2 * margin) > w && go->vX >= 0)
+            go->Position.X = 0 - margin;
 
-        if((go->Position.Y - go->h - margin) > h && go->vY > 0)
-            go->Position.Y = 0 - 2 * margin;
+        if((go->Position.Y - go->h - 2 * margin) > h && go->vY >= 0)
+            go->Position.Y = 0 - margin;
         
-        if((go->Position.X + go->w + margin) < 0 && go->vX < 0)
-            go->Position.X = w + 2 * margin;
+        if((go->Position.X + go->w + 2 * margin) < 0 && go->vX <= 0)
+            go->Position.X = w + margin;
 
-        if((go->Position.Y + go->h + margin) < 0 && go->vY < 0)
-            go->Position.Y = h + 2 * margin;
+        if((go->Position.Y + go->h + 2 * margin) < 0 && go->vY <= 0)
+            go->Position.Y = h + margin;
     }
 
     // When leaving the screen, object will be deleted
     if(go->OutOfBoundsMethod == 2)
     {
-        int16_t margin = 8;
+        int16_t margin = 16;
  
         if((go->Position.X - go->w - margin) > w || (go->Position.Y - go->h - margin) > h || (go->Position.X + go->w + margin) < 0 || (go->Position.Y + go->h + margin) < 0)
             _removedobjects.push_back(go);
@@ -135,6 +170,7 @@ GameObject* AsteroidsGame::CollisionCheck(GameObject *go)
         float distance = go->Position.Distance(obj->Position);
         if(distance < 8)
         {
+            score+=((Asteroid*)obj)->Sizeclass * 5;
             _removedobjects.push_back(go);
             _removedobjects.push_back(obj);
             return obj;

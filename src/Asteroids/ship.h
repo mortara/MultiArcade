@@ -12,7 +12,7 @@ class Ship : public GameObject
         RotaryEncoder *_rotary;
         int16_t _lastCount;
 
-        float _acceleration = 35;
-        float _rotationspeed = 10;
+        float _acceleration = 45;
+        float _rotationspeed = 7;
         
 };

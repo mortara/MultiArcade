@@ -13,6 +13,7 @@ class Manager
     private:
         Joystick _stick;
         RotaryEncoder *_rotary;
+        RotaryEncoder *_rotary2;
         Menu _menu;
         TFT_eSPI _screen;
         int16_t Width;
