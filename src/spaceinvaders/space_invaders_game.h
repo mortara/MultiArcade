@@ -13,7 +13,7 @@ class SpaceInvadersGame
         int16_t h;
 
         RotaryEncoder *_rotary;
-        Ship *_ship;
+
         float _reloadtime = 0.3;
         float _lastshot = 0;
 

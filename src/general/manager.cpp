@@ -69,6 +69,16 @@ void Manager::Loop()
                     _pong = Pong();
                     _pong.Setup(_screen, _rotary, _rotary2);
                     break;
+                case 3:
+                    CurrentGame = 4;
+                    _breakout = BreakoutGame();
+                    _breakout.Setup(_screen, _rotary, Width, Height);
+                    break;
+                case 4:
+                    CurrentGame = 5;
+                    _spaceInvaders = SpaceInvadersGame();
+                    _spaceInvaders.Setup(_screen, _rotary, Width, Height);
+                    break;
             }
         }
     }
@@ -81,5 +91,12 @@ void Manager::Loop()
     {
         _pong.Loop();
     }
-
+    if(CurrentGame == 4)
+    {
+        _breakout.Loop();
+    }
+    if(CurrentGame == 5)
+    {
+        _spaceInvaders.Loop();
+    }
 }

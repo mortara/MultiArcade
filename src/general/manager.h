@@ -7,6 +7,8 @@
 #include "config.h"
 #include "Asteroids/asteroids_game.h"
 #include "Pong/pong.h"
+#include "../breakout/breakout_game.h"
+#include "../spaceinvaders/space_invaders_game.h"
 
 class Manager
 {
@@ -21,6 +23,8 @@ class Manager
 
         AsteroidsGame _asteroids;
         Pong _pong;
+        BreakoutGame _breakout;
+        SpaceInvadersGame _spaceInvaders;
 
     public:
         int16_t CurrentGame;
