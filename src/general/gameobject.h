@@ -11,7 +11,8 @@ class GameObject
     public:
 
         VectorF Position;
-       
+        VectorF OldPosition;
+
         float Size = 1;
         float w = 1;
         float h = 1;
@@ -44,8 +45,6 @@ class GameObject
         float c;
         float s;
 
-        float Xold;
-        float Yold;
         float Rold;
         
 };

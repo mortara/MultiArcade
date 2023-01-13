@@ -1,10 +1,10 @@
 #include "asteroids_game.h"
 #include "../general/config.h"
 
-void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_height, int16_t screen_width)
+void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_width, int16_t screen_height)
 {
-    h = screen_width;
-    w = screen_height;
+    w = screen_width;
+    h = screen_height;
 
     _tft = screen;
     _tft.fillScreen(BLACK);

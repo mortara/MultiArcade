@@ -23,27 +23,27 @@ void GameObject::Move(float d)
 void GameObject::RemoveFromScreen(TFT_eSPI tft)
 {
     if(_numPoints > 0)
-        RenderLines(tft, BLACK, Xold, Yold, Rold);
+        RenderLines(tft, BLACK, OldPosition.X, OldPosition.Y, Rold);
         //tft.fillCircle((int16_t)Xold, (int16_t)Yold, Size * 5, BLACK);
     else
-        tft.drawPixel((int16_t)Xold, (int16_t)Yold, BLACK);
+        tft.drawPixel((int16_t)OldPosition.X, (int16_t)OldPosition.Y, BLACK);
 }
 
 void GameObject::Render(TFT_eSPI tft)
 {
     //tft.fillRect(   X,    Y, 5, 5, WHITE);
-    if((int)Position.X == (int)Xold && (int)Position.Y == (int)Yold && (int)Rold == (int)Rotation)
+    if((int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)Rold == (int)Rotation)
         return;
 
     RemoveFromScreen(tft);
 
     Rold = Rotation;
-    Xold = Position.X;
-    Yold = Position.Y;
+    OldPosition.X = Position.X;
+    OldPosition.Y = Position.Y;
 
     if(_numPoints == 0)
     {
-        tft.drawPixel((int16_t)Xold, (int16_t)Yold, WHITE);
+        tft.drawPixel((int16_t)OldPosition.X, (int16_t)OldPosition.Y, WHITE);
     }
     else
     {

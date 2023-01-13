@@ -7,7 +7,7 @@
 #include "config.h"
 #include "Asteroids/asteroids_game.h"
 #include "Pong/pong.h"
-#include "../breakout/breakout_game.h"
+#include "../breakout/breakout_game.hpp"
 #include "../spaceinvaders/space_invaders_game.h"
 
 class Manager

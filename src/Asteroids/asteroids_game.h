@@ -33,6 +33,6 @@ class AsteroidsGame
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_height, int16_t screen_width);
+        void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_width, int16_t screen_height);
         void Loop();
 };
