@@ -2,19 +2,19 @@
 
 void loop() {
   // put your main code here, to run repeatedly:
-  // delay(10);
+    //delay(_delay);
 
     _mgr.Loop();
 
     _loopCount++;
-    if(_loopCount == 100)
+    if(_loopCount == 500)
     {
         unsigned long end = millis();
-        float duration = (float)(end - _loopStart) / (float)100.0;
+        float duration = (float)(end - _loopStart) / (float)500.0;
         //Serial.print(duration);
-        _screen.drawString("loop: " + String(duration) + "ms", 10, 113 , 2);
+        _screen.drawString("loop: " + String(duration) + "ms", 10, 113 , 1);
         _loopCount = 0;
-        _loopStart = millis();
+        _loopStart = end;
     }
 }
 

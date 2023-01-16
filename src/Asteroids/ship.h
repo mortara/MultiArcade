@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "../general/gameobject.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
 
 class Ship : public GameObject
 {

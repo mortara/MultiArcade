@@ -42,7 +42,7 @@ void AsteroidsGame::StartLevel(int l)
 
 void AsteroidsGame::scores()
 {
-    _tft.drawString("Level: " + String(level) + "   Score: " + String(score) , 10, 2 , 2);
+    _tft.drawString("Level: " + String(level) + "   Score: " + String(score) , 10, 2 , 1);
     
 }
 

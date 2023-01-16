@@ -77,3 +77,8 @@ void GameObject::RenderLines(TFT_eSPI tft, int16_t color, float cx, float cy, fl
 
     tft.drawLine(xc,yc,xs, ys, color);
 }
+
+bool GameObject::Intersects(GameObject * go2)
+{
+    return ! ( (go2->Position.X) > (Position.X+w) || (go2->Position.X+go2->w) < Position.X || (go2->Position.Y) > (Position.Y + h) || (go2->Position.Y+go2->h) < Position.Y);
+}

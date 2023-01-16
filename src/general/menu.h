@@ -2,7 +2,7 @@
 #include <String.h>
 #include <TFT_eSPI.h>
 #include "../general/config.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
 
 class Menu
 {

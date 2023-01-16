@@ -1,4 +1,4 @@
-#include "rotary_encoder.h"
+#include "rotary_encoder.hpp"
 
 
 
@@ -43,5 +43,19 @@ void RotaryEncoder::Loop()
     _prevValueAB = _currValueAB << 2;
 
     SW = digitalRead(_sw1);
+    if(SW == 0 && SW_OLD != 0)
+      Switch1Pressed = true;
+    else
+      Switch1Pressed = false;
+
+    SW_OLD = SW;
+
     SW2 = digitalRead(_sw2);
+    if(SW2 == 0 && SW2_OLD != 0)
+      Switch2Pressed = true;
+    else
+      Switch2Pressed = false;
+
+    SW2_OLD = SW2;
+
 }

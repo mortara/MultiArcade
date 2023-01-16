@@ -20,25 +20,86 @@ void BreakoutGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t 
     _ball = new GameObject();
     _ball->w = 2;
     _ball->h = 2;
-    _ball->Position.X = _paddle->Position.X + _paddle->w / 2.0f;
-    _ball->Position.Y = _paddle->Position.Y - _ball->h - 4;
-
-    float startspeed = 55;
-    float startangle = 300.0f + random(120);
-
-    float angle = (startangle - 90.0f) / 360.0f * 2.0f * PI;
-
-    _ball->vX = cos(angle) * startspeed;
-    _ball->vY = sin(angle) * startspeed;
     
     Serial.print("Breakout initialized!");
 
     _lastLoop = millis();
 }
 
+void BreakoutGame::StartLevel(int l)
+{
+    level = l;
+
+    int rows = 3 + l;
+    int bpr = 9;
+    int bh = 5;
+    int bw = (w - 4) / (bpr + 1);
+
+    if(rows > 7)
+        rows = 7;
+
+    for(int r = 0; r <= rows; r++)
+    {
+        uint16_t rc = WHITE;
+        switch(r)
+        {
+            case 0:
+                rc = TFT_BLUE;
+                break;
+            case 1: 
+                rc = TFT_GREEN;
+                break;
+            case 2:
+                rc = TFT_YELLOW;
+                break;
+            case 3:
+                rc = TFT_GREEN;
+                break;
+            case 4:
+                rc = TFT_RED;
+                break;
+            case 5:
+                rc = TFT_BROWN;
+                break;
+            case 6:
+                rc = TFT_CYAN;
+                break;
+        }
+
+
+        for(int c = 0; c <= bpr; c++)
+        {
+            Block* block = new Block();
+
+            block->h = bh;
+            block->w = bw;
+            block->Position.X = 2 + c * (bw+1);
+            block->Position.Y = 15 + r * (bh+1);
+
+            block->Setup(rc);
+
+            _objects.push_back(block);
+            block->Render(_tft);
+        }
+    }
+
+    float startspeed = 60 + l * 5.0f;
+    float startangle = 30.0f + random(30);
+    if(random(100) > 50)
+        startangle = 360 - startangle;
+
+    float angle = (startangle - 90.0f) / 360.0f * 2.0f * PI;
+
+    _ball->Position.X = _paddle->Position.X + _paddle->w / 2.0f;
+    _ball->Position.Y = _paddle->Position.Y - _ball->h - 4;
+    _ball->vX = cos(angle) * startspeed;
+    _ball->vY = sin(angle) * startspeed;
+
+}
+
 void BreakoutGame::scores()
 {
-    //_tft.drawString("Level: " + String(level) + "   Score: " + String(score) , 10, 2 , 2); 
+    _tft.drawString("Lives: " + String(lives) + " Score: " + String(score) , 10, 1 , 1); 
 }
 
 void BreakoutGame::ball(float elapsed) 
@@ -68,6 +129,7 @@ void BreakoutGame::ball(float elapsed)
 
         if(lives == 0)
         {
+            _tft.fillScreen(BLACK);
             gamestage = 2;
             return;
         }
@@ -78,10 +140,45 @@ void BreakoutGame::ball(float elapsed)
     //    _ball->vY *= -1.0f;
     }
 
-    if(_ball->vY > 0 && _ball->Position.Y >= _paddle->Position.Y && (_ball->Position.X >= _paddle->Position.X && _ball->Position.X <= (_paddle->Position.X + _paddle->w)))
+    if(_ball->vY > 0 && ((_ball->Position.Y + _ball->h) >= _paddle->Position.Y && _ball->Position.Y < _paddle->Position.Y + _paddle->h) && ((_ball->Position.X + _ball->w) >= _paddle->Position.X && _ball->Position.X <= (_paddle->Position.X + _paddle->w)))
     {
         _ball->vY *= -1.0f;
-        _ball->vX += _paddle->vX * elapsed * 0.5;
+        _ball->vX += _paddle->vX * 0.5;
+        float d = - (_ball->Position.X - _paddle->Position.X - _paddle->w / 2.0f) / (_paddle->w / 2.0f);
+        _ball->vX -= d * 5.0f;
+        if(abs(d) > 0.9)
+            _ball->vX *= -1.0f;
+    }
+
+    std::list<Block *> _removedobjects;
+
+    for (Block *obj : _objects)
+    {
+        if(obj->Intersects(_ball))
+        {
+            score += 5;
+            _removedobjects.push_back(obj);
+            obj->RemoveFromScreen(_tft);
+
+            if(_ball->Position.X > obj->Position.X && (_ball->Position.X + _ball->w) < (obj->Position.X + obj->w))
+                _ball->vY *= -1.0f;
+            else if(_ball->Position.Y > obj->Position.Y && (_ball->Position.Y + _ball->h) < (obj->Position.Y + obj->h))
+                _ball->vX *= -1.0f;
+            else
+            {
+                _ball->vY *= -1.0f;
+                _ball->vX *= -1.0f;
+            }
+            break;
+        }
+    }
+
+    for (Block *obj : _removedobjects)
+        _objects.remove(obj);
+
+    if(_objects.empty())
+    {
+        StartLevel(level + 1);
     }
 
     if(redraw || firstloop)
@@ -121,11 +218,14 @@ void BreakoutGame::Loop()
     if(gamestage == 0)
     {
         _tft.drawString("BREAKOUT", w / 2 - 40, h / 2, 1);
-        if(_rotary->SW2 == 0 || _rotary->SW == 0)
+        if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
+            _tft.fillScreen(BLACK);
             score = 0;
             lives = 3;
             gamestage = 1;
+            StartLevel(1);
+            delay(500);
         }
     }
     if(gamestage == 1)
@@ -138,8 +238,12 @@ void BreakoutGame::Loop()
     if(gamestage == 2)
     {
         _tft.drawString("GAME OVER", w / 2 - 50, h / 2, 1);
-        if(_rotary->SW2 == 0 || _rotary->SW == 0)
+        if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
+        {
+            _tft.fillScreen(BLACK);
+            delay(500);
             gamestage = 0;
+        }
     }
 
     _lastLoop = time;

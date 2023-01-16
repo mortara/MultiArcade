@@ -33,7 +33,7 @@ class GameObject
         void Move(float d);
         void Render(TFT_eSPI _screen);
         void RemoveFromScreen(TFT_eSPI _screen);
-      
+        bool Intersects(GameObject * go2);
     private:
         
         int16_t _numPoints = 0;

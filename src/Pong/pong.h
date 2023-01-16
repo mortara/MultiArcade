@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 
-#include "../input/rotary_encoder.h"
+#include "../input/rotary_encoder.hpp"
 
 class Pong
 {

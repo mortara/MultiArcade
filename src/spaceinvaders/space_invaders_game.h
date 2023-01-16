@@ -2,7 +2,7 @@
 #include <list>
 #include <TFT_eSPI.h>
 #include "../general/gameobject.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
 
 class SpaceInvadersGame
 {

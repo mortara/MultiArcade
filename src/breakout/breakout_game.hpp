@@ -2,7 +2,8 @@
 #include <list>
 #include <TFT_eSPI.h>
 #include "../general/gameobject.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
+#include "block.hpp"
 
 class BreakoutGame
 {
@@ -16,20 +17,17 @@ class BreakoutGame
 
         int gamestage = 0;  // 0 = Before start,  1 = game running,  2 = game over
         bool firstloop = true;
-        float _reloadtime = 0.3;
-        float _lastshot = 0;
 
-        std::list<GameObject *> _objects;
-        std::list<GameObject *> _removedobjects;
-
+        std::list<Block *> _objects;
+      
         GameObject *_ball;
         GameObject *_paddle;
         
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
-
+        
         long _lastrotarycount;
-        float paddle_v = 3;
+        float paddle_v = 2;
 
         int lives = 3;
         int score = 0;

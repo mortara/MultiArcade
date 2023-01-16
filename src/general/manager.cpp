@@ -81,6 +81,7 @@ void Manager::Loop()
                     break;
             }
         }
+        return;
     }
 
     if(CurrentGame == 1)

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "../Input/joystick.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include "menu.h"

@@ -37,7 +37,7 @@ int Menu::Loop()
         for(int i = 0; i < _gamecount; i++)
         {
             if(i == _currentIndex)
-                _tft.setTextColor(BLUE);
+                _tft.setTextColor(TFT_BLUE);
             else
                 _tft.setTextColor(WHITE);
 
@@ -47,7 +47,7 @@ int Menu::Loop()
         delay(50);
     }
 
-    if(_player1paddle->SW == 0 || _player1paddle->SW2 == 0)
+    if(_player1paddle->Switch1Pressed || _player1paddle->Switch2Pressed)
         return _currentIndex;
 
     return -1;

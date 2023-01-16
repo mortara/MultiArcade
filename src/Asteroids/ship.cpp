@@ -28,7 +28,7 @@ bool Ship::Control()
         Rotation = nr;
     }
 
-    if(_rotary->SW == 0)  // Accelerate
+    if(_rotary->Switch1Pressed)  // Accelerate
     {
         float r = (Rotation + 90.0f) / 360.0f * 2.0f * PI;
 
@@ -41,7 +41,7 @@ bool Ship::Control()
         aY = 0;
     }
 
-    if(_rotary->SW2 == 0)  // Fire
+    if(_rotary->Switch2Pressed)  // Fire
         return true;
 
     return false;

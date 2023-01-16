@@ -6,7 +6,7 @@
 #include "bullet.h"
 #include "asteroid.h"
 #include "../general/gameobject.h"
-#include "../Input/rotary_encoder.h"
+#include "../Input/rotary_encoder.hpp"
 
 class AsteroidsGame
 {
