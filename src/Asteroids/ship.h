@@ -13,6 +13,6 @@ class Ship : public GameObject
         int16_t _lastCount;
 
         float _acceleration = 45;
-        float _rotationspeed = 7;
+        float _rotationspeed = 5;
         
 };

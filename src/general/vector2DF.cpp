@@ -1,18 +1,19 @@
-#include "vector.h"
+#include <Arduino.h>
+#include "vector2DF.hpp"
 
-VectorF::VectorF()
+Vector2DF::Vector2DF()
 {
     X = 0;
     Y = 0;
 }
 
-VectorF::VectorF(float x, float y)
+Vector2DF::Vector2DF(float x, float y)
 {
     X = x;
     Y = y;
 }
 
-void VectorF::Rotate(float radians)
+void Vector2DF::Rotate(float radians)
 {
     auto c = cos(radians);
     auto s = sin(radians);
@@ -24,7 +25,7 @@ void VectorF::Rotate(float radians)
     Y = ny;
 }
 
-VectorF VectorF::GetRotated(float r)
+Vector2DF Vector2DF::GetRotated(float r)
 {
     auto c = cos(r);
     auto s = sin(r);
@@ -32,11 +33,12 @@ VectorF VectorF::GetRotated(float r)
     float nx = c * X - s * Y;
     float ny = s * X + c * Y;
 
-    return VectorF(nx,ny);
+    return Vector2DF(nx,ny);
 }
 
-float VectorF::Distance(VectorF v2)
+float Vector2DF::Distance(Vector2DF v2)
 {
     float d = sqrt((this->X - v2.X) * (this->X - v2.X) + (this->Y - v2.Y) * (this->Y - v2.Y));
     return d;
 }
+

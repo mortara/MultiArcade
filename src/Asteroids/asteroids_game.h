@@ -11,7 +11,7 @@
 class AsteroidsGame
 {
     private:
-        long _lastLoop;
+        unsigned long _lastLoop;
         TFT_eSPI _tft;
         int16_t w;
         int16_t h;
@@ -22,13 +22,14 @@ class AsteroidsGame
         float _lastshot = 0;
 
         std::list<GameObject *> _objects;
-        std::list<GameObject *> _removedobjects;
-        
-        void OutOfBoundsCheck(GameObject *go);
-        GameObject* CollisionCheck(GameObject *go);
 
+        bool OutOfBoundsCheck(GameObject *go);
+        GameObject* CollisionCheck(GameObject *go, int objecttype);
+
+        int lives = 3;
         int score = 0;
         int level = 0;
+        int gamestage = 0;
 
         void scores();
         void StartLevel(int l);

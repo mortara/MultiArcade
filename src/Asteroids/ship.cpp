@@ -1,13 +1,14 @@
 #include <math.h>
 #include "ship.h"
+#include "../general/vector2DF.hpp"
 
 void Ship::Setup(RotaryEncoder *p1paddle)
 {
     _rotary = p1paddle;
-    Size = 2;
     OutOfBoundsMethod = 1;
     ObjectType = 1;
-    GameObject::Setup(4, new VectorF[4] {VectorF(0.0f,4.0f), VectorF(2.0f,-2.0f), VectorF(0.0f,0.0f), VectorF(-2.0f,-2.0f)});
+    double scale = 2;
+    GameObject::Setup(4, new Vector2DF[4] {Vector2DF(0.0f,4.0f) * scale, Vector2DF(2.0f,-2.0f)* scale, Vector2DF(0.0f,0.0f)* scale, Vector2DF(-2.0f,-2.0f)* scale});
 }
 
 bool Ship::Control()
@@ -28,20 +29,19 @@ bool Ship::Control()
         Rotation = nr;
     }
 
-    if(_rotary->Switch1Pressed)  // Accelerate
+    if(_rotary->SW == 0)  // Accelerate
     {
         float r = (Rotation + 90.0f) / 360.0f * 2.0f * PI;
 
-        aX = cos(r) * _acceleration;
-        aY = sin(r) * _acceleration;
+        Acceleration.X = cos(r) * _acceleration;
+        Acceleration.Y = sin(r) * _acceleration;
     }
     else
     {
-        aX = 0;
-        aY = 0;
+        Acceleration = Vector2DF(0,0);
     }
 
-    if(_rotary->Switch2Pressed)  // Fire
+    if(_rotary->SW2 == 0)  // Fire
         return true;
 
     return false;

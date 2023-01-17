@@ -8,10 +8,10 @@ void Block::Setup(uint16_t color)
 
 void Block::Render(TFT_eSPI screen)
 {
-    screen.fillRect((int)Position.X, (int)Position.Y, (int)w, (int)h, _color);
+    screen.fillRect((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, _color);
 }
 
 void Block::RemoveFromScreen(TFT_eSPI screen)
 {
-    screen.fillRect((int)Position.X, (int)Position.Y, (int)w, (int)h, BLACK);
+    screen.fillRect((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, BLACK);
 }

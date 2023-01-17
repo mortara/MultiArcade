@@ -11,8 +11,9 @@ class RotaryEncoder
         
         int Counter = 0;
         
-
-        bool Switch1Pressed;
+        int SW = 0;
+        int SW2 = 0;
+        bool Switch1Pressed; // Debounced
         bool Switch2Pressed;
 
     private:
@@ -23,8 +24,7 @@ class RotaryEncoder
         uint8_t _sw2;
 
 
-        int SW = 0;
-        int SW2 = 0;
+        
         int SW_OLD = 0;
         int SW2_OLD = 0;
 
