@@ -1,14 +1,14 @@
 #include <Arduino.h>
-#include "../Input/joystick.h"
+#include "../Input/joystick.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include <TFT_eSPI.h>
 #include <SPI.h>
-#include "menu.h"
-#include "config.h"
-#include "Asteroids/asteroids_game.h"
-#include "Pong/pong.h"
+#include "menu.hpp"
+#include "config.hpp"
+#include "Asteroids/asteroids_game.hpp"
+#include "Pong/pong.hpp"
 #include "../breakout/breakout_game.hpp"
-#include "../spaceinvaders/space_invaders_game.h"
+#include "../spaceinvaders/space_invaders_game.hpp"
 
 class Manager
 {

@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "general/manager.h"
+#include "general/manager.hpp"
 
 unsigned long _loopStart;
 int _loopCount;

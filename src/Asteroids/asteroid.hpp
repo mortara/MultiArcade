@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "../general/gameobject.h"
+#include "../general/gameobject.hpp"
 
 class Asteroid:public GameObject
 {

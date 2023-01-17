@@ -1,4 +1,4 @@
-#include "gameobject.h"
+#include "gameobject.hpp"
 
 
 double determinant(Vector2DF vec1, Vector2DF vec2){

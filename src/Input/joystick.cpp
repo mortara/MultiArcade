@@ -1,4 +1,4 @@
-#include "joystick.h"
+#include "joystick.hpp"
 
 #define VRX_PIN  26 // ESP32 pin GIOP36 (ADC0) connected to VRX pin
 #define VRY_PIN  25 // ESP32 pin GIOP39 (ADC0) connected to VRY pin

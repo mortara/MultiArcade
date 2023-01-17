@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <list>
 #include <TFT_eSPI.h>
-#include "../general/gameobject.h"
+#include "../general/gameobject.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include "block.hpp"
 

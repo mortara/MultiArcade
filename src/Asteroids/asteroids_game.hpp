@@ -2,10 +2,10 @@
 #include <Arduino.h>
 #include <list>
 #include <TFT_eSPI.h>
-#include "ship.h"
-#include "bullet.h"
-#include "asteroid.h"
-#include "../general/gameobject.h"
+#include "ship.hpp"
+#include "bullet.hpp"
+#include "asteroid.hpp"
+#include "../general/gameobject.hpp"
 #include "../Input/rotary_encoder.hpp"
 
 class AsteroidsGame

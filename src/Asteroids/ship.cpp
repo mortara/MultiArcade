@@ -1,5 +1,5 @@
 #include <math.h>
-#include "ship.h"
+#include "ship.hpp"
 #include "../general/vector2DF.hpp"
 
 void Ship::Setup(RotaryEncoder *p1paddle)
@@ -32,9 +32,7 @@ bool Ship::Control()
     if(_rotary->SW == 0)  // Accelerate
     {
         float r = (Rotation + 90.0f) / 360.0f * 2.0f * PI;
-
-        Acceleration.X = cos(r) * _acceleration;
-        Acceleration.Y = sin(r) * _acceleration;
+        Acceleration = Vector2DF(cos(r), sin(r)) * _acceleration;
     }
     else
     {

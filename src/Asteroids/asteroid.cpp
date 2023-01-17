@@ -1,4 +1,4 @@
-#include "asteroid.h"
+#include "asteroid.hpp"
 
 void Asteroid::Setup(int s, int sw, int sh)
 {

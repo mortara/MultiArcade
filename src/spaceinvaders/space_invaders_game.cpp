@@ -1,4 +1,4 @@
-#include "space_invaders_game.h"
+#include "space_invaders_game.hpp"
 
 void SpaceInvadersGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_height, int16_t screen_width)
 {

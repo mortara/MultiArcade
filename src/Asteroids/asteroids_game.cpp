@@ -1,4 +1,4 @@
-#include "asteroids_game.h"
+#include "asteroids_game.hpp"
 #include "../general/config.h"
 
 void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_width, int16_t screen_height)

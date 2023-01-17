@@ -4,7 +4,7 @@
 #include <SPI.h>
 
 #include "../general/config.h"
-#include "pong.h"
+#include "pong.hpp"
 
 void Pong::midline() {
 

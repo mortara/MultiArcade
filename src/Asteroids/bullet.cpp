@@ -1,4 +1,4 @@
-#include "bullet.h"
+#include "bullet.hpp"
 
 void Bullet::Setup(GameObject *starter)
 {

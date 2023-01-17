@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "menu.hpp"
 #include "../general/config.h"
 
 void Menu::Setup(TFT_eSPI screen, RotaryEncoder *p1)

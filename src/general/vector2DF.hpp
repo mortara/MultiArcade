@@ -1,4 +1,4 @@
-
+#include <Arduino.h>
 
 #ifndef VECTOR2DF_H
 #define VECTOR2DF_H
