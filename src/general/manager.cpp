@@ -56,7 +56,7 @@ void Manager::Loop()
                 case 0:
                     CurrentGame = 1;
                     _asteroids = AsteroidsGame();
-                    _asteroids.Setup(_screen, _rotary, Width, Height);
+                    _asteroids.Setup(_screen, _rotary);
                     break;
                 case 1:
                     CurrentGame = 2;
@@ -72,12 +72,12 @@ void Manager::Loop()
                 case 3:
                     CurrentGame = 4;
                     _breakout = BreakoutGame();
-                    _breakout.Setup(_screen, _rotary, Width, Height);
+                    _breakout.Setup(_screen, _rotary);
                     break;
                 case 4:
                     CurrentGame = 5;
                     _spaceInvaders = SpaceInvadersGame();
-                    _spaceInvaders.Setup(_screen, _rotary, Width, Height);
+                    _spaceInvaders.Setup(_screen, _rotary);
                     break;
             }
         }

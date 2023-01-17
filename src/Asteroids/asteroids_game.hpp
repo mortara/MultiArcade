@@ -5,6 +5,7 @@
 #include "ship.hpp"
 #include "bullet.hpp"
 #include "asteroid.hpp"
+#include "debris.hpp"
 #include "../general/gameobject.hpp"
 #include "../Input/rotary_encoder.hpp"
 
@@ -13,8 +14,7 @@ class AsteroidsGame
     private:
         unsigned long _lastLoop;
         TFT_eSPI _tft;
-        int16_t w;
-        int16_t h;
+        bool _firstloop = true;
 
         RotaryEncoder *_rotary;
         Ship *_ship;
@@ -25,15 +25,16 @@ class AsteroidsGame
 
         bool OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go, int objecttype);
+        void Explode(GameObject *go);
 
         int lives = 3;
         int score = 0;
         int level = 0;
         int gamestage = 0;
-
+        float stagetimer = 0;
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_width, int16_t screen_height);
+        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
         void Loop();
 };

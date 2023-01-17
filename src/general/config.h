@@ -1,6 +1,9 @@
 
 #ifndef CONFIGFILE_H
 
+    #define degreesToRadians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+    #define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
+
     #define BLACK 0x0000
     #define WHITE 0xFFFF
     #define GREY 0x5AEB

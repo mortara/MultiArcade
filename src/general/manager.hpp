@@ -4,7 +4,7 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include "menu.hpp"
-#include "config.hpp"
+#include "config.h"
 #include "Asteroids/asteroids_game.hpp"
 #include "Pong/pong.hpp"
 #include "../breakout/breakout_game.hpp"

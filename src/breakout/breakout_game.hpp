@@ -8,11 +8,9 @@
 class BreakoutGame
 {
     private:
-        long _lastLoop;
+        unsigned long _lastLoop;
         TFT_eSPI _tft;
-        int16_t w;
-        int16_t h;
-
+      
         RotaryEncoder *_rotary;
 
         int gamestage = 0;  // 0 = Before start,  1 = game running,  2 = game over
@@ -38,6 +36,6 @@ class BreakoutGame
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_width, int16_t screen_height);
+        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
         void Loop();
 };

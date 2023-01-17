@@ -18,28 +18,32 @@ class GameObject
 
         Vector2DF Size;
     
-        float Rotation;
+        float Orientation;
         float vR;
+
+        int PolygonPoints = 0;
 
         int16_t OutOfBoundsMethod = 0;
         int16_t ObjectType;
 
+        uint32_t Color = TFT_WHITE;
+
+        bool Delete = false;
+
         void Setup(int16_t numpoints, Vector2DF *points);
-        void Move(float d);
+        virtual void Move(float d);
+        void SetOrientation(float d);
         void Render(TFT_eSPI _screen, bool force = false);
         void RemoveFromScreen(TFT_eSPI _screen);
         bool Intersects(GameObject * go2);
+        bool PointInPolygon(Vector2DF point);
+
     private:
-        
-        int16_t _numPoints = 0;
         Vector2DF *_points;
         Vector2DF *_rotatedpoints;
 
-        void RenderLines(TFT_eSPI screen, int16_t color, float cx, float cy, float rotation);
-
-        float c;
-        float s;
-
+        void RenderLines(TFT_eSPI screen, int16_t color, Vector2DF position, float rotation);
+      
         float Rold;
         
 };

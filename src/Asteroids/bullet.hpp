@@ -7,5 +7,5 @@ class Bullet: public GameObject
         void Setup(GameObject *start);     
 
     private:
-        float _speed = 100;  
+        float _speed = 120;  
 };

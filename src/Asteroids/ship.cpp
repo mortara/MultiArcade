@@ -19,19 +19,19 @@ bool Ship::Control()
 
     if(diff != 0)
     {
-        float nr = Rotation + (float)diff * _rotationspeed;
+        float nr = Orientation + (float)diff * _rotationspeed;
         while(nr >= 360.0f)
             nr -= 360.0f;
 
         while(nr < 0.0f)
             nr += 360.0f;
 
-        Rotation = nr;
+        Orientation = nr;
     }
 
     if(_rotary->SW == 0)  // Accelerate
     {
-        float r = (Rotation + 90.0f) / 360.0f * 2.0f * PI;
+        float r = degreesToRadians(Orientation + 90.0f);
         Acceleration = Vector2DF(cos(r), sin(r)) * _acceleration;
     }
     else

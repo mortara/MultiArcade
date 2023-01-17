@@ -1,11 +1,9 @@
 #include "asteroids_game.hpp"
 #include "../general/config.h"
 
-void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t screen_width, int16_t screen_height)
+void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
 {
-    w = screen_width;
-    h = screen_height;
-
+ 
     _tft = screen;
     _tft.fillScreen(BLACK);
 
@@ -14,21 +12,19 @@ void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle, int16_t
     _ship = new Ship();
     _ship->Setup(_rotary);
     
-
-    
     Serial.print("Asteroids initialized!");
 }
 
 void AsteroidsGame::StartLevel(int l)
 {
     level = l;
+    _firstloop = true;
 
-    _ship->Position.X = w / 2;
-    _ship->Position.Y = h / 2;
-    _ship->Velocity.X = 0;
-    _ship->Velocity.Y = 0;
-    _ship->Rotation = 0;
+    _tft.fillScreen(BLACK);
 
+    _ship->Position = Vector2DF(_tft.width()/2,_tft.height()/2);
+    _ship->Velocity = Vector2DF(0,0);
+    
     int numa = 3 + l;
     _objects.clear();
     for(int i = 0; i < numa; i++)
@@ -39,7 +35,7 @@ void AsteroidsGame::StartLevel(int l)
         if(random(50) < (l*3))
             sc = 4;         // but sometimes size 4 ones. the higher the level, the more size 4 asteroids are coming
 
-        ast->Setup(sc, w, h);
+        ast->Setup(sc, _tft.width(), _tft.height());
         _objects.push_back(ast);
     }
 
@@ -54,43 +50,68 @@ void AsteroidsGame::scores()
 void AsteroidsGame::Loop()
 {
     unsigned long time = millis();
-    double elapsed = (double)(time - _lastLoop) / 1000.0;
+    float elapsed = (float)(time - _lastLoop) / 1000.0;
     _lastshot += elapsed;
 
     if(gamestage == 0)
     {
-        _tft.drawString("ASTEROIDS", w / 2 - 30, h / 2 - 10, 1);
+        _tft.drawString("ASTEROIDS", _tft.width() / 2 - 30, _tft.height() / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft.fillScreen(BLACK);
             score = 0;
             gamestage = 1;
             lives = 3;
+            
             StartLevel(1);
             delay(500);
+            return;
         }
     }
 
-    if(gamestage == 1)
+    if(gamestage == 1 || gamestage == 3)
     {
-        bool fire = _ship->Control();
-        _ship->Move(elapsed);
-        _ship->Render(_tft);
-
-        OutOfBoundsCheck(_ship);
-        GameObject *shipcoll = CollisionCheck(_ship, 2);
-        if(shipcoll != NULL)
+        bool fire = false;
+        
+        if(gamestage != 3)
         {
-            _tft.fillScreen(BLACK);
-            delay(1500);
-            lives--;
-            if(lives == 0)
+            fire = _ship->Control();
+            _ship->Move(elapsed);
+            _ship->Render(_tft, _firstloop);
+        
+            OutOfBoundsCheck(_ship);
+            GameObject *shipcoll = CollisionCheck(_ship, 2);
+            if(shipcoll != NULL)
             {
-                gamestage = 2;
+                
+                Explode(shipcoll);
+                Explode(_ship);
+                
+                shipcoll->Delete = true;
+
+                lives--;
+                if(lives == 0)
+                {
+                    gamestage = 2;
+                    return;
+                }
+                else
+                {
+                    stagetimer = 3;
+                    gamestage = 3;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            stagetimer -= elapsed;
+            if(stagetimer <= 0)
+            {
+                StartLevel(level);
+                gamestage = 1;
                 return;
             }
-            else
-                StartLevel(level);
         }
 
         std::list<GameObject *> _removedobjects;
@@ -99,10 +120,10 @@ void AsteroidsGame::Loop()
         {
             obj->Move(elapsed);
             obj->Render(_tft);      
-            if(OutOfBoundsCheck(obj))
+            if(OutOfBoundsCheck(obj) || obj->Delete == true)
                 _removedobjects.push_back(obj);
 
-            if(obj->ObjectType == 3)
+            else if(obj->ObjectType == 3)
             {
                 GameObject *coll = CollisionCheck(obj, 2);
                 if(coll != NULL)
@@ -119,12 +140,15 @@ void AsteroidsGame::Loop()
                         for(int i = 0; i < s; i++)
                         {
                             Asteroid *asn = new Asteroid();
-                            asn->Setup(s-1, w, h);
-                            asn->Position.X = ast->Position.X;
-                            asn->Position.Y = ast->Position.Y;
+                            asn->Setup(s-1, _tft.width(), _tft.height());
+                            asn->Position = ast->Position;
                             asn->Velocity = asn->Velocity * (double)1.5;
                             _objects.push_back(asn);
                         }
+                    }
+                    else
+                    {
+                        Explode(coll);
                     }
                 }
             }
@@ -164,7 +188,7 @@ void AsteroidsGame::Loop()
 
     if(gamestage == 2)
     {
-        _tft.drawString("GAME OVER", w / 2 - 30, h / 2 - 10, 1);
+        _tft.drawString("GAME OVER", _tft.width() / 2 - 30, _tft.height() / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft.fillScreen(BLACK);
@@ -174,7 +198,7 @@ void AsteroidsGame::Loop()
     }
 
     _lastLoop = time;
-
+    _firstloop = false;
     //_tft.drawString("ShipPos: " + String(_ship->X) + ", " + String(_ship->Y) + " ", 10, 10 , 2);
 }
 
@@ -189,17 +213,17 @@ bool AsteroidsGame::OutOfBoundsCheck(GameObject *go)
     {
         int16_t margin = 8;
 
-        if((go->Position.X - go->Size.X - margin) > w && go->Velocity.X >= 0)
+        if((go->Position.X - go->Size.X - margin) > _tft.width() && go->Velocity.X >= 0)
             go->Position.X = 0 - margin;
 
-        if((go->Position.Y - go->Size.Y - margin) > h && go->Velocity.Y >= 0)
+        if((go->Position.Y - go->Size.Y - margin) > _tft.height() && go->Velocity.Y >= 0)
             go->Position.Y = 0 - margin;
         
         if((go->Position.X + go->Size.X + margin) < 0 && go->Velocity.X <= 0)
-            go->Position.X = w + margin;
+            go->Position.X = _tft.width() + margin;
 
         if((go->Position.Y + go->Size.Y + margin) < 0 && go->Velocity.Y <= 0)
-            go->Position.Y = h + margin;
+            go->Position.Y = _tft.height() + margin;
 
         return false;
     }
@@ -209,7 +233,7 @@ bool AsteroidsGame::OutOfBoundsCheck(GameObject *go)
     {
         int16_t margin = 16;
  
-        if((go->Position.X - go->Size.X - margin) > w || (go->Position.Y - go->Size.Y - margin) > h || (go->Position.X + go->Size.X + margin) < 0 || (go->Position.Y + go->Size.Y + margin) < 0)
+        if((go->Position.X - go->Size.X - margin) > _tft.width() || (go->Position.Y - go->Size.Y - margin) > _tft.height() || (go->Position.X + go->Size.X + margin) < 0 || (go->Position.Y + go->Size.Y + margin) < 0)
         {
             return true;
         }
@@ -226,10 +250,31 @@ GameObject* AsteroidsGame::CollisionCheck(GameObject *go, int objecttype)
         if(obj->ObjectType != objecttype)
             continue;
 
-        if(go->Intersects(obj))
+        if(go->ObjectType == 3)
+        {
+            if(obj->PointInPolygon(go->Position))
+                return obj;
+        }
+        else if(go->Intersects(obj))
             return obj;
 
     }
 
     return NULL;
+}
+
+void AsteroidsGame::Explode(GameObject *go)
+{
+    int num = go->PolygonPoints / 2;
+    if(num < 1)
+        num = 1;
+
+    for(int i = 0; i < num; i++)
+    {
+        Debris *debr = new Debris();
+        debr->Setup(go);
+        _objects.push_back(debr);
+    }
+
+    go->RemoveFromScreen(_tft);
 }

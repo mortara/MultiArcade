@@ -17,36 +17,34 @@ class Vector2DF
 
         float Distance(Vector2DF v2);
 
+        friend bool operator== (const Vector2DF& c1, const Vector2DF& c2)
+        {
+            return (c1.X == c2.X && c1.Y == c2.Y);
+        }
+
+        friend bool operator!= (const Vector2DF& c1, const Vector2DF& c2)
+        {
+            return (c1.X != c2.X || c1.Y != c2.Y);
+        }
+
         Vector2DF operator + (Vector2DF const &obj)
         {
-            Vector2DF r = Vector2DF();
-            r.X = X + obj.X;
-            r.Y = Y + obj.Y;
-            return r;
+            return Vector2DF(X + obj.X, Y + obj.Y);  
         }
 
         Vector2DF operator - (Vector2DF const &obj)
         {
-            Vector2DF r = Vector2DF();
-            r.X = X - obj.X;
-            r.Y = Y - obj.Y;
-            return r;
+            return Vector2DF(X - obj.X, Y - obj.Y);          
         }
 
         Vector2DF operator * (Vector2DF const &obj)
         {
-            Vector2DF r = Vector2DF();
-            r.X = X * obj.X;
-            r.Y = Y * obj.Y;
-            return r;
+            return Vector2DF(X * obj.X, Y * obj.Y);
         }
 
         Vector2DF operator * (double f)
         {
-            Vector2DF r = Vector2DF();
-            r.X = X * f;
-            r.Y = Y * f;
-            return r;
+            return Vector2DF(X * f, Y * f);
         }
 };
 

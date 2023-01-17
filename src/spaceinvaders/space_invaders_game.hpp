@@ -9,17 +9,14 @@ class SpaceInvadersGame
     private:
         long _lastLoop;
         TFT_eSPI _tft;
-        int16_t w;
-        int16_t h;
-
+     
         RotaryEncoder *_rotary;
 
         float _reloadtime = 0.3;
         float _lastshot = 0;
 
         std::list<GameObject *> _objects;
-        std::list<GameObject *> _removedobjects;
-        
+    
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
 
@@ -29,6 +26,6 @@ class SpaceInvadersGame
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1, int16_t screen_height, int16_t screen_width);
+        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
         void Loop();
 };
