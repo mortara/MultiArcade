@@ -48,7 +48,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
 
     if(fire && _lastshot >= _reloadtime)
     {
-        Bullet *bullet = new Bullet();
+        Beam *bullet = new Beam();
         bullet->Setup(_ship);
         _objects.push_back(bullet);
         _lastshot = 0;
@@ -57,7 +57,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
 
 void SpaceInvadersGame::ProcessObjects(float elapsed)
 {
-    std::list<GameObject *> _removedobjects;
+    std::list<Alien *> _removedobjects;
     for (Alien *obj : _aliens)
     {
         obj->Move(elapsed);

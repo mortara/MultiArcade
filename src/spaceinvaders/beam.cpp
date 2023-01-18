@@ -8,12 +8,6 @@ void Beam::Setup(GameObject *starter)
         Radius = 5;
         Color = TFT_YELLOW;
 
-        float r = degreesToRadians(starter->GetOrientation() + 90.0f);
-
         Position = starter->Position;
-
-        Velocity.X = 0;
-        Velocity = Vector2DF(0, starter->Velocity.Y + sin(r) * _speed);
-
-        
+        Velocity = Vector2DF(0, _speed);
 }

@@ -20,9 +20,13 @@ class SpaceInvadersGame
         float _lastshot = 0;
 
         std::list<Alien *> _aliens;
+        std::list<GameObject *> _objects;
     
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
+
+        void ProcessShip(float elapsed);
+        void ProcessObjects(float elapsed);
 
         int lives = 0;
         int score = 0;
