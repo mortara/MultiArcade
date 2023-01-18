@@ -11,11 +11,14 @@ class Vector2DF
 
         Vector2DF();
         Vector2DF(float x, float y);
-
-        void Rotate(float rads);
+    
         Vector2DF GetRotated(float rads);
 
         float Distance(Vector2DF v2);
+        float Length();
+
+        float LengthSquared();
+        float DistanceSquared(Vector2DF v2);
 
         friend bool operator== (const Vector2DF& c1, const Vector2DF& c2)
         {

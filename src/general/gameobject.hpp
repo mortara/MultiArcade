@@ -17,8 +17,9 @@ class GameObject
         Vector2DF Acceleration;
 
         Vector2DF Size;
+        float Radius;
     
-        float Orientation;
+        
         float vR;
 
         int PolygonPoints = 0;
@@ -32,17 +33,21 @@ class GameObject
 
         void Setup(int16_t numpoints, Vector2DF *points);
         virtual void Move(float d);
+
         void SetOrientation(float d);
+        float GetOrientation();
+
         void Render(TFT_eSPI _screen, bool force = false);
         void RemoveFromScreen(TFT_eSPI _screen);
-        bool Intersects(GameObject * go2);
+        bool CollidesWith(GameObject * go2);
         bool PointInPolygon(Vector2DF point);
 
     private:
         Vector2DF *_points;
         Vector2DF *_rotatedpoints;
-
-        void RenderLines(TFT_eSPI screen, int16_t color, Vector2DF position, float rotation);
+        Vector2DF *_rendered_points;
+        float _orientation;
+        void RenderLines(TFT_eSPI screen, int16_t color, Vector2DF position, Vector2DF *points);
       
         float Rold;
         

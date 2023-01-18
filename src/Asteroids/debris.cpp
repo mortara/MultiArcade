@@ -12,7 +12,7 @@ void Debris::Setup(GameObject *starter)
     p[2] = Vector2DF(random(5) - 2.5, random(5) - 2.5);
 
     GameObject::Setup(3, p);
-    Orientation= random(360);
+    SetOrientation(random(360));
     vR = random(50) - 25;
 }
 

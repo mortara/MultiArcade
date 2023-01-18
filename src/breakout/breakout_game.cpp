@@ -152,7 +152,7 @@ void BreakoutGame::ball(float elapsed)
 
         for (Block *obj : _objects)
         {
-            if(obj->Intersects(_ball))
+            if(obj->CollidesWith(_ball))
             {
                 score += 5;
                 _removedobjects.push_back(obj);

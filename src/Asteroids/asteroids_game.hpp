@@ -34,6 +34,10 @@ class AsteroidsGame
         float stagetimer = 0;
         void scores();
         void StartLevel(int l);
+
+        void ProcessShip(float elapsed);
+        void ProcessObjects(float elapsed);
+
     public:
         void Setup(TFT_eSPI screen, RotaryEncoder *player1);
         void Loop();

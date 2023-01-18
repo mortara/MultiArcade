@@ -24,13 +24,24 @@ void GameObject::Setup(int16_t num, Vector2DF *points)
     PolygonPoints = num;
     _points = points;
     _rotatedpoints = new Vector2DF[PolygonPoints] {};
+    _rendered_points = new Vector2DF[PolygonPoints] {};
+    for(int i = 0; i < PolygonPoints; i++)
+    {
+       if(_points[i].Length() > Radius)
+            Radius = _points[i].Length();
+
+       _rotatedpoints[i] = _points[i];
+       _rendered_points[i] = _points[i];
+    }
     Rold = 1;
+    SetOrientation(0);   
 }
 
 void GameObject::SetOrientation(float d)
 {
-    if(PolygonPoints == 0 || d == Orientation)
+    if(PolygonPoints == 0 || (int)d == (int)_orientation)
         return;
+    _orientation = d;
 
     float r = degreesToRadians(d);
 
@@ -38,35 +49,36 @@ void GameObject::SetOrientation(float d)
     {
         _rotatedpoints[i] = _points[i].GetRotated(r);
     }
+}
 
-    Orientation = d;
+float GameObject::GetOrientation()
+{
+    return _orientation;
 }
 
 void GameObject::Move(float d)
 {
     Velocity = Velocity + Acceleration * d;
     Position = Position + Velocity * d;
-    Orientation = Orientation + vR * d;
+    SetOrientation(_orientation + vR * d);
 }
 
 void GameObject::RemoveFromScreen(TFT_eSPI tft)
 {
     if(PolygonPoints > 0)
-        RenderLines(tft, BLACK, OldPosition, Rold);
-        //tft.fillCircle((int16_t)Xold, (int16_t)Yold, Size * 5, BLACK);
+        RenderLines(tft, BLACK, OldPosition, _rendered_points);
     else
         tft.drawPixel((int32_t)OldPosition.X, (int32_t)OldPosition.Y, BLACK);
 }
 
 void GameObject::Render(TFT_eSPI tft, bool force)
 {
-    //tft.fillRect(   X,    Y, 5, 5, WHITE);
-    if(!force && (int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)Rold == (int)Orientation)
+    if(!force && ((int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)Rold == (int)_orientation))
         return;
 
     RemoveFromScreen(tft);
 
-    Rold = Orientation;
+    Rold = _orientation;
     OldPosition = Position;
 
     if(PolygonPoints == 0)
@@ -75,76 +87,76 @@ void GameObject::Render(TFT_eSPI tft, bool force)
     }
     else
     {
-        RenderLines(tft, Color, Position, Orientation);
+        RenderLines(tft, Color, Position, _rotatedpoints);
     }
 }
 
-void GameObject::RenderLines(TFT_eSPI tft, int16_t color, Vector2DF position, float rotation)
+void GameObject::RenderLines(TFT_eSPI tft, int16_t color, Vector2DF position, Vector2DF *points)
 {
-    float rads = degreesToRadians(rotation);
-
-    Vector2DF drawstart = position + _points[0].GetRotated(rads);
-    Vector2DF drawcurrent = drawstart;
-
+    _rendered_points[0] = points[0];
+    Vector2DF drawcurrent = _rendered_points[0];
     for(int i = 1; i < PolygonPoints; i++)
     {
-        Vector2DF target = position + _points[i].GetRotated(rads);
-   
-        tft.drawLine(drawcurrent.X,drawcurrent.Y,target.X,target.Y, color);
-
-        drawcurrent = target;
+        _rendered_points[i] = points[i];
+        tft.drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X + _rendered_points[i].X, position.Y + _rendered_points[i].Y, color);
+        drawcurrent = _rendered_points[i];
     }
 
-    tft.drawLine(drawcurrent.X, drawcurrent.Y, drawstart.X, drawstart.Y, color);
+    tft.drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X +  _rendered_points[0].X, position.Y + _rendered_points[0].Y, color);
 }
 
-bool GameObject::Intersects(GameObject * go2)
+bool GameObject::CollidesWith(GameObject * go2)
 {
-    //if(!( (go2->Position.X) > (Position.X+Size.X) || (go2->Position.X+go2->Size.X) < Position.X || (go2->Position.Y) > (Position.Y + Size.Y) || (go2->Position.Y+go2->Size.Y) < Position.Y))
+    if(go2->PolygonPoints > 0 && PolygonPoints > 0)
     {
-        if(go2->PolygonPoints > 0 && PolygonPoints > 0)
+        float dist = Position.DistanceSquared(go2->Position);
+        if(dist > (Radius + go2->Radius) * (Radius + go2->Radius))
+            return false;
+
+        for(int p1 = 0; p1 < PolygonPoints; p1++)
         {
-            float rads1 = degreesToRadians(Orientation);
-            float rads2 = degreesToRadians(go2->Orientation);
+            Vector2DF v1s = Position + _rotatedpoints[p1];
 
-            for(int p1 = 0; p1 < PolygonPoints; p1++)
+            int next = p1+1;
+            if(next == PolygonPoints)
+                next = 0;
+
+            Vector2DF v1e = Position + _rotatedpoints[next];
+
+            for(int p2 = 0; p2 < go2->PolygonPoints; p2++)
             {
-                Vector2DF v1s = Position + _points[p1].GetRotated(rads1);
+                Vector2DF v2s = go2->Position + go2->_rotatedpoints[p2];
 
-                int next = p1+1;
-                if(next == PolygonPoints)
+                next = p2+1;
+                if(next == go2->PolygonPoints)
                     next = 0;
 
-                Vector2DF v1e = Position + _points[next].GetRotated(rads1);
-
-                for(int p2 = 0; p2 < go2->PolygonPoints; p2++)
-                {
-                    Vector2DF v2s = go2->Position + go2->_points[p2].GetRotated(rads2);
-
-                    next = p2+1;
-                    if(next == go2->PolygonPoints)
-                        next = 0;
-
-                    Vector2DF v2e = go2->Position + go2->_points[next].GetRotated(rads2);
-                    if(edgeIntersection(v1s, v1e, v2s, v2e))
-                        return true;
-                }
+                Vector2DF v2e = go2->Position + go2->_rotatedpoints[next];
+                if(edgeIntersection(v1s, v1e, v2s, v2e))
+                    return true;
             }
-            return false;
         }
-        return true;
+        return false;
+    } else if(go2->PolygonPoints > 0)
+    {
+        return go2->PointInPolygon(Position);
+    } else if(PolygonPoints > 0)
+    {
+        return PointInPolygon(go2->Position);
     }
+    else if(!( (go2->Position.X) > (Position.X+Size.X) || (go2->Position.X+go2->Size.X) < Position.X || (go2->Position.Y) > (Position.Y + Size.Y) || (go2->Position.Y+go2->Size.Y) < Position.Y))
+        return true;
+
     return false;
 }
 
 bool GameObject::PointInPolygon(Vector2DF test) {
-    float rads1 = degreesToRadians(Orientation);
     test = test - Position;
     int i, j, nvert = PolygonPoints;
     bool c = false;
     for (i = 0, j = nvert-1; i < nvert; j = i++) {
-        if ( ((_points[i].GetRotated(rads1).Y>test.Y) != (_points[j].GetRotated(rads1).Y>test.Y)) &&
-        (test.X < (_points[j].GetRotated(rads1).X-_points[i].GetRotated(rads1).X) * (test.Y-_points[i].GetRotated(rads1).Y) / (_points[j].GetRotated(rads1).Y-_points[i].GetRotated(rads1).Y) + _points[i].GetRotated(rads1).X) )
+        if ( ((_rotatedpoints[i].Y>test.Y) != (_rotatedpoints[j].Y>test.Y)) &&
+        (test.X < (_rotatedpoints[j].X-_rotatedpoints[i].X) * (test.Y-_rotatedpoints[i].Y) / (_rotatedpoints[j].Y-_rotatedpoints[i].Y) + _rotatedpoints[i].X) )
         c = !c;
     }
     return c;
