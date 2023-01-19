@@ -4,9 +4,9 @@
 class Alien : public GameObject
 {
     public:
-        void Setup(int c, int r);
+        void Setup(int c, int r, TFT_eSPI screen);
 
-        void Move(float elapsed0) override;
+        void Move(float elapsed) override;
 
     private:
         int Row;
