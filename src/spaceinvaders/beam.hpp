@@ -7,5 +7,5 @@ class Beam : public GameObject
         void Setup(GameObject *start);     
 
     private:
-        float _speed = 120;  
+        float _speed = 150;  
 };

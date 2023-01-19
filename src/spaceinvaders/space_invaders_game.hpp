@@ -5,6 +5,7 @@
 #include "../Input/rotary_encoder.hpp"
 #include "player.hpp"
 #include "alien.hpp"
+#include "beam.hpp"
 
 class SpaceInvadersGame
 {
@@ -19,11 +20,9 @@ class SpaceInvadersGame
         float _reloadtime = 0.3;
         float _lastshot = 0;
 
-        std::list<Alien *> _aliens;
         std::list<GameObject *> _objects;
     
-        void OutOfBoundsCheck(GameObject *go);
-        GameObject* CollisionCheck(GameObject *go);
+        GameObject* CollisionCheck(GameObject *go, int objecttype);
 
         void ProcessShip(float elapsed);
         void ProcessObjects(float elapsed);

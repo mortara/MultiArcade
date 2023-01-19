@@ -54,7 +54,7 @@ void AsteroidsGame::ProcessShip(float elapsed)
     _ship->Move(elapsed);
     _ship->Render(_tft);
 
-    OutOfBoundsCheck(_ship);
+    _ship->OutOfBoundsCheck(_tft);
     GameObject *shipcoll = CollisionCheck(_ship, 2);
     if(shipcoll != NULL)
     {
@@ -94,7 +94,7 @@ void AsteroidsGame::ProcessObjects(float elapsed)
     {
         obj->Move(elapsed);
         obj->Render(_tft);      
-        if(OutOfBoundsCheck(obj) || obj->Delete == true)
+        if(obj->OutOfBoundsCheck(_tft) || obj->Delete == true)
             _removedobjects.push_back(obj);
 
         else if(obj->ObjectType == 3)
@@ -200,46 +200,7 @@ void AsteroidsGame::Loop()
     _firstloop = false;
 }
 
-bool AsteroidsGame::OutOfBoundsCheck(GameObject *go)
-{
-    // Nothing happens when object leaves the screen
-    if(go->OutOfBoundsMethod == 0)
-        return false;
 
-    // When leaving the screen on one side, the object will return to screen on the other
-    if(go->OutOfBoundsMethod == 1)
-    {
-        int16_t margin = 8;
-
-        if((go->Position.X - go->Radius - margin) > _tft.width() && go->Velocity.X >= 0)
-            go->Position.X = 0 - margin;
-
-        if((go->Position.Y - go->Radius - margin) > _tft.height() && go->Velocity.Y >= 0)
-            go->Position.Y = 0 - margin;
-        
-        if((go->Position.X + go->Radius + margin) < 0 && go->Velocity.X <= 0)
-            go->Position.X = _tft.width() + margin;
-
-        if((go->Position.Y + go->Radius + margin) < 0 && go->Velocity.Y <= 0)
-            go->Position.Y = _tft.height() + margin;
-
-        return false;
-    }
-
-    // When leaving the screen, object will be deleted
-    if(go->OutOfBoundsMethod == 2)
-    {
-        int16_t margin = 16;
- 
-        if((go->Position.X - go->Radius - margin) > _tft.width() || (go->Position.Y - go->Radius - margin) > _tft.height() || (go->Position.X + go->Radius + margin) < 0 || (go->Position.Y + go->Radius + margin) < 0)
-        {
-            return true;
-        }
-
-    }
-
-    return false;
-}
 
 GameObject* AsteroidsGame::CollisionCheck(GameObject *go, int objecttype)
 {

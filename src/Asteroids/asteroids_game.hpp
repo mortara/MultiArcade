@@ -23,7 +23,6 @@ class AsteroidsGame
 
         std::list<GameObject *> _objects;
 
-        bool OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go, int objecttype);
         void Explode(GameObject *go);
 

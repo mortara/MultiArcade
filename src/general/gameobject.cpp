@@ -105,6 +105,74 @@ void GameObject::RenderLines(TFT_eSPI tft, int16_t color, Vector2DF position, Ve
     tft.drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X +  _rendered_points[0].X, position.Y + _rendered_points[0].Y, color);
 }
 
+bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
+{
+    // Nothing happens when object leaves the screen
+    if(OutOfBoundsMethod == 0)
+        return false;
+
+    // When leaving the screen on one side, the object will return to screen on the other
+    if(OutOfBoundsMethod == 1)
+    {
+        int16_t margin = 8;
+
+        if((Position.X - Radius - margin) > _screen.width() && Velocity.X >= 0)
+            Position.X = 0 - margin;
+
+        if((Position.Y - Radius - margin) > _screen.height() && Velocity.Y >= 0)
+            Position.Y = 0 - margin;
+        
+        if((Position.X + Radius + margin) < 0 && Velocity.X <= 0)
+            Position.X = _screen.width() + margin;
+
+        if((Position.Y + Radius + margin) < 0 && Velocity.Y <= 0)
+            Position.Y = _screen.height() + margin;
+
+        return false;
+    }
+
+    // When leaving the screen, object will be deleted
+    if(OutOfBoundsMethod == 2)
+    {
+        int16_t margin = 16;
+ 
+        if((Position.X - Radius - margin) > _screen.width() || (Position.Y - Radius - margin) > _screen.height() || (Position.X + Radius + margin) < 0 || (Position.Y + Radius + margin) < 0)
+        {
+            return true;
+        }
+
+    }
+
+    if(OutOfBoundsMethod == 3)
+    {
+        if(Position.X < 0)
+        {
+            Position.X = 0;
+            Velocity.X = 0;
+            Acceleration.X = 0;
+        } else if(Position.X + Size.X > _screen.width())
+        {
+            Position.X = _screen.width() - Size.X;
+            Velocity.X = 0;
+            Acceleration.X = 0;
+        }
+
+        if(Position.Y < 0)
+        {
+            Position.Y = 0;
+            Velocity.Y = 0;
+            Acceleration.Y = 0;
+        } else if(Position.Y + Size.Y > _screen.height())
+        {
+            Position.Y = _screen.height() - Size.Y;
+            Velocity.Y = 0;
+            Acceleration.Y = 0;
+        }
+    }
+
+    return false;
+}
+
 bool GameObject::CollidesWith(GameObject * go2)
 {
     if(go2->PolygonPoints > 0 && PolygonPoints > 0)

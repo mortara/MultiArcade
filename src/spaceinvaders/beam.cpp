@@ -1,4 +1,4 @@
-#include "beam.h"
+#include "beam.hpp"
 
 void Beam::Setup(GameObject *starter)
 {
@@ -8,6 +8,13 @@ void Beam::Setup(GameObject *starter)
         Radius = 5;
         Color = TFT_YELLOW;
 
-        Position = starter->Position;
-        Velocity = Vector2DF(0, _speed);
+        Position = starter->Position - Vector2DF(0,5);
+        Velocity = Vector2DF(0, -_speed);
+        float scale = 1;
+
+        GameObject::Setup(2, new Vector2DF[2] 
+        {
+            Vector2DF(0.0f,-4.0f) * scale, 
+            Vector2DF(0.0f,0.0f) * scale            
+        });
 }
