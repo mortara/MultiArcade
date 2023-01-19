@@ -15,12 +15,21 @@ void SpaceInvadersGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
 
 void SpaceInvadersGame::scores()
 {
-    _tft.drawString("Level: " + String(level) + "   Score: " + String(score) , 1, 1 , 1);
+    _tft.drawString("Lvl: " + String(level) + " Score: " + String(score) + " Lives: " + String(lives), 1, 1 , 1);
 }
 
 void SpaceInvadersGame::StartLevel(int l)
 {
-    
+    int cols = 8;
+    level = l;
+    _objects.clear();
+    for(int r = 0; r < l + 3; r++)
+        for(int c = 0; c < cols; c++)
+        {
+            Alien *alien = new Alien();
+            alien->Setup(c,r,cols, _tft);
+            _objects.push_back(alien);
+        }
 }
 
 void SpaceInvadersGame::ProcessShip(float elapsed)
@@ -29,7 +38,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
     _ship->Render(_tft);
     _ship->OutOfBoundsCheck(_tft);
     _lastshot += elapsed;
-    GameObject *shipcoll = CollisionCheck(_ship, 4);
+    GameObject *shipcoll = CollisionCheck(_ship, 2);
     if(shipcoll != NULL)
     {
         shipcoll->Delete = true;
@@ -67,6 +76,17 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
         obj->Render(_tft);      
         if(obj->Delete == true)
             _removedobjects.push_back(obj);
+
+        if(obj->ObjectType == 2)
+        {
+            GameObject *coll = CollisionCheck(obj, 3);
+            if(coll != NULL)
+            {
+                _removedobjects.push_back(coll);
+                _removedobjects.push_back(obj);
+                score += 5;
+            }
+        }
     }
 
     for (GameObject *obj : _removedobjects)
@@ -113,16 +133,6 @@ void SpaceInvadersGame::Loop()
         }
 
         scores();
-    } else if(gamestage == 3)
-    {
-        ProcessObjects(elapsed);
-        scores();
-        stagetimer -= elapsed;
-        if(stagetimer <= 0)
-        {
-            StartLevel(level);
-            gamestage = 1;
-        }
     } else if(gamestage == 2)
     {
         ProcessObjects(elapsed);
