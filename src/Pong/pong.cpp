@@ -110,9 +110,11 @@ void Pong::ball(float elapsed) {
     if (ball_dx < 0.0 && (int)ball_x == paddle_w && (int)ball_y + ball_h >= lpaddle_y && (int)ball_y <= lpaddle_y + paddle_h) {
       ball_dx = ball_dx * -1.0;
       calc_target_y(); 
+      _buzz.PlayTone(200, 50);
     } else if (ball_dx > 0.0 && (int)ball_x + ball_w == w - paddle_w && (int)ball_y + ball_h >= rpaddle_y && (int)ball_y <= rpaddle_y + paddle_h) {
       ball_dx = ball_dx * -1.0; 
       calc_target_y();
+      _buzz.PlayTone(200, 50);
     } 
 
     if ((int)ball_y > h - ball_w || (int)ball_y < 0) {
@@ -215,6 +217,9 @@ void Pong::Setup(TFT_eSPI screen, RotaryEncoder *player1) {
   ball_y = lpaddle_y + (paddle_h / 2);
   
   calc_target_y();
+
+  _buzz = Buzzer();
+  _buzz.Setup();
 
   tft.fillScreen(BLACK);
   _lastLoop = millis();

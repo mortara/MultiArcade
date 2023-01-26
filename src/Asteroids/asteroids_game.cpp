@@ -11,6 +11,9 @@ void AsteroidsGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
 
     _ship = new Ship();
     _ship->Setup(_rotary);
+
+    _buzz = Buzzer();
+    _buzz.Setup();
     
     Serial.print("Asteroids initialized!");
 }
@@ -84,6 +87,8 @@ void AsteroidsGame::ProcessShip(float elapsed)
         bullet->Setup(_ship);
         _objects.push_back(bullet);
         _lastshot = 0;
+
+        _buzz.PlayTone(1200, 50);
     }
 }
 
@@ -123,6 +128,7 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                 else
                 {
                     Explode(coll);
+                    _buzz.PlayNoise(200);
                 }
             }
         }

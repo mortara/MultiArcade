@@ -4,6 +4,7 @@
 #include "../general/gameobject.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include "block.hpp"
+#include "../sound/sound.hpp"
 
 class BreakoutGame
 {
@@ -20,6 +21,7 @@ class BreakoutGame
       
         GameObject *_ball;
         GameObject *_paddle;
+        Buzzer _buzz;
         
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
@@ -30,6 +32,8 @@ class BreakoutGame
         int lives = 3;
         int score = 0;
         int level = 0;
+        float ballbasespeed = 70;
+        float ballspeedlvlmultiplier = 6;
 
         void ball(float elapsed);
         void paddle();

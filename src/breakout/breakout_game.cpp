@@ -15,6 +15,9 @@ void BreakoutGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
 
     _ball = new GameObject();
     _ball->Size = Vector2DF(2,2);
+
+    _buzz = Buzzer();
+    _buzz.Setup();
     
     Serial.print("Breakout initialized!");
 
@@ -78,7 +81,7 @@ void BreakoutGame::StartLevel(int l)
         }
     }
 
-    float startspeed = 60 + l * 5.0f;
+    float startspeed = ballbasespeed + l * ballspeedlvlmultiplier;
     float startangle = 30.0f + random(30);
     if(random(100) > 50)
         startangle = 360 - startangle;
@@ -143,7 +146,7 @@ void BreakoutGame::ball(float elapsed)
         else if((d > 0.7 && _ball->Velocity.X > 0) || (d < -0.7 && _ball->Velocity.X < 0))
             _ball->Velocity.X *= -0.8f;
 
-        
+        _buzz.PlayTone(200, 50);
         _tft.drawString("d:" + String(d), 10, 15, 1);
     }
     else
@@ -167,6 +170,9 @@ void BreakoutGame::ball(float elapsed)
                     _ball->Velocity.Y *= -1.0f;
                     _ball->Velocity.X *= -1.0f;
                 }
+
+
+                _buzz.PlayTone(400, 50);
 
                 break;
             }

@@ -8,6 +8,7 @@
 #include "debris.hpp"
 #include "../general/gameobject.hpp"
 #include "../Input/rotary_encoder.hpp"
+#include "../sound/sound.hpp"
 
 class AsteroidsGame
 {
@@ -20,6 +21,8 @@ class AsteroidsGame
         Ship *_ship;
         float _reloadtime = 0.3;
         float _lastshot = 0;
+
+        Buzzer _buzz;
 
         std::list<GameObject *> _objects;
 

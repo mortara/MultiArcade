@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
-
+#include "../sound/sound.hpp"
 #include "../input/rotary_encoder.hpp"
 
 class Pong
@@ -9,6 +9,7 @@ class Pong
         long _lastLoop;
 
         TFT_eSPI tft;
+        Buzzer _buzz;
 
         int16_t h = 128;
         int16_t w = 160;
