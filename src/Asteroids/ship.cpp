@@ -7,7 +7,7 @@ void Ship::Setup(RotaryEncoder *p1paddle)
     _rotary = p1paddle;
     OutOfBoundsMethod = 1;
     ObjectType = 1;
-    double scale = 2;
+    double scale = 1.5;
     GameObject::Setup(4, new Vector2DF[4] {Vector2DF(0.0f,4.0f) * scale, Vector2DF(2.0f,-2.0f)* scale, Vector2DF(0.0f,0.0f)* scale, Vector2DF(-2.0f,-2.0f)* scale});
 }
 

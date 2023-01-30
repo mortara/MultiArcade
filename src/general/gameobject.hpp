@@ -48,9 +48,9 @@ class GameObject
         Vector2DF *_rotatedpoints;
         Vector2DF *_rendered_points;
         float _orientation;
+        float _old_orientation;
         void RenderLines(TFT_eSPI screen, int16_t color, Vector2DF position, Vector2DF *points);
       
-        float Rold;
         
 };
 

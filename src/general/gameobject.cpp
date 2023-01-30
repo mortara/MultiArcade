@@ -33,16 +33,20 @@ void GameObject::Setup(int16_t num, Vector2DF *points)
        _rotatedpoints[i] = _points[i];
        _rendered_points[i] = _points[i];
     }
-    Rold = 1;
+    _old_orientation = 1;
     SetOrientation(0);   
 }
 
 void GameObject::SetOrientation(float d)
 {
-    if(PolygonPoints == 0 || (int)d == (int)_orientation)
-        return;
-    _orientation = d;
 
+    if(PolygonPoints == 0 || (int)d == (int)_orientation)
+    {
+        _orientation = d;
+        return;
+    }
+
+    _orientation = d;
     float r = degreesToRadians(d);
 
     for(int i = 0; i < PolygonPoints; i++)
@@ -73,12 +77,12 @@ void GameObject::RemoveFromScreen(TFT_eSPI tft)
 
 void GameObject::Render(TFT_eSPI tft, bool force)
 {
-    if(!force && ((int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)Rold == (int)_orientation))
+    if(!force && ((int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)_old_orientation == (int)_orientation))
         return;
 
     RemoveFromScreen(tft);
 
-    Rold = _orientation;
+    _old_orientation = _orientation;
     OldPosition = Position;
 
     if(PolygonPoints == 0)

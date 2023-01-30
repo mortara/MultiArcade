@@ -39,7 +39,7 @@ void Asteroid::Setup(int s, int sw, int sh)
     Velocity = Vector2DF(random(40) - 20, random(40) - 20);
    
     // Random rotation speed
-    vR = random(60) - 30;
+    vR = random(180) - 90;
 
     GameObject::Setup(points, p);
 }

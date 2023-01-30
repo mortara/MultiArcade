@@ -64,6 +64,8 @@ void AsteroidsGame::ProcessShip(float elapsed)
         
         Explode(shipcoll);
         Explode(_ship);
+
+        _buzz.PlayNoise(350);
         
         shipcoll->Delete = true;
 
@@ -88,7 +90,7 @@ void AsteroidsGame::ProcessShip(float elapsed)
         _objects.push_back(bullet);
         _lastshot = 0;
 
-        _buzz.PlayTone(1200, 50);
+        _buzz.PlayTone(100, 50);
     }
 }
 
@@ -124,11 +126,12 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                         asn->Velocity = asn->Velocity * (double)1.5;
                         _objects.push_back(asn);
                     }
+                    _buzz.PlayNoise(150);
                 }
                 else
                 {
                     Explode(coll);
-                    _buzz.PlayNoise(200);
+                    _buzz.PlayNoise(150);
                 }
             }
         }
