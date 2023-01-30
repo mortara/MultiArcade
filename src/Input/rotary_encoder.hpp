@@ -23,8 +23,6 @@ class RotaryEncoder
         uint8_t _sw1;
         uint8_t _sw2;
 
-
-        
         int SW_OLD = 0;
         int SW2_OLD = 0;
 
