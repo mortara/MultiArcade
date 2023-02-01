@@ -7,12 +7,13 @@ void loop() {
     _mgr.Loop();
 
     _loopCount++;
-    if(_loopCount == 500)
+    if(_loopCount == 500 && _screen != NULL)
     {
         unsigned long end = millis();
         float duration = (float)(end - _loopStart) / (float)500.0;
         //Serial.print(duration);
-        _screen.drawString("loop: " + String(duration) + "ms", 10, 113 , 1);
+        _screen->setTextColor(WHITE);
+        _screen->drawString("loop: " + String(duration) + "ms", 10, 113 , 1);
         _loopCount = 0;
         _loopStart = end;
     }

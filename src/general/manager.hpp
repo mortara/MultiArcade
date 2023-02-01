@@ -17,7 +17,7 @@ class Manager
         RotaryEncoder *_rotary;
         RotaryEncoder *_rotary2;
         Menu _menu;
-        TFT_eSPI _screen;
+        TFT_eSPI* _screen;
         int16_t Width;
         int16_t Height;
 
@@ -29,7 +29,7 @@ class Manager
     public:
         int16_t CurrentGame;
 
-        TFT_eSPI Setup();
+        TFT_eSPI* Setup();
         void Loop();
         
 };

@@ -1,14 +1,17 @@
 #include "alien.hpp"
 
-void Alien::Setup(int c, int r, int num_cols, TFT_eSPI screen )
+void Alien::Setup(int c, int r, int num_cols, TFT_eSPI* screen )
 {
     ObjectType = 2;
     
-    X = 27 + (screen.width() - 40) / num_cols * c;
+    X = 27 + (screen->width() - 40) / num_cols * c;
 
     Position = Vector2DF(X, 10 * r);
     Velocity.Y = 2;
     float scale = 2;
+
+    Row = r;
+    Column = c;
 
     GameObject::Setup(4, new Vector2DF[4] 
         {
@@ -18,7 +21,6 @@ void Alien::Setup(int c, int r, int num_cols, TFT_eSPI screen )
             Vector2DF(-2.0f,-2.0f)* scale
         });
 }   
-
 
 void Alien::Move(float elapsed)
 {

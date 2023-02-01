@@ -6,7 +6,7 @@
 class RotaryEncoder
 {
     public:
-        void Setup(uint8_t clk_pin, uint8_t dt_pin, uint8_t switch1_pin, uint8_t switch2_pin, bool hw_pullups);
+        RotaryEncoder(uint8_t clk_pin, uint8_t dt_pin, uint8_t switch1_pin, uint8_t switch2_pin, bool hw_pullups);
         void Loop();
         
         int Counter = 0;

@@ -1,6 +1,6 @@
 #include "manager.hpp"
 
-TFT_eSPI Manager::Setup()
+TFT_eSPI* Manager::Setup()
 {
     Serial.begin(115200);
 
@@ -14,17 +14,14 @@ TFT_eSPI Manager::Setup()
     //_stick = Joystick();
     //_stick.Setup();
 
-    _rotary = new RotaryEncoder();
-    _rotary->Setup(CLK1_PIN, DT1_PIN, SW1_PIN, SW1_PIN2, true);
-
-    _rotary2 = new RotaryEncoder();
-    _rotary2->Setup(CLK2_PIN, DT2_PIN, SW2_PIN, SW2_PIN2, false);
-
-    _screen = TFT_eSPI();
-    _screen.init();
-    _screen.setRotation(1);
-    _screen.fillScreen(BLACK);
-    _screen.setTextColor(WHITE, BLACK);
+    _rotary = new RotaryEncoder(CLK1_PIN, DT1_PIN, SW1_PIN, SW1_PIN2, true);
+    _rotary2 = new RotaryEncoder(CLK2_PIN, DT2_PIN, SW2_PIN, SW2_PIN2, false);
+    
+    _screen = new TFT_eSPI();
+    _screen->init();
+    _screen->setRotation(1);
+    _screen->fillScreen(BLACK);
+    _screen->setTextColor(WHITE, BLACK);
 
     _menu = Menu();
     _menu.Setup(_screen, _rotary);
@@ -34,8 +31,6 @@ TFT_eSPI Manager::Setup()
 
 void Manager::Loop()
 {
-    
-
     //_stick.Loop();
     _rotary->Loop();
 
@@ -88,15 +83,15 @@ void Manager::Loop()
     {
         _asteroids.Loop();
     }
-    if(CurrentGame == 2 || CurrentGame == 3)
+    else if(CurrentGame == 2 || CurrentGame == 3)
     {
         _pong.Loop();
     }
-    if(CurrentGame == 4)
+    else if(CurrentGame == 4)
     {
         _breakout.Loop();
     }
-    if(CurrentGame == 5)
+    else if(CurrentGame == 5)
     {
         _spaceInvaders.Loop();
     }

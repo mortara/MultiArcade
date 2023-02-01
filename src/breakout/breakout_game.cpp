@@ -1,16 +1,16 @@
 #include "breakout_game.hpp"
 
-void BreakoutGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
+void BreakoutGame::Setup(TFT_eSPI* screen, RotaryEncoder *player1paddle)
 {
     _tft = screen;
-    _tft.fillScreen(BLACK);
+    _tft->fillScreen(BLACK);
 
     _rotary = player1paddle;
     _lastrotarycount = _rotary->Counter;
 
     _paddle = new GameObject();
-    _paddle->Position.X = _tft.width() / 2;
-    _paddle->Position.Y = _tft.height() - 20;
+    _paddle->Position.X = _tft->width() / 2;
+    _paddle->Position.Y = _tft->height() - 20;
     _paddle->Size = Vector2DF(18,2);
 
     _ball = new GameObject();
@@ -18,7 +18,6 @@ void BreakoutGame::Setup(TFT_eSPI screen, RotaryEncoder *player1paddle)
 
     _buzz = Buzzer();
     _buzz.Setup();
-    
     Serial.print("Breakout initialized!");
 
     delay(500);
@@ -33,7 +32,7 @@ void BreakoutGame::StartLevel(int l)
     int rows = 3 + l;
     int bpr = 9;
     int bh = 5;
-    int bw = (_tft.width() - 4) / (bpr + 1);
+    int bw = (_tft->width() - 4) / (bpr + 1);
 
     if(rows > 7)
         rows = 7;
@@ -97,7 +96,7 @@ void BreakoutGame::StartLevel(int l)
 
 void BreakoutGame::scores()
 {
-    _tft.drawString("Lives: " + String(lives) + " Score: " + String(score) , 10, 1 , 1); 
+    _tft->drawString("Lives: " + String(lives) + " Score: " + String(score) , 10, 1 , 1); 
 }
 
 void BreakoutGame::ball(float elapsed) 
@@ -105,7 +104,7 @@ void BreakoutGame::ball(float elapsed)
     bool redraw = false;
     if (_ball->Position.X != _ball->OldPosition.X || _ball->Position.Y != _ball->OldPosition.Y)
     {
-        _tft.fillRect((int)_ball->OldPosition.X, (int)_ball->OldPosition.Y, (int)_ball->Size.X, (int)_ball->Size.Y, BLACK);
+        _tft->fillRect((int)_ball->OldPosition.X, (int)_ball->OldPosition.Y, (int)_ball->Size.X, (int)_ball->Size.Y, BLACK);
         redraw = true;
     } 
     
@@ -116,17 +115,17 @@ void BreakoutGame::ball(float elapsed)
     _ball->Position.X +=  _ball->Velocity.X * elapsed;
     _ball->Position.Y +=  _ball->Velocity.Y * elapsed;
 
-    if((_ball->Position.X <= 0 && _ball->Velocity.X < 0) || ((_ball->Position.X + _ball->Size.X) >= _tft.width() && _ball->Velocity.X > 0))
+    if((_ball->Position.X <= 0 && _ball->Velocity.X < 0) || ((_ball->Position.X + _ball->Size.X) >= _tft->width() && _ball->Velocity.X > 0))
         _ball->Velocity.X *= -1.0f;
     else if(_ball->Position.Y <= 0 && _ball->Velocity.Y < 0)
         _ball->Velocity.Y *= -1.0f;
-    else if((_ball->Position.Y + _ball->Size.Y) > _tft.height() && _ball->Velocity.Y > 0)
+    else if((_ball->Position.Y + _ball->Size.Y) > _tft->height() && _ball->Velocity.Y > 0)
     {
         lives--;
 
         if(lives == 0)
         {
-            _tft.fillScreen(BLACK);
+            _tft->fillScreen(BLACK);
             gamestage = 2;
             return;
         }
@@ -147,7 +146,7 @@ void BreakoutGame::ball(float elapsed)
             _ball->Velocity.X *= -0.8f;
 
         _buzz.PlayTone(200, 50);
-        _tft.drawString("d:" + String(d), 10, 15, 1);
+        _tft->drawString("d:" + String(d), 10, 15, 1);
     }
     else
     {
@@ -188,7 +187,7 @@ void BreakoutGame::ball(float elapsed)
     }
 
     if(redraw || firstloop)
-        _tft.fillRect((int)_ball->Position.X, (int)_ball->Position.Y, (int)_ball->Size.X, (int)_ball->Size.Y, WHITE);
+        _tft->fillRect((int)_ball->Position.X, (int)_ball->Position.Y, (int)_ball->Size.X, (int)_ball->Size.Y, WHITE);
 }
 
 void BreakoutGame::paddle() {
@@ -196,7 +195,7 @@ void BreakoutGame::paddle() {
   bool redraw = false;
   if (_paddle->Position.X != _paddle->OldPosition.X )
   {
-    _tft.fillRect((int)_paddle->OldPosition.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, BLACK);
+    _tft->fillRect((int)_paddle->OldPosition.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, BLACK);
     redraw = true;
   } 
   
@@ -207,13 +206,13 @@ void BreakoutGame::paddle() {
   _paddle->Velocity.X = (paddle1count - _lastrotarycount) * paddle_v ;
   _lastrotarycount = paddle1count;
 
-  if ((int)_paddle->Position.X + _paddle->Size.X >= _tft.width() && _paddle->Velocity.X > 0) 
+  if ((int)_paddle->Position.X + _paddle->Size.X >= _tft->width() && _paddle->Velocity.X > 0) 
     _paddle->Velocity.X = 0;
   else if ((int)_paddle->Position.X <= 0 && _paddle->Velocity.X < 0) 
     _paddle->Velocity.X = 0;
 
   if(redraw || firstloop)
-    _tft.fillRect((int)_paddle->Position.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, WHITE);
+    _tft->fillRect((int)_paddle->Position.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, WHITE);
 }
 
 void BreakoutGame::Loop()
@@ -223,10 +222,10 @@ void BreakoutGame::Loop()
   
     if(gamestage == 0)
     {
-        _tft.drawString("BREAKOUT", _tft.width() / 2 - 30, _tft.height() / 2 - 10, 1);
+        _tft->drawString("BREAKOUT", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
-            _tft.fillScreen(BLACK);
+            _tft->fillScreen(BLACK);
             score = 0;
             lives = 3;
             gamestage = 1;
@@ -243,10 +242,10 @@ void BreakoutGame::Loop()
 
     if(gamestage == 2)
     {
-        _tft.drawString("GAME OVER", _tft.width() / 2 - 30, _tft.height() / 2 - 10, 1);
+        _tft->drawString("GAME OVER", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
-            _tft.fillScreen(BLACK);
+            _tft->fillScreen(BLACK);
             delay(500);
             gamestage = 0;
         }

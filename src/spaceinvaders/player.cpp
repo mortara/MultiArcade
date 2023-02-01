@@ -1,6 +1,6 @@
 #include "player.hpp"
 
-void Player::Setup(RotaryEncoder *playerpaddle, TFT_eSPI screen)
+void Player::Setup(RotaryEncoder *playerpaddle, TFT_eSPI* screen)
 {
     _rotary = playerpaddle;
     OutOfBoundsMethod = 3;
@@ -17,7 +17,7 @@ void Player::Setup(RotaryEncoder *playerpaddle, TFT_eSPI screen)
             Vector2DF(-1.0f,0.0f)* scale
         });
 
-    Position = Vector2DF(screen.width() / 2.0, screen.height() - 10);
+    Position = Vector2DF(screen->width() / 2.0, screen->height() - 10);
 }
 
 bool Player::Control()

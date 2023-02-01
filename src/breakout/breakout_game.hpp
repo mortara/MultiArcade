@@ -10,7 +10,7 @@ class BreakoutGame
 {
     private:
         unsigned long _lastLoop;
-        TFT_eSPI _tft;
+        TFT_eSPI* _tft;
       
         RotaryEncoder *_rotary;
 
@@ -40,6 +40,6 @@ class BreakoutGame
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
+        void Setup(TFT_eSPI* screen, RotaryEncoder *player1);
         void Loop();
 };

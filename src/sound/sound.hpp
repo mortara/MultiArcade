@@ -1,17 +1,15 @@
 #include <Arduino.h>
 #include <list>
+#include "../general/config.h"
 
 #ifndef SOUND_H
 #define SOUND_H
 
-#define BUZZER_PIN 22
-
-class BuzzerTask
+struct BuzzerTask
 {
-    public:
-        int Type;
-        unsigned int Frequency;
-        unsigned long Duration;
+    int Type;
+    unsigned int Frequency;
+    unsigned long Duration;
 };
 
 class Buzzer
@@ -21,12 +19,16 @@ class Buzzer
         
 
     public:
-        std::list<BuzzerTask *> Tasks;
+        std::list<BuzzerTask *>* Tasks;
+        volatile bool lock;
 
     void Setup()
     {
-        pinMode(BUZZER_PIN, OUTPUT);
 
+        Tasks = new std::list<BuzzerTask *>();
+
+        pinMode(BUZZER_PIN, OUTPUT);
+        
         xTaskCreatePinnedToCore(
             Task1code, /* Function to implement the task */
             "Task1", /* Name of the task */
@@ -38,17 +40,22 @@ class Buzzer
     }
 
     static void Task1code(void *pvParameters) {
-        Buzzer *l_pThis = (Buzzer *) pvParameters;
+        Buzzer *l_pThis = static_cast<Buzzer *>(pvParameters);
         
         for(;;) {
-            if(l_pThis->Tasks.empty())
+            if(l_pThis->Tasks->empty())
             {
                 noTone(BUZZER_PIN);
                 delay(100);
             }
             else
             {
-                BuzzerTask *bt = l_pThis->Tasks.front();
+                while(l_pThis->lock)
+                    delay(5);
+
+                l_pThis->lock = true;
+                BuzzerTask *bt = l_pThis->Tasks->front();
+                l_pThis->lock = false;
                 switch(bt->Type)
                 {
                     case 1:
@@ -60,7 +67,10 @@ class Buzzer
                             tone(BUZZER_PIN, random(100, 300), random(5));   // change the parameters of random() for different sound
                         }
                 }
-                l_pThis->Tasks.pop_front();
+                l_pThis->lock = true;
+                l_pThis->Tasks->remove(bt);
+                l_pThis->lock = false;
+                delete bt;
             }
             delay(50);
         }
@@ -73,7 +83,12 @@ class Buzzer
         bt->Duration = duration;
         bt->Frequency = frequency;
 
-        Tasks.push_back(bt);
+        while(lock)
+            delay(5);
+
+        lock = true;
+        Tasks->push_back(bt);
+        lock = false;
     }
 
     void PlayNoise(unsigned long duration)  {
@@ -83,7 +98,12 @@ class Buzzer
         bt->Duration = duration;
         bt->Frequency = 0;
 
-        Tasks.push_back(bt);
+        while(lock)
+            delay(5);
+
+        lock = true;
+        Tasks->push_back(bt);
+        lock = false;
     }
 
     void StopSound()

@@ -14,7 +14,7 @@ class AsteroidsGame
 {
     private:
         unsigned long _lastLoop;
-        TFT_eSPI _tft;
+        TFT_eSPI* _tft;
         bool _firstloop = true;
 
         RotaryEncoder *_rotary;
@@ -41,6 +41,6 @@ class AsteroidsGame
         void ProcessObjects(float elapsed);
 
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
+        void Setup(TFT_eSPI* screen, RotaryEncoder *player1);
         void Loop();
 };

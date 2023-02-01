@@ -7,6 +7,9 @@
     #define BLACK 0x0000
     #define WHITE 0xFFFF
     #define GREY 0x5AEB
+
+    // Piezo buzzer
+    #define BUZZER_PIN 22
     
     // Player 1 paddle
     #define CLK1_PIN 17 

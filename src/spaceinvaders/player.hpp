@@ -5,7 +5,7 @@
 class Player : public GameObject
 {
     public:
-        void Setup(RotaryEncoder *playerpaddle, TFT_eSPI screen);
+        void Setup(RotaryEncoder *playerpaddle, TFT_eSPI* screen);
         bool Control();
     private:
         RotaryEncoder *_rotary;

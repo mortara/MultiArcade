@@ -37,9 +37,9 @@ class GameObject
         void SetOrientation(float d);
         float GetOrientation();
 
-        void Render(TFT_eSPI _screen, bool force = false);
-        void RemoveFromScreen(TFT_eSPI _screen);
-        bool OutOfBoundsCheck(TFT_eSPI _screen);
+        void Render(TFT_eSPI* _screen, bool force = false);
+        void RemoveFromScreen(TFT_eSPI* _screen);
+        bool OutOfBoundsCheck(TFT_eSPI* _screen);
         bool CollidesWith(GameObject * go2);
         bool PointInPolygon(Vector2DF point);
 
@@ -49,7 +49,7 @@ class GameObject
         Vector2DF *_rendered_points;
         float _orientation;
         float _old_orientation;
-        void RenderLines(TFT_eSPI screen, int16_t color, Vector2DF position, Vector2DF *points);
+        void RenderLines(TFT_eSPI* screen, int16_t color, Vector2DF position, Vector2DF *points);
       
         
 };

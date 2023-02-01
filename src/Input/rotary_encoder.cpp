@@ -2,12 +2,15 @@
 
 
 
-void RotaryEncoder::Setup(uint8_t clk_pin, uint8_t dt_pin, uint8_t switch1_pin, uint8_t switch2_pin, bool hw_pullups)
+RotaryEncoder::RotaryEncoder(uint8_t clk_pin, uint8_t dt_pin, uint8_t switch1_pin, uint8_t switch2_pin, bool hw_pullups)
 {
     _dt = dt_pin;
     _clk = clk_pin;
     _sw1 = switch1_pin;
     _sw2 = switch2_pin;
+
+    Switch1Pressed = false;
+    Switch2Pressed = false;
 
     uint8_t inputmode = INPUT;
     if(!hw_pullups)

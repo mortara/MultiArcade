@@ -8,7 +8,7 @@ class Pong
     private:
         long _lastLoop;
 
-        TFT_eSPI tft;
+        TFT_eSPI* tft;
         Buzzer _buzz;
 
         int16_t h = 128;
@@ -72,7 +72,7 @@ class Pong
         void ball(float elapsed);
 
     public:
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1);
-        void Setup(TFT_eSPI screen, RotaryEncoder *player1, RotaryEncoder *player2);
+        void Setup(TFT_eSPI* screen, RotaryEncoder *player1);
+        void Setup(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2);
         void Loop();
 };

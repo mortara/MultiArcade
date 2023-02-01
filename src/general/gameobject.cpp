@@ -67,15 +67,15 @@ void GameObject::Move(float d)
     SetOrientation(_orientation + vR * d);
 }
 
-void GameObject::RemoveFromScreen(TFT_eSPI tft)
+void GameObject::RemoveFromScreen(TFT_eSPI* tft)
 {
     if(PolygonPoints > 0)
         RenderLines(tft, BLACK, OldPosition, _rendered_points);
     else
-        tft.drawPixel((int32_t)OldPosition.X, (int32_t)OldPosition.Y, BLACK);
+        tft->drawPixel((int32_t)OldPosition.X, (int32_t)OldPosition.Y, BLACK);
 }
 
-void GameObject::Render(TFT_eSPI tft, bool force)
+void GameObject::Render(TFT_eSPI* tft, bool force)
 {
     if(!force && ((int)Position.X == (int)OldPosition.X && (int)Position.Y == (int)OldPosition.Y && (int)_old_orientation == (int)_orientation))
         return;
@@ -87,7 +87,7 @@ void GameObject::Render(TFT_eSPI tft, bool force)
 
     if(PolygonPoints == 0)
     {
-        tft.drawPixel((int32_t)Position.X, (int32_t)Position.Y, Color);
+        tft->drawPixel((int32_t)Position.X, (int32_t)Position.Y, Color);
     }
     else
     {
@@ -95,21 +95,21 @@ void GameObject::Render(TFT_eSPI tft, bool force)
     }
 }
 
-void GameObject::RenderLines(TFT_eSPI tft, int16_t color, Vector2DF position, Vector2DF *points)
+void GameObject::RenderLines(TFT_eSPI* tft, int16_t color, Vector2DF position, Vector2DF *points)
 {
     _rendered_points[0] = points[0];
     Vector2DF drawcurrent = _rendered_points[0];
     for(int i = 1; i < PolygonPoints; i++)
     {
         _rendered_points[i] = points[i];
-        tft.drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X + _rendered_points[i].X, position.Y + _rendered_points[i].Y, color);
+        tft->drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X + _rendered_points[i].X, position.Y + _rendered_points[i].Y, color);
         drawcurrent = _rendered_points[i];
     }
 
-    tft.drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X +  _rendered_points[0].X, position.Y + _rendered_points[0].Y, color);
+    tft->drawLine(position.X + drawcurrent.X, position.Y + drawcurrent.Y, position.X +  _rendered_points[0].X, position.Y + _rendered_points[0].Y, color);
 }
 
-bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
+bool GameObject::OutOfBoundsCheck(TFT_eSPI* _screen)
 {
     // Nothing happens when object leaves the screen
     if(OutOfBoundsMethod == 0)
@@ -120,17 +120,17 @@ bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
     {
         int16_t margin = 8;
 
-        if((Position.X - Radius - margin) > _screen.width() && Velocity.X >= 0)
+        if((Position.X - Radius - margin) > _screen->width() && Velocity.X >= 0)
             Position.X = 0 - margin;
 
-        if((Position.Y - Radius - margin) > _screen.height() && Velocity.Y >= 0)
+        if((Position.Y - Radius - margin) > _screen->height() && Velocity.Y >= 0)
             Position.Y = 0 - margin;
         
         if((Position.X + Radius + margin) < 0 && Velocity.X <= 0)
-            Position.X = _screen.width() + margin;
+            Position.X = _screen->width() + margin;
 
         if((Position.Y + Radius + margin) < 0 && Velocity.Y <= 0)
-            Position.Y = _screen.height() + margin;
+            Position.Y = _screen->height() + margin;
 
         return false;
     }
@@ -140,7 +140,7 @@ bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
     {
         int16_t margin = 16;
  
-        if((Position.X - Radius - margin) > _screen.width() || (Position.Y - Radius - margin) > _screen.height() || (Position.X + Radius + margin) < 0 || (Position.Y + Radius + margin) < 0)
+        if((Position.X - Radius - margin) > _screen->width() || (Position.Y - Radius - margin) > _screen->height() || (Position.X + Radius + margin) < 0 || (Position.Y + Radius + margin) < 0)
         {
             return true;
         }
@@ -154,9 +154,9 @@ bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
             Position.X = 0;
             Velocity.X = 0;
             Acceleration.X = 0;
-        } else if(Position.X + Size.X > _screen.width())
+        } else if(Position.X + Size.X > _screen->width())
         {
-            Position.X = _screen.width() - Size.X;
+            Position.X = _screen->width() - Size.X;
             Velocity.X = 0;
             Acceleration.X = 0;
         }
@@ -166,9 +166,9 @@ bool GameObject::OutOfBoundsCheck(TFT_eSPI _screen)
             Position.Y = 0;
             Velocity.Y = 0;
             Acceleration.Y = 0;
-        } else if(Position.Y + Size.Y > _screen.height())
+        } else if(Position.Y + Size.Y > _screen->height())
         {
-            Position.Y = _screen.height() - Size.Y;
+            Position.Y = _screen->height() - Size.Y;
             Velocity.Y = 0;
             Acceleration.Y = 0;
         }

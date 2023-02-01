@@ -3,7 +3,7 @@
 class Joystick
 {
     public:
-        void Setup();
+        Joystick();
         void Loop();
 
         int X = 0;

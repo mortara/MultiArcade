@@ -4,7 +4,7 @@
 #define VRY_PIN  25 // ESP32 pin GIOP39 (ADC0) connected to VRY pin
 #define SW_PIN   35 // ESP32 pin GIOP17 connected to SW  pin
 
-void Joystick::Setup()
+Joystick::Joystick()
 {
     pinMode(VRX_PIN, INPUT);
     pinMode(VRY_PIN, INPUT);
