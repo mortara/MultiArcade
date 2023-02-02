@@ -30,18 +30,16 @@ void AsteroidsGame::StartLevel(int l)
 
     int numa = 3 + l;
     for(int i = 0; i < numa; i++)
-    {
-        Asteroid *ast = new Asteroid();
+    {    
         int sc = 3; // We want Size 3 asteroids
 
         if(random(50) < (l*3))
             sc = 4;         // but sometimes size 4 ones. the higher the level, the more size 4 asteroids are coming
 
-        ast->Setup(sc, ScreenWidth, ScreenHeight);
+        Asteroid *ast = new Asteroid(sc, ScreenWidth, ScreenHeight);
         ast->Render(_tft, true);
         _world->AddObject(ast);
     }
-
 }
 
 void AsteroidsGame::scores()
@@ -83,8 +81,7 @@ void AsteroidsGame::ProcessShip(float elapsed)
 
     if(fire && _lastshot >= _reloadtime)
     {
-        Bullet *bullet = new Bullet();
-        bullet->Setup(_ship);
+        Bullet *bullet = new Bullet(_ship);
         _world->AddObject(bullet);
         _lastshot = 0;
 
@@ -112,8 +109,7 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                 {
                     for(int i = 0; i < s; i++)
                     {
-                        Asteroid *asn = new Asteroid();
-                        asn->Setup(s-1, ScreenWidth, ScreenHeight);
+                        Asteroid *asn = new Asteroid(s-1, ScreenWidth, ScreenHeight);
                         asn->Position = ast->Position;
                         asn->Velocity = asn->Velocity * (double)1.5;
                         _world->AddObject(asn);

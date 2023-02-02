@@ -25,9 +25,9 @@ class Game
             _buzz->Setup();
         }
 
-        int16_t ScreenWidth;
-        int16_t ScreenHeight;
-        int16_t GameStage;
+        int16_t ScreenWidth = 160;
+        int16_t ScreenHeight = 128;
+        int16_t GameStage = 0;
 
     
 };

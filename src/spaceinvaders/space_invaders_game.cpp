@@ -35,8 +35,7 @@ void SpaceInvadersGame::StartLevel(int l)
     for(int r = 0; r < rows; r++)
         for(int c = 0; c < cols; c++)
         {
-            Alien *alien = new Alien();
-            alien->Setup(c,r,cols, _tft);
+            Alien *alien = new Alien(c,r,cols, _tft);
             _world->AddObject(alien);         
         }
 }
@@ -70,8 +69,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
         }
     } else if(fire && _lastshot >= _reloadtime)
     {
-        Beam *bullet = new Beam();
-        bullet->Setup(_ship);
+        Beam *bullet = new Beam(_ship);
         _world->AddObject(bullet);
         _buzz->PlayTone(600, 50);
         _lastshot = 0;
@@ -118,8 +116,7 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
 
                     if(!blocked && random(10) > 8)
                     {
-                        Beam *bullet = new Beam();
-                        bullet->Setup(alien);
+                        Beam *bullet = new Beam(alien);
                         _world->AddObject(bullet);
                         _lastalienshot = 0;
                         _buzz->PlayTone(400, 50);
