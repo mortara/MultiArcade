@@ -12,7 +12,7 @@ void loop() {
         unsigned long end = millis();
         float duration = (float)(end - _loopStart) / (float)500.0;
         //Serial.print(duration);
-        _screen->setTextColor(WHITE);
+        _screen->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
         _screen->drawString("loop: " + String(duration) + "ms", 10, 113 , 1);
         _loopCount = 0;
         _loopStart = end;

@@ -6,7 +6,7 @@
 #include "bullet.hpp"
 #include "asteroid.hpp"
 #include "debris.hpp"
-#include "../general/gameobject.hpp"
+#include "../general/GameWorld.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include "../sound/sound.hpp"
 
@@ -23,10 +23,8 @@ class AsteroidsGame
         float _lastshot = 0;
 
         Buzzer _buzz;
-
-        std::list<GameObject *> _objects;
-
-        GameObject* CollisionCheck(GameObject *go, int objecttype);
+        GameWorld* _world;
+        
         void Explode(GameObject *go);
 
         int lives = 3;

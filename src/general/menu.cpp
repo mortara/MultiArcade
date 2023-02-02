@@ -37,11 +37,11 @@ int Menu::Loop()
         for(int i = 0; i < _gamecount; i++)
         {
             if(i == _currentIndex)
-                _tft->setTextColor(TFT_BLUE);
+                _tft->setTextColor(DEFAULT_TEXT2_COLOR, DEFAULT_BG_COLOR, true);
             else
-                _tft->setTextColor(WHITE);
+                _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
 
-            _tft->drawString(_items[i], 20, 20 + i * 12 , 2);
+            _tft->drawString(_items[i], 20, 20 + i * 14 , 2);
         }
         _firsttime = false;
         //delay(50);

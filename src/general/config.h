@@ -4,6 +4,10 @@
     #define degreesToRadians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
     #define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
 
+    #define DEFAULT_TEXT_COLOR TFT_WHITE
+    #define DEFAULT_TEXT2_COLOR TFT_BLUE
+    #define DEFAULT_BG_COLOR TFT_BLACK
+
     #define BLACK 0x0000
     #define WHITE 0xFFFF
     #define GREY 0x5AEB

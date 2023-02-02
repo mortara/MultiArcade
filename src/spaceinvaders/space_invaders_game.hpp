@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <list>
 #include <TFT_eSPI.h>
-#include "../general/gameobject.hpp"
+#include "../general/GameWorld.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include "player.hpp"
 #include "alien.hpp"
@@ -11,7 +11,6 @@
 class SpaceInvadersGame
 {
     private:
-        bool _firstloop;
         long _lastLoop;
         TFT_eSPI* _tft;
      
@@ -22,10 +21,8 @@ class SpaceInvadersGame
         float _lastshot = 0;
         float _lastalienshot = 0;
 
-        std::list<GameObject *> _objects;
+        GameWorld* _world;
         
-        GameObject* CollisionCheck(GameObject *go, int objecttype);
-
         void ProcessShip(float elapsed);
         void ProcessObjects(float elapsed);
 

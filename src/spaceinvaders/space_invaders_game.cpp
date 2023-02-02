@@ -3,12 +3,14 @@
 void SpaceInvadersGame::Setup(TFT_eSPI* screen, RotaryEncoder *player1paddle)
 {
     _tft = screen;
-    _tft->fillScreen(BLACK);
+    _tft->fillScreen(DEFAULT_BG_COLOR);
 
     _rotary = player1paddle;
 
     _buzz = Buzzer();
     _buzz.Setup();
+
+    _world = new GameWorld(screen);
     
     _ship = new Player();
     _ship->Setup(_rotary, screen);
@@ -23,7 +25,7 @@ void SpaceInvadersGame::scores()
 
 void SpaceInvadersGame::StartLevel(int l)
 {
-    _tft->fillScreen(BLACK);
+    _tft->fillScreen(DEFAULT_BG_COLOR);
 
     int cols = _maxcols;
     level = l;
@@ -31,17 +33,14 @@ void SpaceInvadersGame::StartLevel(int l)
     if(rows > _maxrows)
         rows = _maxrows;
 
-    for (GameObject *obj : _objects)
-        delete obj;
-
-    _objects.clear();
+    _world->DeleteObjects();
     
     for(int r = 0; r < rows; r++)
         for(int c = 0; c < cols; c++)
         {
             Alien *alien = new Alien();
             alien->Setup(c,r,cols, _tft);
-            _objects.push_back(alien);         
+            _world->AddObject(alien);         
         }
 }
 
@@ -52,9 +51,9 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
     _ship->OutOfBoundsCheck(_tft);
     _lastshot += elapsed;
 
-    GameObject *shipcoll = CollisionCheck(_ship, 2);
+    GameObject *shipcoll = _world->CollisionCheck(_ship, 2);
     if(shipcoll == NULL)
-        shipcoll = CollisionCheck(_ship, 3);
+        shipcoll = _world->CollisionCheck(_ship, 3);
 
     if(shipcoll != NULL)
     {
@@ -76,7 +75,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
     {
         Beam *bullet = new Beam();
         bullet->Setup(_ship);
-        _objects.push_back(bullet);
+        _world->AddObject(bullet);
         _buzz.PlayTone(600, 50);
         _lastshot = 0;
     }
@@ -85,25 +84,16 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
 void SpaceInvadersGame::ProcessObjects(float elapsed)
 {
     _lastalienshot += elapsed;
-    
-    for (GameObject *obj : _objects)
+    std::list<GameObject *>* _objects = _world->GetObjects();
+    for (GameObject *obj : *_objects)
     {
         if(obj->Delete == true)
             continue;
 
-        obj->Move(elapsed);
-        if(obj->OutOfBoundsCheck(_tft))
-        {
-            obj->Delete = true;
-            continue;
-        }
-
-        obj->Render(_tft);      
-        
         if(obj->ObjectType == 2)
         {
             Alien* alien = static_cast<Alien*>(obj);
-            GameObject *coll = CollisionCheck(obj, 3);
+            GameObject *coll = _world->CollisionCheck(obj, 3);
             if(coll != NULL)
             {
                 coll->Delete = true;
@@ -116,7 +106,7 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                 if(random(1000) < _lastalienshot)
                 {
                     bool blocked = false;
-                    for (GameObject *obj_test : _objects)
+                    for (GameObject *obj_test : *_objects)
                     {
                         if(obj_test->Delete || obj_test->ObjectType != 2)
                             continue;
@@ -133,7 +123,7 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                     {
                         Beam *bullet = new Beam();
                         bullet->Setup(alien);
-                        _objects.push_back(bullet);
+                        _world->AddObject(bullet);
                         _lastalienshot = 0;
                         _buzz.PlayTone(400, 50);
                     }
@@ -142,27 +132,15 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
             }
         }
     }
-
-    std::list<GameObject *> _removedobjects;
-    for (GameObject *obj : _objects)
-    {
-        if(obj->Delete == true)
-            _removedobjects.push_back(obj);
-    }
-  
-    for (GameObject *obj : _removedobjects)
-    {
-        obj->RemoveFromScreen(_tft);
-        _objects.remove(obj);
-        delete obj;
-    }
 }
 
 void SpaceInvadersGame::Loop()
 {
     long time = millis();
     double elapsed = (double)(time - _lastLoop) / 1000.0;
-  
+    _lastLoop = time;
+    _world->Loop(elapsed);
+
     if(gamestage == 0)
     {
         _tft->drawString("SPACE INVADERS", _tft->width() / 2 - 40, _tft->height() / 2 - 10, 1);
@@ -181,7 +159,7 @@ void SpaceInvadersGame::Loop()
         ProcessShip(elapsed);
         ProcessObjects(elapsed);
 
-        int aliensleft = std::count_if(_objects.begin(), _objects.end(), [](GameObject *go) { return go->ObjectType == 2; });
+        int aliensleft = _world->CountObjects(2);
 
         if(aliensleft == 0)
         {
@@ -197,7 +175,7 @@ void SpaceInvadersGame::Loop()
         _tft->drawString("GAME OVER", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
-            _tft->fillScreen(BLACK);
+            _tft->fillScreen(DEFAULT_BG_COLOR);
             delay(500);
             gamestage = 0;
         }
@@ -213,22 +191,5 @@ void SpaceInvadersGame::Loop()
         }
     }
 
-    _lastLoop = time;
-    _firstloop = false;
-
     //_tft.drawString("ShipPos: " + String(_ship->X) + ", " + String(_ship->Y) + " ", 10, 10 , 2);
-}
-
-GameObject* SpaceInvadersGame::CollisionCheck(GameObject *go, int objecttype)
-{
-    for (GameObject *obj : _objects)
-    {
-        if(obj->Delete || obj->ObjectType != objecttype)
-            continue;
-
-        if(go->CollidesWith(obj))
-            return obj;
-    }
-
-    return NULL;
 }
