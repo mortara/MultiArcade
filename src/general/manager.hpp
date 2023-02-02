@@ -16,15 +16,13 @@ class Manager
         Joystick _stick;
         RotaryEncoder *_rotary;
         RotaryEncoder *_rotary2;
-        Menu _menu;
+        Menu* _menu;
         TFT_eSPI* _screen;
-        int16_t Width;
-        int16_t Height;
-
-        AsteroidsGame _asteroids;
-        Pong _pong;
-        BreakoutGame _breakout;
-        SpaceInvadersGame _spaceInvaders;
+     
+        AsteroidsGame *_asteroids;
+        Pong *_pong;
+        BreakoutGame* _breakout;
+        SpaceInvadersGame *_spaceInvaders;
 
     public:
         int16_t CurrentGame;

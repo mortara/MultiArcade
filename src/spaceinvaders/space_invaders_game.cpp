@@ -1,14 +1,11 @@
 #include "space_invaders_game.hpp"
 
-void SpaceInvadersGame::Setup(TFT_eSPI* screen, RotaryEncoder *player1paddle)
+SpaceInvadersGame::SpaceInvadersGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
-    _tft = screen;
+
     _tft->fillScreen(DEFAULT_BG_COLOR);
 
     _rotary = player1paddle;
-
-    _buzz = Buzzer();
-    _buzz.Setup();
 
     _world = new GameWorld(screen);
     
@@ -58,17 +55,17 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
     if(shipcoll != NULL)
     {
         shipcoll->Delete = true;
-        _buzz.PlayNoise(150);
+        _buzz->PlayNoise(150);
         lives--;
         if(lives == 0)
         {
-            gamestage = 2;
+            GameStage = 2;
             return;
         }
         else
         {
             stagetimer = 3;
-            gamestage = 3;
+            GameStage = 3;
             return;
         }
     } else if(fire && _lastshot >= _reloadtime)
@@ -76,7 +73,7 @@ void SpaceInvadersGame::ProcessShip(float elapsed)
         Beam *bullet = new Beam();
         bullet->Setup(_ship);
         _world->AddObject(bullet);
-        _buzz.PlayTone(600, 50);
+        _buzz->PlayTone(600, 50);
         _lastshot = 0;
     }
 }
@@ -99,8 +96,8 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                 coll->Delete = true;
                 obj->Delete = true;
                 score += 5;
-                _buzz.PlayNoise(150);
-            } else if(gamestage != 3)
+                _buzz->PlayNoise(150);
+            } else if(GameStage != 3)
             {
                 // Sometimes Aliens fire back
                 if(random(1000) < _lastalienshot)
@@ -125,7 +122,7 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                         bullet->Setup(alien);
                         _world->AddObject(bullet);
                         _lastalienshot = 0;
-                        _buzz.PlayTone(400, 50);
+                        _buzz->PlayTone(400, 50);
                     }
                     
                 }
@@ -141,20 +138,20 @@ void SpaceInvadersGame::Loop()
     _lastLoop = time;
     _world->Loop(elapsed);
 
-    if(gamestage == 0)
+    if(GameStage == 0)
     {
-        _tft->drawString("SPACE INVADERS", _tft->width() / 2 - 40, _tft->height() / 2 - 10, 1);
+        _tft->drawString("SPACE INVADERS", ScreenWidth / 2 - 40, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft->fillScreen(BLACK);
             score = 0;
-            gamestage = 1;
+            GameStage = 1;
             lives = 3;
             
             StartLevel(1);
             delay(500);
         }
-    } else if(gamestage == 1)
+    } else if(GameStage == 1)
     {
         ProcessShip(elapsed);
         ProcessObjects(elapsed);
@@ -168,18 +165,18 @@ void SpaceInvadersGame::Loop()
         }
 
         scores();
-    } else if(gamestage == 2)
+    } else if(GameStage == 2)
     {
         ProcessObjects(elapsed);
         scores();
-        _tft->drawString("GAME OVER", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
+        _tft->drawString("GAME OVER", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft->fillScreen(DEFAULT_BG_COLOR);
             delay(500);
-            gamestage = 0;
+            GameStage = 0;
         }
-    } else if(gamestage == 3)
+    } else if(GameStage == 3)
     {
         ProcessObjects(elapsed);
         scores();
@@ -187,7 +184,7 @@ void SpaceInvadersGame::Loop()
         if(stagetimer <= 0)
         {
             StartLevel(level);
-            gamestage = 1;
+            GameStage = 1;
         }
     }
 

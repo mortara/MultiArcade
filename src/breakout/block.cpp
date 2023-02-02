@@ -1,7 +1,7 @@
 #include "block.hpp"
 
 
-void Block::Setup(uint16_t color)
+Block::Block(uint16_t color)
 {
     _color = color;
 }

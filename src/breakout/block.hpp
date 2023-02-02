@@ -4,7 +4,7 @@
 class Block : public GameObject
 {
     public:
-        void Setup(uint16_t color);
+        Block(uint16_t color);
         void Render(TFT_eSPI* screen);
         void RemoveFromScreen(TFT_eSPI* screen);
 

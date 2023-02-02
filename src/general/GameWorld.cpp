@@ -94,3 +94,18 @@ GameObject* GameWorld::CollisionCheck(GameObject *go, int objecttype)
 
     return NULL;
 }
+
+void GameWorld::Explode(GameObject *go)
+{
+    int num = go->PolygonPoints / 2;
+    if(num < 1)
+        num = 1;
+
+    for(int i = 0; i < num; i++)
+    {
+        Debris *debr = new Debris(go);
+        AddObject(debr);
+    }
+
+    go->RemoveFromScreen(_tft);
+}

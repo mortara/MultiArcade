@@ -1,29 +1,24 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
+#include "../general/Game.hpp"
 #include "../sound/sound.hpp"
 #include "../input/rotary_encoder.hpp"
 
-class Pong
+class Pong : public Game
 {
     private:
         long _lastLoop;
-
-        TFT_eSPI* tft;
-        Buzzer _buzz;
-
-        int16_t h = 128;
-        int16_t w = 160;
 
         int16_t paddle_h = 25;
         int16_t paddle_w = 2;
 
         int16_t lpaddle_x = 0;
-        int16_t rpaddle_x = w - paddle_w;
+        int16_t rpaddle_x = 0;
 
         float lpaddle_y = 0;
-        float rpaddle_y = h - paddle_h;
+        float rpaddle_y = 0;
         float lpaddle_y_old = 0;
-        float rpaddle_y_old = h - paddle_h;
+        float rpaddle_y_old = 0;
 
         float lpaddle_d = 1;
         float rpaddle_d = -1;
@@ -44,12 +39,6 @@ class Pong
 
         int16_t ball_w = 4;
         int16_t ball_h = 4;
-
-        int16_t dashline_h = 4;
-        int16_t dashline_w = 2;
-        int16_t dashline_n = h / dashline_h;
-        int16_t dashline_x = w / 2 - 1;
-        int16_t dashline_y = dashline_h / 2;
 
         bool singleplayer;
         int16_t lscore = 0;
@@ -72,7 +61,8 @@ class Pong
         void ball(float elapsed);
 
     public:
-        void Setup(TFT_eSPI* screen, RotaryEncoder *player1);
-        void Setup(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2);
+        Pong(TFT_eSPI* screen, RotaryEncoder *player1);
+        Pong(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2);
+
         void Loop();
 };

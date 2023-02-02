@@ -5,23 +5,19 @@
 #include "../Input/rotary_encoder.hpp"
 #include "block.hpp"
 #include "../sound/sound.hpp"
+#include "../general/Game.hpp"
 
-class BreakoutGame
+class BreakoutGame : Game
 {
     private:
         unsigned long _lastLoop;
-        TFT_eSPI* _tft;
-      
+        bool firstloop;
         RotaryEncoder *_rotary;
-
-        int gamestage = 0;  // 0 = Before start,  1 = game running,  2 = game over
-        bool firstloop = true;
 
         std::list<Block *> _objects;
       
         GameObject *_ball;
         GameObject *_paddle;
-        Buzzer _buzz;
         
         void OutOfBoundsCheck(GameObject *go);
         GameObject* CollisionCheck(GameObject *go);
@@ -40,6 +36,6 @@ class BreakoutGame
         void scores();
         void StartLevel(int l);
     public:
-        void Setup(TFT_eSPI* screen, RotaryEncoder *player1);
+        BreakoutGame(TFT_eSPI* screen, RotaryEncoder *player1);
         void Loop();
 };

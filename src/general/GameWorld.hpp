@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <list>
 #include "gameobject.hpp"
+#include "debris.hpp"
 #include <TFT_eSPI.h>
 
 #ifndef GAMEWORLD_H
@@ -23,6 +24,7 @@ class GameWorld
         std::list<GameObject *>* GetObjects();
 
         GameObject* CollisionCheck(GameObject *go, int objecttype);
+        void Explode(GameObject *go);
 
     private:
         std::list<GameObject *>* _objects;

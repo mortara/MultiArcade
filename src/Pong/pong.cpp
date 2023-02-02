@@ -7,21 +7,27 @@
 
 void Pong::midline() {
 
-  // If the ball is not on the line then don't redraw the line
-  if ((( (int16_t)ball_x < (dashline_x-ball_w) ) || ( (int16_t)ball_x > (dashline_x+dashline_w))) && !firstloop) 
-    return;
+    int16_t dashline_h = 4;
+    int16_t dashline_w = 2;
+    int16_t dashline_n = ScreenHeight / dashline_h;
+    int16_t dashline_x = ScreenWidth / 2 - 1;
+    int16_t dashline_y = dashline_h / 2;
 
-  tft->startWrite();
+    // If the ball is not on the line then don't redraw the line
+    if ((( (int16_t)ball_x < (dashline_x-ball_w) ) || ( (int16_t)ball_x > (dashline_x+dashline_w))) && !firstloop) 
+      return;
 
-  // Quick way to draw a dashed line
-  tft->setAddrWindow(dashline_x, 0, dashline_w, h);
-  
-  for(int16_t i = 0; i < dashline_n; i+=2) {
-    tft->pushColor(WHITE, dashline_w*dashline_h); // push dash pixels
-    tft->pushColor(BLACK, dashline_w*dashline_h); // push gap pixels
-  }
+    _tft->startWrite();
 
-  tft->endWrite();
+    // Quick way to draw a dashed line
+    _tft->setAddrWindow(dashline_x, 0, dashline_w, ScreenHeight);
+    
+    for(int16_t i = 0; i < dashline_n; i+=2) {
+      _tft->pushColor(WHITE, dashline_w*dashline_h); // push dash pixels
+      _tft->pushColor(DEFAULT_BG_COLOR, dashline_w*dashline_h); // push gap pixels
+    }
+
+    _tft->endWrite();
 }
 
 void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, float &y_old) {
@@ -29,7 +35,7 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, flo
   bool redraw = true;
   if (y != y_old )
   {
-    tft->fillRect(x, (int)y_old, paddle_w, (int)paddle_h, BLACK);
+    _tft->fillRect(x, (int)y_old, paddle_w, (int)paddle_h, BLACK);
   } 
   else
   {
@@ -69,13 +75,13 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, flo
     }
   }
 
-  if ((int)y + paddle_h >= h && d > 0) 
+  if ((int)y + paddle_h >= ScreenHeight && d > 0) 
     d = 0;
   else if ((int)y <= 0 && d < 0) 
     d = 0;
 
   if(redraw || firstloop)
-    tft->fillRect((int)x, (int)y, paddle_w, paddle_h, WHITE);
+    _tft->fillRect((int)x, (int)y, paddle_w, paddle_h, WHITE);
 }
 
 void Pong::calc_target_y() {
@@ -84,21 +90,21 @@ void Pong::calc_target_y() {
   int16_t y;
 
   if (ball_dx == 1) {
-    target_x = w - ball_w;
+    target_x = ScreenWidth - ball_w;
   } 
   else {
-    target_x = -1 * (w - ball_w);
+    target_x = -1 * (ScreenWidth - ball_w);
   }
 
   y = abs(target_x * (ball_dy / ball_dx) + ball_y);
 
-  reflections = floor(y / h);
+  reflections = floor(y / ScreenHeight);
 
   if (reflections % 2 == 0) {
-    target_y = y % h;
+    target_y = y % ScreenHeight;
   } 
   else {
-    target_y = h - (y % h);
+    target_y = ScreenHeight - (y % ScreenHeight);
   }
 }
 
@@ -109,19 +115,19 @@ void Pong::ball(float elapsed) {
     if (ball_dx < 0.0 && (int)ball_x == paddle_w && (int)ball_y + ball_h >= lpaddle_y && (int)ball_y <= lpaddle_y + paddle_h) {
       ball_dx = ball_dx * -1.0;
       calc_target_y(); 
-      _buzz.PlayTone(200, 50);
-    } else if (ball_dx > 0.0 && (int)ball_x + ball_w == w - paddle_w && (int)ball_y + ball_h >= rpaddle_y && (int)ball_y <= rpaddle_y + paddle_h) {
+      _buzz->PlayTone(200, 50);
+    } else if (ball_dx > 0.0 && (int)ball_x + ball_w == ScreenWidth - paddle_w && (int)ball_y + ball_h >= rpaddle_y && (int)ball_y <= rpaddle_y + paddle_h) {
       ball_dx = ball_dx * -1.0; 
       calc_target_y();
-      _buzz.PlayTone(200, 50);
+      _buzz->PlayTone(200, 50);
     } 
 
-    if ((int)ball_y > h - ball_w || (int)ball_y < 0) {
+    if ((int)ball_y > ScreenHeight - ball_w || (int)ball_y < 0) {
       ball_dy = ball_dy * -1.0;
       ball_y += ball_dy; // Keep in bounds
     }
 
-    if ((int)ball_x > w)
+    if ((int)ball_x > ScreenWidth)
     {
         ball_x = 2;
         ball_y = lpaddle_y + (paddle_h / 2);
@@ -150,8 +156,8 @@ void Pong::ball(float elapsed) {
     if(oldball_x != ball_x || oldball_y != ball_y || firstloop)
     {
       //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
-      tft->fillRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
-      tft->fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
+      _tft->fillRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
+      _tft->fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
       oldball_x = ball_x;
       oldball_y = ball_y;
     }
@@ -161,12 +167,12 @@ void Pong::scores()
 {
     if(singleplayer)
     {
-        tft->drawString("Level: " + String(rscore) , 90, 2 , 2);
+        _tft->drawString("Level: " + String(rscore) , 90, 2 , 2);
     }
     else
     {
-        tft->drawString("P1: " + String(lscore) , 10, 2 , 2);
-        tft->drawString("P2: " + String(rscore) , 120, 2 , 2);
+        _tft->drawString("P1: " + String(lscore) , 10, 2 , 2);
+        _tft->drawString("P2: " + String(rscore) , 120, 2 , 2);
 
     }
 }
@@ -202,12 +208,15 @@ void Pong::Loop() {
     _lastLoop = time;
 }
 
-void Pong::Setup(TFT_eSPI* screen, RotaryEncoder *player1) {
-  tft = screen;
+Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1) : Game(screen)
+{
+  rpaddle_x = ScreenWidth - paddle_w;
+  rpaddle_y = ScreenHeight - paddle_h;
+  rpaddle_y_old = rpaddle_y;
   _player1paddle = player1;
 
-  lpaddle_y = random(0, h - paddle_h);
-  rpaddle_y = random(0, h - paddle_h);
+  lpaddle_y = random(0, ScreenHeight - paddle_h);
+  rpaddle_y = random(0, ScreenHeight - paddle_h);
 
   player1->Counter = 0;
   _player1LastpaddleCount = 0;
@@ -217,10 +226,7 @@ void Pong::Setup(TFT_eSPI* screen, RotaryEncoder *player1) {
   
   calc_target_y();
 
-  _buzz = Buzzer();
-  _buzz.Setup();
-  
-  tft->fillScreen(BLACK);
+  _tft->fillScreen(DEFAULT_BG_COLOR);
   _lastLoop = millis();
 
   singleplayer = true;
@@ -228,25 +234,11 @@ void Pong::Setup(TFT_eSPI* screen, RotaryEncoder *player1) {
   lscore = 3;
 }
 
-void Pong::Setup(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2) {
-  tft = screen;
-  _player1paddle = player1;
+Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2) : Pong(screen, player1)
+{
   _player2paddle = player2;
-
-  lpaddle_y = random(0, h - paddle_h);
-  rpaddle_y = random(0, h - paddle_h);
-
-  player1->Counter = 0;
-  _player1LastpaddleCount = 0;
-
   player2->Counter = 0;
   _player2LastpaddleCount = 0;
-
-  // ball is placed on the center of the left paddle
-  ball_y = lpaddle_y + (paddle_h / 2);
-  
-  tft->fillScreen(BLACK);
-  _lastLoop = millis();
 
   singleplayer = false;
   rscore = 0;

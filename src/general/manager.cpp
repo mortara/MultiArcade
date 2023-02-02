@@ -8,9 +8,6 @@ TFT_eSPI* Manager::Setup()
 
     CurrentGame = 0;
 
-    Width = 160;
-    Height = 128;
-
     //_stick = Joystick();
     //_stick.Setup();
 
@@ -23,8 +20,7 @@ TFT_eSPI* Manager::Setup()
     _screen->fillScreen(BLACK);
     _screen->setTextColor(WHITE, BLACK);
 
-    _menu = Menu();
-    _menu.Setup(_screen, _rotary);
+    _menu = new Menu(_screen, _rotary);
 
     return _screen;
 }
@@ -43,36 +39,31 @@ void Manager::Loop()
 
     if(CurrentGame == 0)
     {
-        int newgame = _menu.Loop();
+        int newgame = _menu->Loop();
         if(newgame >= 0)
         {
             switch(newgame)
             {
                 case 0:
                     CurrentGame = 1;
-                    _asteroids = AsteroidsGame();
-                    _asteroids.Setup(_screen, _rotary);
+                    _asteroids = new AsteroidsGame(_screen, _rotary);
                     break;
                 case 1:
                     CurrentGame = 2;
-                    _pong = Pong();
-                    _pong.Setup(_screen, _rotary);
+                    _pong = new Pong(_screen, _rotary);
                     break;
                 case 2:
 
                     CurrentGame = 3;
-                    _pong = Pong();
-                    _pong.Setup(_screen, _rotary, _rotary2);
+                    _pong = new Pong(_screen, _rotary, _rotary2);
                     break;
                 case 3:
                     CurrentGame = 4;
-                    _breakout = BreakoutGame();
-                    _breakout.Setup(_screen, _rotary);
+                    _breakout = new BreakoutGame(_screen, _rotary);
                     break;
                 case 4:
                     CurrentGame = 5;
-                    _spaceInvaders = SpaceInvadersGame();
-                    _spaceInvaders.Setup(_screen, _rotary);
+                    _spaceInvaders = new SpaceInvadersGame(_screen, _rotary);
                     break;
             }
         }
@@ -81,18 +72,18 @@ void Manager::Loop()
 
     if(CurrentGame == 1)
     {
-        _asteroids.Loop();
+        _asteroids->Loop();
     }
     else if(CurrentGame == 2 || CurrentGame == 3)
     {
-        _pong.Loop();
+        _pong->Loop();
     }
     else if(CurrentGame == 4)
     {
-        _breakout.Loop();
+        _breakout->Loop();
     }
     else if(CurrentGame == 5)
     {
-        _spaceInvaders.Loop();
+        _spaceInvaders->Loop();
     }
 }

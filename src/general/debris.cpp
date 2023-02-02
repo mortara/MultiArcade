@@ -1,6 +1,6 @@
 #include "debris.hpp"
 
-void Debris::Setup(GameObject *starter)
+Debris::Debris(GameObject *starter)
 {
     ObjectType = 4;
     Position = starter->Position;

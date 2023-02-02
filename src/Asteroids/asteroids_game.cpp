@@ -1,7 +1,7 @@
 #include "asteroids_game.hpp"
 #include "../general/config.h"
 
-void AsteroidsGame::Setup(TFT_eSPI* screen, RotaryEncoder *player1paddle)
+AsteroidsGame::AsteroidsGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
     _tft = screen;
     _tft->fillScreen(DEFAULT_BG_COLOR);
@@ -13,25 +13,22 @@ void AsteroidsGame::Setup(TFT_eSPI* screen, RotaryEncoder *player1paddle)
     _ship = new Ship();
     _ship->Setup(_rotary);
 
-    _buzz = Buzzer();
-    _buzz.Setup();
     Serial.print("Asteroids initialized!");
 }
 
 void AsteroidsGame::StartLevel(int l)
 {
     level = l;
-    _firstloop = true;
-
+   
     _tft->fillScreen(DEFAULT_BG_COLOR);
 
-    _ship->Position = Vector2DF(_tft->width()/2,_tft->height()/2);
+    _ship->Position = Vector2DF(ScreenWidth/2,ScreenHeight/2);
     _ship->Velocity = Vector2DF(0,0);
     _ship->Render(_tft, true);
-    int numa = 3 + l;
-
+    
     _world->DeleteObjects();
 
+    int numa = 3 + l;
     for(int i = 0; i < numa; i++)
     {
         Asteroid *ast = new Asteroid();
@@ -40,7 +37,7 @@ void AsteroidsGame::StartLevel(int l)
         if(random(50) < (l*3))
             sc = 4;         // but sometimes size 4 ones. the higher the level, the more size 4 asteroids are coming
 
-        ast->Setup(sc, _tft->width(), _tft->height());
+        ast->Setup(sc, ScreenWidth, ScreenHeight);
         ast->Render(_tft, true);
         _world->AddObject(ast);
     }
@@ -63,23 +60,23 @@ void AsteroidsGame::ProcessShip(float elapsed)
     if(shipcoll != NULL)
     {
         
-        Explode(shipcoll);
-        Explode(_ship);
+        _world->Explode(shipcoll);
+        _world->Explode(_ship);
 
-        _buzz.PlayNoise(350);
+        _buzz->PlayNoise(350);
         
         shipcoll->Delete = true;
 
         lives--;
         if(lives == 0)
         {
-            gamestage = 2;
+            GameStage = 2;
             return;
         }
         else
         {
             stagetimer = 3;
-            gamestage = 3;
+            GameStage = 3;
             return;
         }
     }
@@ -91,7 +88,7 @@ void AsteroidsGame::ProcessShip(float elapsed)
         _world->AddObject(bullet);
         _lastshot = 0;
 
-        _buzz.PlayTone(100, 50);
+        _buzz->PlayTone(100, 50);
     }
 }
 
@@ -116,17 +113,17 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                     for(int i = 0; i < s; i++)
                     {
                         Asteroid *asn = new Asteroid();
-                        asn->Setup(s-1, _tft->width(), _tft->height());
+                        asn->Setup(s-1, ScreenWidth, ScreenHeight);
                         asn->Position = ast->Position;
                         asn->Velocity = asn->Velocity * (double)1.5;
                         _world->AddObject(asn);
                     }
-                    _buzz.PlayNoise(150);
+                    _buzz->PlayNoise(150);
                 }
                 else
                 {
-                    Explode(coll);
-                    _buzz.PlayNoise(150);
+                    _world->Explode(coll);
+                    _buzz->PlayNoise(150);
                 }
             }
         }
@@ -142,20 +139,20 @@ void AsteroidsGame::Loop()
     // Move all the Objects
     _world->Loop(elapsed);
 
-    if(gamestage == 0)
+    if(GameStage == 0)
     {
-        _tft->drawString("ASTEROIDS", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
+        _tft->drawString("ASTEROIDS", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft->fillScreen(DEFAULT_BG_COLOR);
             score = 0;
-            gamestage = 1;
+            GameStage = 1;
             lives = 3;
             
             StartLevel(1);
             delay(500);
         }
-    } else if(gamestage == 1)
+    } else if(GameStage == 1)
     {
         ProcessShip(elapsed);
         ProcessObjects(elapsed);
@@ -169,7 +166,7 @@ void AsteroidsGame::Loop()
         }
 
         scores();
-    } else if(gamestage == 3)
+    } else if(GameStage == 3)
     {
         ProcessObjects(elapsed);
         scores();
@@ -177,37 +174,20 @@ void AsteroidsGame::Loop()
         if(stagetimer <= 0)
         {
             StartLevel(level);
-            gamestage = 1;
+            GameStage = 1;
         }
-    } else if(gamestage == 2)
+    } else if(GameStage == 2)
     {
         ProcessObjects(elapsed);
         scores();
-        _tft->drawString("GAME OVER", _tft->width() / 2 - 30, _tft->height() / 2 - 10, 1);
+        _tft->drawString("GAME OVER", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft->fillScreen(DEFAULT_BG_COLOR);
             delay(500);
-            gamestage = 0;
+            GameStage = 0;
         }
     }
 
     _lastLoop = time;
-    _firstloop = false;
-}
-
-void AsteroidsGame::Explode(GameObject *go)
-{
-    int num = go->PolygonPoints / 2;
-    if(num < 1)
-        num = 1;
-
-    for(int i = 0; i < num; i++)
-    {
-        Debris *debr = new Debris();
-        debr->Setup(go);
-        _world->AddObject(debr);
-    }
-
-    go->RemoveFromScreen(_tft);
 }
