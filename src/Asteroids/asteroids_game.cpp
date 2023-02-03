@@ -23,7 +23,7 @@ void AsteroidsGame::StartLevel(int l)
     _ship->Velocity = Vector2DF(0,0);
     _ship->Render(_tft, true);
     
-    _world->DeleteObjects();
+    _world->Clear();
 
     int numa = 3 + l;
     for(int i = 0; i < numa; i++)

@@ -7,6 +7,7 @@
     #define DEFAULT_TEXT_COLOR TFT_WHITE
     #define DEFAULT_TEXT2_COLOR TFT_BLUE
     #define DEFAULT_BG_COLOR TFT_BLACK
+    #define DEFAULT_FG_COLOR TFT_WHITE
 
     #define BLACK 0x0000
     #define WHITE 0xFFFF

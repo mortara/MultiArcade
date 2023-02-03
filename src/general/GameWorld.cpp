@@ -4,6 +4,10 @@
 GameWorld::GameWorld(TFT_eSPI* tft)
 {
     _tft = tft;
+
+    Width = _tft->width();
+    Height = _tft->height();
+
     _objects = new std::list<GameObject *>();
 }
 
@@ -22,7 +26,7 @@ bool GameWorld::RemoveObject(GameObject *go)
 void GameWorld::Loop(float elapsed)
 {
     MoveObjects(elapsed);
-    DeleteObjects();
+    Cleanup();
     RenderObjects();
 }
 
@@ -54,7 +58,17 @@ void GameWorld::RenderObjects()
     }
 }
 
-void GameWorld::DeleteObjects()
+void GameWorld::Clear()
+{
+    for (GameObject *obj : *_objects)
+    {
+        obj->RemoveFromScreen(_tft);
+        delete obj;
+    }
+    _objects->clear();
+}
+
+void GameWorld::Cleanup()
 {
     std::list<GameObject *> _removedobjects;
     for (GameObject *obj : *_objects)

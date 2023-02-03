@@ -29,7 +29,7 @@ void SpaceInvadersGame::StartLevel(int l)
     if(rows > _maxrows)
         rows = _maxrows;
 
-    _world->DeleteObjects();
+    _world->Clear();
     
     for(int r = 0; r < rows; r++)
         for(int c = 0; c < cols; c++)

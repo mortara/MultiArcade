@@ -132,14 +132,14 @@ bool GameObject::OutOfBoundsCheck(TFT_eSPI* _screen)
     {
         int16_t margin = 8;
 
-        if((Position.X - Radius - margin) > _screen->width() && Velocity.X >= 0)
+        if((Position.X - Radius - margin) >  _screen->width() && Velocity.X >= 0)
             Position.X = 0 - margin;
 
-        if((Position.Y - Radius - margin) > _screen->height() && Velocity.Y >= 0)
+        if((Position.Y - Radius - margin) >  _screen->height() && Velocity.Y >= 0)
             Position.Y = 0 - margin;
         
         if((Position.X + Radius + margin) < 0 && Velocity.X <= 0)
-            Position.X = _screen->width() + margin;
+            Position.X =  _screen->width() + margin;
 
         if((Position.Y + Radius + margin) < 0 && Velocity.Y <= 0)
             Position.Y = _screen->height() + margin;

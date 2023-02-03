@@ -35,7 +35,7 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, flo
   bool redraw = true;
   if (y != y_old )
   {
-    _tft->fillRect(x, (int)y_old, paddle_w, (int)paddle_h, BLACK);
+    _tft->fillRect(x, (int)y_old, paddle_w, (int)paddle_h, DEFAULT_BG_COLOR);
   } 
   else
   {
@@ -81,7 +81,7 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, flo
     d = 0;
 
   if(redraw || firstloop)
-    _tft->fillRect((int)x, (int)y, paddle_w, paddle_h, WHITE);
+    _tft->fillRect((int)x, (int)y, paddle_w, paddle_h, DEFAULT_FG_COLOR);
 }
 
 void Pong::calc_target_y() {
@@ -156,8 +156,8 @@ void Pong::ball(float elapsed) {
     if(oldball_x != ball_x || oldball_y != ball_y || firstloop)
     {
       //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
-      _tft->fillRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
-      _tft->fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, WHITE);
+      _tft->fillRect((int)oldball_x, (int)oldball_y, ball_w, ball_h, DEFAULT_BG_COLOR); // Less TFT refresh aliasing than line above for large balls
+      _tft->fillRect(   (int)ball_x,    (int)ball_y, ball_w, ball_h, DEFAULT_FG_COLOR);
       oldball_x = ball_x;
       oldball_y = ball_y;
     }

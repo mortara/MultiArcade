@@ -19,16 +19,22 @@ class GameWorld
         void Loop(float elapsed);
         void MoveObjects(float elapsed);
         void RenderObjects();
-        void DeleteObjects();
+        void Clear();
+        void Cleanup();
         int CountObjects(int type);
         std::list<GameObject *>* GetObjects();
 
         GameObject* CollisionCheck(GameObject *go, int objecttype);
         void Explode(GameObject *go);
 
+        int Width = 0;
+        int Height = 0;
+
     private:
         std::list<GameObject *>* _objects;
         TFT_eSPI* _tft;
+
+        
         
 };
 

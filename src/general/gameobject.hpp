@@ -25,7 +25,7 @@ class GameObject
         int16_t OutOfBoundsMethod = 0;
         int16_t ObjectType = 0;
 
-        uint32_t Color = TFT_WHITE;
+        uint32_t Color = DEFAULT_FG_COLOR;
 
         bool Delete = false;
 
