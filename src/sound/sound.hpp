@@ -14,18 +14,14 @@ struct BuzzerTask
 
 class Buzzer
 {
-    private:
-        TaskHandle_t Task1;
-        
-
     public:
         std::list<BuzzerTask *>* Tasks;
         volatile bool lock;
 
     void Setup()
     {
-
         Tasks = new std::list<BuzzerTask *>();
+        TaskHandle_t xHandle = NULL;
 
         pinMode(BUZZER_PIN, OUTPUT);
         
@@ -35,7 +31,7 @@ class Buzzer
             10000,  /* Stack size in words */
             this,  /* Task input parameter */
             0,  /* Priority of the task */
-            &Task1,  /* Task handle. */
+            &xHandle,  /* Task handle. */
             0); /* Core where the task should run */
     }
 

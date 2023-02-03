@@ -214,12 +214,14 @@ Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1) : Game(screen)
   rpaddle_y = ScreenHeight - paddle_h;
   rpaddle_y_old = rpaddle_y;
   _player1paddle = player1;
-
+  _player2paddle = player1;
+  
   lpaddle_y = random(0, ScreenHeight - paddle_h);
   rpaddle_y = random(0, ScreenHeight - paddle_h);
 
   player1->Counter = 0;
   _player1LastpaddleCount = 0;
+  _player2LastpaddleCount = 0;
 
   // ball is placed on the center of the left paddle
   ball_y = lpaddle_y + (paddle_h / 2);

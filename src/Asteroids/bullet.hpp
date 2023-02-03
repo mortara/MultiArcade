@@ -4,7 +4,7 @@
 class Bullet: public GameObject
 {
     public:
-        Bullet(GameObject *start);     
+        explicit Bullet(GameObject *start);     
 
     private:
         float _speed = 120;  

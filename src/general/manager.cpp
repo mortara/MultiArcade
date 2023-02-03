@@ -13,12 +13,12 @@ TFT_eSPI* Manager::Setup()
 
     _rotary = new RotaryEncoder(CLK1_PIN, DT1_PIN, SW1_PIN, SW1_PIN2, true);
     _rotary2 = new RotaryEncoder(CLK2_PIN, DT2_PIN, SW2_PIN, SW2_PIN2, false);
-    
     _screen = new TFT_eSPI();
+
     _screen->init();
     _screen->setRotation(1);
-    _screen->fillScreen(BLACK);
-    _screen->setTextColor(WHITE, BLACK);
+    _screen->fillScreen(DEFAULT_BG_COLOR);
+    _screen->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
 
     _menu = new Menu(_screen, _rotary);
 

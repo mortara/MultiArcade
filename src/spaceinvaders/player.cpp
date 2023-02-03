@@ -1,8 +1,9 @@
 #include "player.hpp"
 
-void Player::Setup(RotaryEncoder *playerpaddle, TFT_eSPI* screen)
+Player::Player(RotaryEncoder *playerpaddle, TFT_eSPI* screen)
 {
     _rotary = playerpaddle;
+    _lastCount = _rotary->Counter;
     OutOfBoundsMethod = 3;
     float scale = 1;
     ObjectType = 1;

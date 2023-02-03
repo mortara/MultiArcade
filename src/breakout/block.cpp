@@ -1,6 +1,5 @@
 #include "block.hpp"
 
-
 Block::Block(uint16_t color)
 {
     _color = color;

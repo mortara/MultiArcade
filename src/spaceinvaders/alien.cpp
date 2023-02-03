@@ -5,9 +5,8 @@ Alien::Alien(int c, int r, int num_cols, TFT_eSPI* screen )
     ObjectType = 2;
     
     X = 27 + (screen->width() - 40) / num_cols * c;
-
     Position = Vector2DF(X, 10 * r);
-    Velocity.Y = 2;
+    Velocity = Vector2DF(0,2);
     float scale = 2;
 
     Row = r;

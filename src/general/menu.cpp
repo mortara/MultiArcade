@@ -22,7 +22,6 @@ int Menu::Loop()
         //_screen.drawString("Counter: " + String(cc) + ", SW: " + String(_rotary->SW), 10, 100 , 2);
 
         _lastCounter = cc;
-
     }
 
     if(cm != 0 || _firsttime) 

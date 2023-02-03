@@ -10,7 +10,6 @@
 class BreakoutGame : Game
 {
     private:
-        unsigned long _lastLoop;
         bool firstloop;
         RotaryEncoder *_rotary;
 

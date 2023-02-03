@@ -4,7 +4,7 @@
 class Beam : public GameObject
 {
     public:
-        Beam(GameObject *start);     
+        explicit Beam(GameObject *start);     
 
     private:
         float _speed = 150;  

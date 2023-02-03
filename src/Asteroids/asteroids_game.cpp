@@ -7,11 +7,8 @@ AsteroidsGame::AsteroidsGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : G
     _tft->fillScreen(DEFAULT_BG_COLOR);
 
     _rotary = player1paddle;
-
     _world = new GameWorld(screen);
-
-    _ship = new Ship();
-    _ship->Setup(_rotary);
+    _ship = new Ship(_rotary);
 
     Serial.print("Asteroids initialized!");
 }

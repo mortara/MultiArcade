@@ -13,8 +13,6 @@
 class AsteroidsGame : public Game
 {
     private:
-        unsigned long _lastLoop;
-        
         RotaryEncoder *_rotary;
         Ship *_ship;
         float _reloadtime = 0.3;

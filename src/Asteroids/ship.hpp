@@ -5,7 +5,7 @@
 class Ship : public GameObject
 {
     public:
-        void Setup(RotaryEncoder *playerpaddle);
+        explicit Ship(RotaryEncoder *playerpaddle);
         bool Control();
 
     private:

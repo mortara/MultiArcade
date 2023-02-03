@@ -5,10 +5,10 @@
 class Player : public GameObject
 {
     public:
-        void Setup(RotaryEncoder *playerpaddle, TFT_eSPI* screen);
+        Player(RotaryEncoder *playerpaddle, TFT_eSPI* screen);
         bool Control();
     private:
-        RotaryEncoder *_rotary;
-        int16_t _lastCount;
+        RotaryEncoder *_rotary = NULL;
+        int16_t _lastCount = 0;
         float _speed = 2;
 };

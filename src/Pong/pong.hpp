@@ -7,8 +7,6 @@
 class Pong : public Game
 {
     private:
-        long _lastLoop;
-
         int16_t paddle_h = 25;
         int16_t paddle_w = 2;
 

@@ -8,7 +8,7 @@ class Menu
 {
     private:
         bool _firsttime = true;
-        int16_t _currentIndex;
+        int16_t _currentIndex = 0;
         int16_t _lastCounter = 0;
         TFT_eSPI* _tft;
         RotaryEncoder *_player1paddle;

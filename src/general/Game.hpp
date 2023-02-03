@@ -10,7 +10,9 @@ class Game
     protected:
 
         TFT_eSPI* _tft;
-        Buzzer* _buzz;
+        Buzzer* _buzz = NULL;
+
+        unsigned long _lastLoop = 0;
 
     public:
 
@@ -23,6 +25,13 @@ class Game
 
             _buzz = new Buzzer();
             _buzz->Setup();
+
+            _lastLoop = millis();
+        }
+
+        ~Game()
+        {
+            delete _buzz;
         }
 
         int16_t ScreenWidth = 160;

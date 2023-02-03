@@ -7,7 +7,7 @@
 class Debris : public GameObject
 {
     public:
-        Debris(GameObject *starter);
+        explicit Debris(GameObject *starter);
         void Move(float d) override ;
 
     private:

@@ -11,8 +11,6 @@
 class SpaceInvadersGame : public Game
 {
     private:
-        long _lastLoop;
-        
         RotaryEncoder *_rotary;
 
         Player *_ship;

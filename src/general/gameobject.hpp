@@ -18,8 +18,6 @@ class GameObject
 
         Vector2DF Size;
         float Radius = 0;
-    
-        
         float vR = 0;
 
         int PolygonPoints = 0;
@@ -43,6 +41,8 @@ class GameObject
         bool CollidesWith(GameObject * go2);
         bool PointInPolygon(Vector2DF point);
 
+        ~GameObject();
+        
     private:
         Vector2DF *_points = NULL;
         Vector2DF *_rotatedpoints = NULL;

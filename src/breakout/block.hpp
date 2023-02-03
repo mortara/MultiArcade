@@ -9,6 +9,5 @@ class Block : public GameObject
         void RemoveFromScreen(TFT_eSPI* screen);
 
     private:
-        uint16_t _color;
-        
+        uint16_t _color;      
 };

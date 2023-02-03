@@ -37,6 +37,18 @@ void GameObject::Setup(int16_t num, Vector2DF *points)
     SetOrientation(0);   
 }
 
+GameObject::~GameObject()
+{
+    if(_points != NULL)
+        delete _points;
+
+    if(_rotatedpoints != NULL)
+        delete _rotatedpoints;
+
+    if(_rendered_points != NULL)
+        delete _rendered_points;    
+}
+
 void GameObject::SetOrientation(float d)
 {
 
@@ -70,9 +82,9 @@ void GameObject::Move(float d)
 void GameObject::RemoveFromScreen(TFT_eSPI* tft)
 {
     if(PolygonPoints > 0)
-        RenderLines(tft, BLACK, OldPosition, _rendered_points);
+        RenderLines(tft, DEFAULT_BG_COLOR, OldPosition, _rendered_points);
     else
-        tft->drawPixel((int32_t)OldPosition.X, (int32_t)OldPosition.Y, BLACK);
+        tft->drawPixel((int32_t)OldPosition.X, (int32_t)OldPosition.Y, DEFAULT_BG_COLOR);
 }
 
 void GameObject::Render(TFT_eSPI* tft, bool force)

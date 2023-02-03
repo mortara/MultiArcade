@@ -186,26 +186,26 @@ void BreakoutGame::ball(float elapsed)
 
 void BreakoutGame::paddle() {
   
-  bool redraw = false;
-  if (_paddle->Position.X != _paddle->OldPosition.X )
-  {
+    bool redraw = false;
+    if (_paddle->Position.X != _paddle->OldPosition.X )
+    {
     _tft->fillRect((int)_paddle->OldPosition.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, BLACK);
     redraw = true;
-  } 
-  
-  _paddle->OldPosition = _paddle->Position;
-  _paddle->Position =  _paddle->Position + _paddle->Velocity ;
-  
-  int paddle1count =  _rotary->Counter;  
-  _paddle->Velocity.X = (paddle1count - _lastrotarycount) * paddle_v ;
-  _lastrotarycount = paddle1count;
+    } 
 
-  if ((int)_paddle->Position.X + _paddle->Size.X >= ScreenWidth && _paddle->Velocity.X > 0) 
+    _paddle->OldPosition = _paddle->Position;
+    _paddle->Position =  _paddle->Position + _paddle->Velocity ;
+
+    int paddle1count =  _rotary->Counter;  
+    _paddle->Velocity.X = (paddle1count - _lastrotarycount) * paddle_v ;
+    _lastrotarycount = paddle1count;
+
+    if ((int)_paddle->Position.X + _paddle->Size.X >= ScreenWidth && _paddle->Velocity.X > 0) 
     _paddle->Velocity.X = 0;
-  else if ((int)_paddle->Position.X <= 0 && _paddle->Velocity.X < 0) 
+    else if ((int)_paddle->Position.X <= 0 && _paddle->Velocity.X < 0) 
     _paddle->Velocity.X = 0;
 
-  if(redraw || firstloop)
+    if(redraw || firstloop)
     _tft->fillRect((int)_paddle->Position.X, (int)_paddle->Position.Y, (int)_paddle->Size.X, (int)_paddle->Size.Y, WHITE);
 }
 

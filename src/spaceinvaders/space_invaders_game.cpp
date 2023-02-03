@@ -2,15 +2,14 @@
 
 SpaceInvadersGame::SpaceInvadersGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
-
     _tft->fillScreen(DEFAULT_BG_COLOR);
 
     _rotary = player1paddle;
-
-    _world = new GameWorld(screen);
     
-    _ship = new Player();
-    _ship->Setup(_rotary, screen);
+    _world = new GameWorld(screen);
+    _ship = new Player(_rotary, screen);
+
+    _lastLoop = millis();
 
     Serial.print("SpaceInvaders initialized!");
 }
@@ -95,7 +94,8 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                 obj->Delete = true;
                 score += 5;
                 _buzz->PlayNoise(150);
-            } else if(GameStage != 3)
+            } 
+            else if(GameStage != 3)
             {
                 // Sometimes Aliens fire back
                 if(random(1000) < _lastalienshot)
@@ -103,7 +103,7 @@ void SpaceInvadersGame::ProcessObjects(float elapsed)
                     bool blocked = false;
                     for (GameObject *obj_test : *_objects)
                     {
-                        if(obj_test->Delete || obj_test->ObjectType != 2)
+                        if(obj_test->Delete || obj_test->ObjectType != 2 || obj == obj_test)
                             continue;
                         
                         Alien* alien2 = static_cast<Alien*>(obj_test);
@@ -139,8 +139,7 @@ void SpaceInvadersGame::Loop()
     {
         _tft->drawString("SPACE INVADERS", ScreenWidth / 2 - 40, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
-        {
-            _tft->fillScreen(BLACK);
+        {           
             score = 0;
             GameStage = 1;
             lives = 3;

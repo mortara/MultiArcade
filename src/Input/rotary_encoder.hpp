@@ -13,8 +13,8 @@ class RotaryEncoder
         
         int SW = 0;
         int SW2 = 0;
-        bool Switch1Pressed; // Debounced
-        bool Switch2Pressed;
+        bool Switch1Pressed = false; // Debounced
+        bool Switch2Pressed = false;
 
     private:
     
