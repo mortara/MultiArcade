@@ -17,15 +17,15 @@ class GameObject
         Vector2DF Acceleration;
 
         Vector2DF Size;
-        float Radius;
+        float Radius = 0;
     
         
-        float vR;
+        float vR = 0;
 
         int PolygonPoints = 0;
 
         int16_t OutOfBoundsMethod = 0;
-        int16_t ObjectType;
+        int16_t ObjectType = 0;
 
         uint32_t Color = TFT_WHITE;
 
@@ -44,11 +44,11 @@ class GameObject
         bool PointInPolygon(Vector2DF point);
 
     private:
-        Vector2DF *_points;
-        Vector2DF *_rotatedpoints;
-        Vector2DF *_rendered_points;
-        float _orientation;
-        float _old_orientation;
+        Vector2DF *_points = NULL;
+        Vector2DF *_rotatedpoints = NULL;
+        Vector2DF *_rendered_points = NULL;
+        float _orientation = 0;
+        float _old_orientation = 0;
         void RenderLines(TFT_eSPI* screen, int16_t color, Vector2DF position, Vector2DF *points);
       
         

@@ -1,6 +1,6 @@
 #include "asteroid.hpp"
 
-void Asteroid::Setup(int s, int sw, int sh)
+Asteroid::Asteroid(int s, int sw, int sh)
 {
     Sizeclass = s;
     OutOfBoundsMethod = 1;  // 1 = returns on other side

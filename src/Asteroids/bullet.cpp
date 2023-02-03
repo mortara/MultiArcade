@@ -1,6 +1,6 @@
 #include "bullet.hpp"
 
-void Bullet::Setup(GameObject *starter)
+Bullet::Bullet(GameObject *starter)
 {
         ObjectType = 3;
         OutOfBoundsMethod = 2;

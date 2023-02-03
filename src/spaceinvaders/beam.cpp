@@ -1,6 +1,6 @@
 #include "beam.hpp"
 
-void Beam::Setup(GameObject *starter)
+Beam::Beam(GameObject *starter)
 {
         ObjectType = 3;
         OutOfBoundsMethod = 2;

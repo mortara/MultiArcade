@@ -7,10 +7,12 @@ class Alien : public GameObject
         Alien(int c, int r, int num_cols, TFT_eSPI* screen);
 
         void Move(float elapsed) override;
-        int Row;
-        int Column;
+        int Row = 0;
+        int Column = 0;
+
+        
     private:
         
-        float c;
-        float X;
+        float c = 0;
+        float X = 0;
 };

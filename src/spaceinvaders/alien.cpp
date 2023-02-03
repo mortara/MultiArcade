@@ -1,6 +1,6 @@
 #include "alien.hpp"
 
-void Alien::Setup(int c, int r, int num_cols, TFT_eSPI* screen )
+Alien::Alien(int c, int r, int num_cols, TFT_eSPI* screen )
 {
     ObjectType = 2;
     
