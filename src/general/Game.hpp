@@ -22,7 +22,8 @@ class Game
             ScreenHeight = _screen->height();
 
             _tft = _screen;
-
+            _tft->fillScreen(DEFAULT_BG_COLOR);
+            
             _buzz = new Buzzer();
             _buzz->Setup();
 

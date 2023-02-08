@@ -2,14 +2,10 @@
 
 SpaceInvadersGame::SpaceInvadersGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
-    _tft->fillScreen(DEFAULT_BG_COLOR);
-
     _rotary = player1paddle;
     
     _world = new GameWorld(screen);
     _ship = new Player(_rotary, screen);
-
-    _lastLoop = millis();
 
     Serial.print("SpaceInvaders initialized!");
 }

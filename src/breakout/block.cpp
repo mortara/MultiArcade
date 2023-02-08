@@ -2,6 +2,7 @@
 
 Block::Block(uint16_t color)
 {
+    ObjectType = 2;
     _color = color;
 }
 

@@ -2,10 +2,10 @@
 
 BreakoutGame::BreakoutGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
-    _tft->fillScreen(DEFAULT_BG_COLOR);
-
     _rotary = player1paddle;
     _lastrotarycount = _rotary->Counter;
+
+    _world = new GameWorld(screen);
 
     _paddle = new GameObject();
     _paddle->Position.X = ScreenWidth / 2;
@@ -18,13 +18,13 @@ BreakoutGame::BreakoutGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Gam
     Serial.print("Breakout initialized!");
 
     delay(500);
-
-    _lastLoop = millis();
 }
 
 void BreakoutGame::StartLevel(int l)
 {
     level = l;
+
+    _world->Clear();
 
     int rows = 3 + l;
     int bpr = 9;
@@ -66,11 +66,9 @@ void BreakoutGame::StartLevel(int l)
         for(int c = 0; c <= bpr; c++)
         {
             Block* block = new Block(rc);
-
             block->Size = Vector2DF(bw, bh);
             block->Position = Vector2DF(2 + c * (bw+1),  15 + r * (bh+1));
-
-            _objects.push_back(block);
+            _world->AddObject(block);
             block->Render(_tft);
         }
     }
@@ -107,9 +105,8 @@ void BreakoutGame::ball(float elapsed)
 
     _ball->OldPosition = _ball->Position;
 
-    _ball->Position.X +=  _ball->Velocity.X * elapsed;
-    _ball->Position.Y +=  _ball->Velocity.Y * elapsed;
-
+    _ball->Position = _ball->Position + _ball->Velocity * elapsed;
+    
     if((_ball->Position.X <= 0 && _ball->Velocity.X < 0) || ((_ball->Position.X + _ball->Size.X) >= ScreenWidth && _ball->Velocity.X > 0))
         _ball->Velocity.X *= -1.0f;
     else if(_ball->Position.Y <= 0 && _ball->Velocity.Y < 0)
@@ -141,18 +138,17 @@ void BreakoutGame::ball(float elapsed)
             _ball->Velocity.X *= -0.8f;
 
         _buzz->PlayTone(200, 50);
-        _tft->drawString("d:" + String(d), 10, 15, 1);
+        //_tft->drawString("d:" + String(d), 10, 15, 1);
     }
     else
     {
-        std::list<Block *> _removedobjects;
-
-        for (Block *obj : _objects)
+        std::list<GameObject *>* _objects = _world->GetObjects();
+        for (GameObject *obj : *_objects)
         {
             if(obj->CollidesWith(_ball))
             {
                 score += 5;
-                _removedobjects.push_back(obj);
+                obj->Delete = true;
                 obj->RemoveFromScreen(_tft);
 
                 if((_ball->Position.X + _ball->Size.X) > obj->Position.X && _ball->Position.X  < obj->Position.X + obj->Size.X)
@@ -169,14 +165,6 @@ void BreakoutGame::ball(float elapsed)
 
                 break;
             }
-        }
-
-        for (Block *obj : _removedobjects)
-            _objects.remove(obj);
-
-        if(_objects.empty())
-        {
-            StartLevel(level + 1);
         }
     }
 
@@ -214,6 +202,8 @@ void BreakoutGame::Loop()
     long time = millis();
     double elapsed = (double)(time - _lastLoop) / 1000.0;
   
+    _world->Loop(elapsed);
+
     if(GameStage == 0)
     {
         _tft->drawString("BREAKOUT", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
@@ -232,6 +222,11 @@ void BreakoutGame::Loop()
         scores();
         paddle();
         ball(elapsed);       
+        int blocksleft = _world->CountObjects(2);
+        if(blocksleft == 0)
+        {
+            StartLevel(level + 1);
+        }
     }
 
     if(GameStage == 2)

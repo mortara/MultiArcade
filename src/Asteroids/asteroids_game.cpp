@@ -4,8 +4,7 @@
 AsteroidsGame::AsteroidsGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
     _tft = screen;
-    _tft->fillScreen(DEFAULT_BG_COLOR);
-
+    
     _rotary = player1paddle;
     _world = new GameWorld(screen);
     _ship = new Ship(_rotary);

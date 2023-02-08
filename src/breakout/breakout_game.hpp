@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <list>
 #include <TFT_eSPI.h>
-#include "../general/gameobject.hpp"
+#include "../general/GameWorld.hpp"
 #include "../Input/rotary_encoder.hpp"
 #include "block.hpp"
 #include "../sound/sound.hpp"
@@ -13,13 +13,9 @@ class BreakoutGame : Game
         bool firstloop;
         RotaryEncoder *_rotary;
 
-        std::list<Block *> _objects;
-      
         GameObject *_ball;
         GameObject *_paddle;
-        
-        void OutOfBoundsCheck(GameObject *go);
-        GameObject* CollisionCheck(GameObject *go);
+        GameWorld *_world;
         
         long _lastrotarycount;
         float paddle_v = 2;
