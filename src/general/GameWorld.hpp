@@ -29,13 +29,13 @@ class GameWorld
 
         int Width = 0;
         int Height = 0;
+        bool _gravityenabled = false;
+        void SetGravity(Vector2DF grav);
 
     private:
         std::list<GameObject *>* _objects;
         TFT_eSPI* _tft;
-
-        
-        
+        Vector2DF _gravity = Vector2DF(0,0);
 };
 
 #endif

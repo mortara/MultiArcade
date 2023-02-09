@@ -6,7 +6,7 @@ Block::Block(uint16_t color)
     _color = color;
 }
 
-void Block::Render(TFT_eSPI* screen)
+void Block::Render(TFT_eSPI* screen, bool force)
 {
     screen->fillRect((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, _color);
 }

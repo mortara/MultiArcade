@@ -11,6 +11,12 @@ GameWorld::GameWorld(TFT_eSPI* tft)
     _objects = new std::list<GameObject *>();
 }
 
+void GameWorld::SetGravity(Vector2DF grav)
+{
+    _gravity = grav;
+    _gravityenabled = (_gravity.Length() != 0);
+}
+
 bool GameWorld::AddObject(GameObject *go)
 {
     _objects->push_back(go);
@@ -38,6 +44,11 @@ void GameWorld::MoveObjects(float elapsed)
             continue;
 
         obj->Move(elapsed);
+
+        if(_gravityenabled)
+        {
+            obj->Velocity = obj->Velocity + _gravity * elapsed;
+        }
              
         if(obj->OutOfBoundsCheck(_tft))
         {

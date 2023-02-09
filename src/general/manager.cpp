@@ -65,6 +65,10 @@ void Manager::Loop()
                     CurrentGame = 5;
                     _spaceInvaders = new SpaceInvadersGame(_screen, _rotary);
                     break;
+                case 5:
+                    CurrentGame = 6;
+                    _lunarLander = new LunarLanderGame(_screen, _rotary);
+                    break;
             }
         }
         return;
@@ -85,5 +89,9 @@ void Manager::Loop()
     else if(CurrentGame == 5)
     {
         _spaceInvaders->Loop();
+    }
+    else if(CurrentGame == 6)
+    {
+        _lunarLander->Loop();
     }
 }

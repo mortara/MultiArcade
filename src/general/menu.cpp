@@ -40,7 +40,7 @@ int Menu::Loop()
             else
                 _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
 
-            _tft->drawString(_items[i], 20, 20 + i * 14 , 2);
+            _tft->drawString(_items[i], 20, 5 + i * 15 , 2);
         }
         _firsttime = false;
         //delay(50);
