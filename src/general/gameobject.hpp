@@ -27,6 +27,8 @@ class GameObject
 
         uint32_t Color = DEFAULT_FG_COLOR;
 
+        bool Visible = true;
+        bool Gravity = true;
         bool Delete = false;
 
         void Setup(int16_t numpoints, Vector2DF *points);

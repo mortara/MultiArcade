@@ -45,7 +45,7 @@ void GameWorld::MoveObjects(float elapsed)
 
         obj->Move(elapsed);
 
-        if(_gravityenabled)
+        if(_gravityenabled && obj->Gravity)
         {
             obj->Velocity = obj->Velocity + _gravity * elapsed;
         }

@@ -97,6 +97,9 @@ void GameObject::Render(TFT_eSPI* tft, bool force)
     _old_orientation = _orientation;
     OldPosition = Position;
 
+    if(!Visible)
+        return;
+
     if(PolygonPoints == 0)
     {
         tft->drawPixel((int32_t)Position.X, (int32_t)Position.Y, Color);

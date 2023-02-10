@@ -6,19 +6,22 @@
 #include "../sound/sound.hpp"
 #include "../general/Game.hpp"
 #include "capsule.hpp"
+#include "ground.hpp"
 
 class LunarLanderGame : Game
 {
     private:
         bool firstloop;
-        float _stagetimer = 0;
+        float _stagetimer = 5;
         int _level = 0;
         RotaryEncoder *_rotary;
 
         Capsule *_ship;
+        Ground *_ground;
         GameWorld *_world;
          
         void StartLevel(int l);
+        void HUD();
 
     public:
         LunarLanderGame(TFT_eSPI* screen, RotaryEncoder *player1);
