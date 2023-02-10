@@ -4,8 +4,6 @@ void loop() {
   // put your main code here, to run repeatedly:
     //delay(_delay);
 
-    _mgr.Loop();
-
     _loopCount++;
     if(_loopCount == 500 && _screen != NULL)
     {
@@ -17,6 +15,8 @@ void loop() {
         _loopCount = 0;
         _loopStart = end;
     }
+
+    _mgr.Loop();
 }
 
 void setup() {
