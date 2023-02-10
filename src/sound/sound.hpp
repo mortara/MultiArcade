@@ -60,15 +60,17 @@ class Buzzer
                     case 2:
                         unsigned long time = millis();
                         while(millis() - time <= bt->Duration)  {  
-                            tone(BUZZER_PIN, random(100, 300), random(5));   // change the parameters of random() for different sound
-                        }
+                            int dur = random(3) + 3;
+                            tone(BUZZER_PIN, random(100, 300));   // change the parameters of random() for different sound
+                            delay(dur);
+                        }     
+                        noTone(BUZZER_PIN);
                 }
                 l_pThis->lock = true;
                 l_pThis->Tasks->remove(bt);
                 l_pThis->lock = false;
                 delete bt;
             }
-            delay(50);
         }
     }
 

@@ -110,12 +110,12 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                         asn->Velocity = asn->Velocity * (double)1.5;
                         _world->AddObject(asn);
                     }
-                    _buzz->PlayNoise(150);
+                    _buzz->PlayNoise(300);
                 }
                 else
                 {
                     _world->Explode(coll);
-                    _buzz->PlayNoise(150);
+                    _buzz->PlayNoise(300);
                 }
             }
         }
