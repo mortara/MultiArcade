@@ -115,7 +115,8 @@ void LunarLanderGame::Loop()
     } else if(GameStage == 3)
     {
         _stagetimer -= elapsed;
-        _tft->drawString("LANDED! Next level in " + String(_stagetimer,1) + "s ", ScreenWidth / 2 - 60, ScreenHeight / 2 - 10, 1);
+        _tft->drawString("LANDED!", ScreenWidth / 2 - 25, ScreenHeight / 2 - 20, 1);
+        _tft->drawString("Next level in " + String(_stagetimer,1) + "s ", ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
         if(_stagetimer <= 0)
         {
             StartLevel(_level);
