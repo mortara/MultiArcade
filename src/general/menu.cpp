@@ -5,6 +5,8 @@ Menu::Menu(TFT_eSPI* screen, RotaryEncoder *p1)
 {
     _tft = screen;
     _player1paddle = p1;
+
+    Serial.println("Menu setup done!");
 }
 
 int Menu::Loop()

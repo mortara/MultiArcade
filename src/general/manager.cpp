@@ -2,8 +2,6 @@
 
 TFT_eSPI* Manager::Setup()
 {
-    Serial.begin(115200);
-
     randomSeed(analogRead(0)*analogRead(1));
 
     CurrentGame = 0;

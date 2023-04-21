@@ -20,6 +20,8 @@ RotaryEncoder::RotaryEncoder(uint8_t clk_pin, uint8_t dt_pin, uint8_t switch1_pi
 
     pinMode(_sw1, INPUT_PULLUP);
     pinMode(_sw2, INPUT_PULLUP);
+
+    Serial.println("Rotary encoder setup done!");
 }
 
 void RotaryEncoder::Loop()
