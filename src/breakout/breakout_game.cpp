@@ -3,7 +3,7 @@
 BreakoutGame::BreakoutGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
     _rotary = player1paddle;
-    _lastrotarycount = _rotary->Counter;
+    _lastrotarycount = _rotary->GetCounter();
 
     _world = new GameWorld(screen);
 
@@ -17,7 +17,7 @@ BreakoutGame::BreakoutGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Gam
 
     Serial.print("Breakout initialized!");
 
-    delay(500);
+    delay(100);
 }
 
 void BreakoutGame::StartLevel(int l)
@@ -184,7 +184,7 @@ void BreakoutGame::paddle() {
     _paddle->OldPosition = _paddle->Position;
     _paddle->Position =  _paddle->Position + _paddle->Velocity ;
 
-    int paddle1count =  _rotary->Counter;  
+    int paddle1count =  _rotary->GetCounter();  
     _paddle->Velocity.X = (paddle1count - _lastrotarycount) * paddle_v ;
     _lastrotarycount = paddle1count;
 
@@ -214,7 +214,7 @@ void BreakoutGame::Loop()
             lives = 3;
             GameStage = 1;
             StartLevel(1);
-            delay(500);
+            delay(300);
         }
     }
     if(GameStage == 1)
@@ -235,7 +235,7 @@ void BreakoutGame::Loop()
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
             _tft->fillScreen(DEFAULT_BG_COLOR);
-            delay(500);
+            delay(300);
             GameStage = 0;
         }
     }

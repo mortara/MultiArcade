@@ -1,6 +1,7 @@
 #include "main.h"
 #include <WiFiManager.h>
 
+unsigned long _lastWifiUpdate = millis();
 bool ota_running = false;
 WiFiManager wifiManager;
 
@@ -47,29 +48,33 @@ void start_ota()
 void loop() {
   // put your main code here, to run repeatedly:
     //delay(_delay);
-
+    unsigned long now = millis();
     _loopCount++;
     if(_loopCount == 500 && _screen != NULL)
     {
-        unsigned long end = millis();
-        float duration = (float)(end - _loopStart) / (float)500.0;
+        
+        float duration = (float)(now - _loopStart) / (float)500.0;
         //Serial.print(duration);
         _screen->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
         _screen->drawString("loop: " + String(duration) + "ms", 10, 113 , 1);
         _loopCount = 0;
-        _loopStart = end;
+        _loopStart = now;
     }
 
-    if(ota_running)
-      ArduinoOTA.handle();
-    else
+    if(now - _lastWifiUpdate > 300)
     {
-      if(WiFi.isConnected())
-        start_ota();
+      if(ota_running)
+        ArduinoOTA.handle();
+      else
+      {
+        if(WiFi.isConnected())
+          start_ota();
+      }
+      wifiManager.process();
+      _lastWifiUpdate = now;
     }
-
     _mgr.Loop();
-    wifiManager.process();
+    
 }
 
 void saveWifiCallback(){
@@ -91,22 +96,16 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(57600);
+  Serial.begin(115200);
   Serial.println("Starting up...");
   _mgr = Manager();
   _screen = _mgr.Setup();
   _loopStart = millis();
 
   WiFi.mode(WIFI_STA);
-  //WiFi.begin("WELAHN2G","dukommsthiernichtrein");
-
-  //wifiManager.resetSettings();
-  //wifiManager.setDebugOutput(true);
-  /*wifiManager.setAPCallback(configModeCallback);
-  wifiManager.setSaveConfigCallback(saveWifiCallback);
-  wifiManager.setConfigPortalTimeoutCallback(configPortalTimeoutCallback);*/
+  WiFi.setHostname("ESP32Arcade");
   wifiManager.setConfigPortalBlocking(false);
-  wifiManager.setConnectTimeout(60);
+  wifiManager.setConnectTimeout(20);
 
   std::vector<const char *> menu = { "wifi", "restart", "exit" };  // Added by me...
   wifiManager.setMenu(menu);

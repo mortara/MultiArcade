@@ -63,13 +63,13 @@ void Pong::paddle(bool player, bool leftside, float &d, int16_t x, float &y, flo
   {
     if(!leftside)
     {
-      int paddle1count =  _player1paddle->Counter;  
+      int paddle1count =  _player1paddle->GetCounter();  
       d = (paddle1count - _player1LastpaddleCount) * rpaddle_v ;
       _player1LastpaddleCount = paddle1count;
     }
     else
     {
-      int paddle2count =  _player2paddle->Counter;  
+      int paddle2count =  _player2paddle->GetCounter();  
       d = (paddle2count - _player2LastpaddleCount) * lpaddle_v ;
       _player2LastpaddleCount = paddle2count;
     }
@@ -219,8 +219,7 @@ Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1) : Game(screen)
   lpaddle_y = random(0, ScreenHeight - paddle_h);
   rpaddle_y = random(0, ScreenHeight - paddle_h);
 
-  player1->Counter = 0;
-  _player1LastpaddleCount = 0;
+  _player1LastpaddleCount = player1->GetCounter();
   _player2LastpaddleCount = 0;
 
   // ball is placed on the center of the left paddle
@@ -239,8 +238,7 @@ Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1) : Game(screen)
 Pong::Pong(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2) : Pong(screen, player1)
 {
   _player2paddle = player2;
-  player2->Counter = 0;
-  _player2LastpaddleCount = 0;
+  _player2LastpaddleCount = player2->GetCounter();
 
   singleplayer = false;
   rscore = 0;

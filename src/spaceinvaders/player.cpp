@@ -3,7 +3,7 @@
 Player::Player(RotaryEncoder *playerpaddle, TFT_eSPI* screen)
 {
     _rotary = playerpaddle;
-    _lastCount = _rotary->Counter;
+    _lastCount = _rotary->GetCounter();
     OutOfBoundsMethod = 3;
     float scale = 1;
     ObjectType = 1;
@@ -23,7 +23,7 @@ Player::Player(RotaryEncoder *playerpaddle, TFT_eSPI* screen)
 
 bool Player::Control()
 {
-    int paddlecounter = _rotary->Counter;
+    int paddlecounter = _rotary->GetCounter();
     int diff = paddlecounter - _lastCount;
     _lastCount = paddlecounter;
 

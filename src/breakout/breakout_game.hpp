@@ -18,7 +18,7 @@ class BreakoutGame : Game
         GameWorld *_world;
         
         long _lastrotarycount;
-        float paddle_v = 2;
+        float paddle_v = 3;
 
         int lives = 3;
         int score = 0;

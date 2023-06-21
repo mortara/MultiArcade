@@ -42,12 +42,12 @@ class Buzzer
             if(l_pThis->Tasks->empty())
             {
                 noTone(BUZZER_PIN);
-                delay(100);
+                delay(10);
             }
             else
             {
                 while(l_pThis->lock)
-                    delay(5);
+                    delay(1);
 
                 l_pThis->lock = true;
                 BuzzerTask *bt = l_pThis->Tasks->front();
@@ -97,7 +97,7 @@ class Buzzer
         bt->Frequency = 0;
 
         while(lock)
-            delay(5);
+            delay(1);
 
         lock = true;
         Tasks->push_back(bt);

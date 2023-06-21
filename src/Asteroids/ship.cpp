@@ -5,7 +5,7 @@
 Ship::Ship(RotaryEncoder *p1paddle)
 {
     _rotary = p1paddle;
-    _lastCount = _rotary->Counter;
+    _lastCount = _rotary->GetCounter();
     OutOfBoundsMethod = 1;
     ObjectType = 1;
     double scale = 1.5;
@@ -14,7 +14,7 @@ Ship::Ship(RotaryEncoder *p1paddle)
 
 bool Ship::Control()
 {
-    int paddlecounter = _rotary->Counter;
+    int paddlecounter = _rotary->GetCounter();
     int diff = paddlecounter - _lastCount;
     _lastCount = paddlecounter;
 

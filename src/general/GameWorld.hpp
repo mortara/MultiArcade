@@ -36,6 +36,8 @@ class GameWorld
         std::list<GameObject *>* _objects;
         TFT_eSPI* _tft;
         Vector2DF _gravity = Vector2DF(0,0);
+
+        unsigned long _lastCleanup;
 };
 
 #endif

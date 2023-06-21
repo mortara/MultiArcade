@@ -5,7 +5,7 @@
 Capsule::Capsule(RotaryEncoder *p1paddle, Buzzer *buzzer)
 {
     _rotary = p1paddle;
-    _lastCount = _rotary->Counter;
+    _lastCount = _rotary->GetCounter();
     OutOfBoundsMethod = 1;
     ObjectType = 1;
     _buzzer = buzzer;
@@ -25,7 +25,7 @@ float Capsule::Altitude(Ground *_ground)
 
 bool Capsule::Control()
 {
-    int paddlecounter = _rotary->Counter;
+    int paddlecounter = _rotary->GetCounter();
     int diff = paddlecounter - _lastCount;
     _lastCount = paddlecounter;
 

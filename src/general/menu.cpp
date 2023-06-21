@@ -12,7 +12,7 @@ Menu::Menu(TFT_eSPI* screen, RotaryEncoder *p1)
 int Menu::Loop()
 {
     int16_t cm = 0;
-    int16_t cc = _player1paddle->Counter;
+    int16_t cc = _player1paddle->GetCounter();
    
     if(_lastCounter != cc)
     {
