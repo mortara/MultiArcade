@@ -10,6 +10,7 @@
 #include "../breakout/breakout_game.hpp"
 #include "../spaceinvaders/space_invaders_game.hpp"
 #include "../lunarlander/lunarlander_game.hpp"
+#include "../cannon/cannon_game.hpp"
 
 class Manager
 {
@@ -25,6 +26,7 @@ class Manager
         BreakoutGame* _breakout;
         SpaceInvadersGame *_spaceInvaders;
         LunarLanderGame *_lunarLander;
+        CannonGame *_cannon;
         
     public:
         int16_t CurrentGame;

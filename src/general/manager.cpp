@@ -67,6 +67,11 @@ void Manager::Loop()
                     CurrentGame = 6;
                     _lunarLander = new LunarLanderGame(_screen, _rotary);
                     break;
+
+                case 6:
+                    CurrentGame = 7;
+                    _cannon = new CannonGame(_screen, _rotary, _rotary2);
+                    break;
             }
         }
         return;
@@ -91,5 +96,9 @@ void Manager::Loop()
     else if(CurrentGame == 6)
     {
         _lunarLander->Loop();
+    }
+    else if(CurrentGame == 7)
+    {
+        _cannon->Loop();
     }
 }
