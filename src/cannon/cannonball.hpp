@@ -7,5 +7,5 @@ class CannonBall: public GameObject
         explicit CannonBall(GameObject *start, float power);     
 
     private:
-        float _speed = 1;  
+        float _speed = 3;  
 };

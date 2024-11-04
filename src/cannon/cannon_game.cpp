@@ -1,12 +1,9 @@
 #include "cannon_game.hpp"
 
-CannonGame::CannonGame(TFT_eSPI* screen, RotaryEncoder *player1paddle, RotaryEncoder *player2paddle) : Game(screen)
+CannonGame::CannonGame(TFT_eSPI* screen, RotaryEncoder *player1paddle) : Game(screen)
 {
     _rotary = player1paddle;
     _lastrotarycount = _rotary->GetCounter();
-
-    _rotary2 = player2paddle;
-    _lastrotarycount2 = _rotary2->GetCounter();
 
     _world = new GameWorld(screen);
 
@@ -18,16 +15,16 @@ CannonGame::CannonGame(TFT_eSPI* screen, RotaryEncoder *player1paddle, RotaryEnc
 void CannonGame::Loop()
 {
     long time = millis();
-    double elapsed = (double)(time - _lastLoop) / 1000.0;
-  
+    float elapsed = (float)(time - _lastLoop) / 1000.0f;
+    _lastLoop = time;
     _world->Loop(elapsed);
 
     if(GameStage == 0)
     {
         _tft->drawString("CANNON", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
-        if(_rotary->Switch1Pressed || _rotary->Switch2Pressed || _rotary2->Switch1Pressed || _rotary2->Switch2Pressed)
+        if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
         {
-            _tft->fillScreen(DEFAULT_BG_COLOR);
+            
             score = 0;
             
             GameStage = 1;
@@ -35,7 +32,7 @@ void CannonGame::Loop()
             delay(300);
         }
     }
-    if(GameStage == 1 || GameStage == 2)
+    else if(GameStage == 1 || GameStage == 2)
     {
         scores();
         HUD();
@@ -53,8 +50,7 @@ void CannonGame::Loop()
                 shots--;
             }
         }
-
-        if(GameStage == 2)
+        else if(GameStage == 2)
         {
             GameObject *coll = _world->CollisionCheck(_cannonball, 2);
             if(coll == _target)
@@ -64,7 +60,6 @@ void CannonGame::Loop()
                 score += (shots + 1 + level);
                 _world->Explode(_target);
                 _buzz->PlayNoise(300);
-
                 GameStage = 3;
             }
             else if(_cannonball->CollidesWith(_ground))
@@ -83,8 +78,18 @@ void CannonGame::Loop()
             }
         }
     }
-
-    if(GameStage == 4)
+    else if(GameStage == 3)
+    {
+        _stagetimer -= elapsed;
+        _tft->drawString("HIT!", ScreenWidth / 2 - 25, ScreenHeight / 2 - 20, 1);
+        _tft->drawString("Next level in " + String(_stagetimer,1) + "s ", ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
+        if(_stagetimer <= 0)
+        {
+            StartLevel(level+1);
+            GameStage = 1;
+        }
+    }
+    else if(GameStage == 4)
     {
         _tft->drawString("GAME OVER", ScreenWidth / 2 - 30, ScreenHeight / 2 - 10, 1);
         if(_rotary->Switch1Pressed || _rotary->Switch2Pressed)
@@ -93,10 +98,7 @@ void CannonGame::Loop()
             delay(300);
             GameStage = 0;
         }
-    }
-
-    _lastLoop = time;
-
+    } 
     //_tft.drawString("ball: " + String(_ball->Position.X) + ", " + String(_ball->Position.Y) + " ", 10, 10 , 2);
 }
 
@@ -105,14 +107,23 @@ void CannonGame::HUD()
     int left = ScreenWidth - 70;
 
     float altitude = _cannon->Power();
-    _tft->drawString("Power:" + String(altitude,1) + "m ", left, 5, 1);
+    if(_cannon->Inputmode != 1)
+        _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
+    else
+        _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
+    _tft->drawString("Power:" + String(altitude,1) + "% ", left, 10, 1);
 
     float angle = _cannon->GetOrientation() - 180;
-    _tft->drawString("Ang:" + String((int)angle)+ "  ", left, 15, 1);
+    if(_cannon->Inputmode != 0)
+        _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
+    else
+        _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
+    _tft->drawString("Angle:" + String((int)angle)+ "  ", left, 20, 1);
 }
 
 void CannonGame::scores()
 {
+    _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     _tft->drawString("Lvl:" + String(level) + " Score:" + String(score) + " Shots:" + String(shots) , 5, 1 , 1);
 }
 
@@ -121,19 +132,31 @@ void CannonGame::StartLevel(int l)
     _tft->fillScreen(DEFAULT_BG_COLOR);
     _world->Clear();
     _world->SetGravity(Vector2DF(0, 10));
+    _world->SetDrag(0.7f);
 
-    _ground = new CannonGround(l, 50, _tft->width(), _tft->height());
+
+    if(_ground != nullptr)
+        delete _ground;
+
+    _ground = new CannonGround(l+3, 50, _tft->width(), _tft->height());
     _ground->Render(_tft, true);
 
-    _cannon = new Cannon(_rotary, _rotary2, _buzz);
+    _cannon = new Cannon(_rotary, _buzz);
     _cannon->Position = Vector2DF(_ground->CannonPlatformLocation.X, _ground->CannonPlatformLocation.Y);
-    _cannon->SetOrientation(45);
+    _cannon->Acceleration = Vector2DF(0,0);
+    _cannon->Velocity = Vector2DF(0,0);
+    _cannon->SetOrientation(0);
+    _cannon->Gravity = false;
+    _world->AddObject(_cannon);
 
     _target = new Target(TFT_RED);
-    _target->Position = Vector2DF(_ground->TargetPlatformLocation.X, _ground->TargetPlatformLocation.Y);
-
+    _target->Position = Vector2DF(_ground->TargetPlatformLocation.X, _ground->TargetPlatformLocation.Y -5);
+    _target->Size = Vector2DF(5, 5);
+    _target->Acceleration = Vector2DF(0,0);
+    _target->Velocity = Vector2DF(0,0);
+    _target->Gravity = false;
     _world->AddObject(_target);
-    _world->AddObject(_cannon);
+    
 
     shots = 3;
 }

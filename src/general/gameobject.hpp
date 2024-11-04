@@ -31,6 +31,8 @@ class GameObject
         bool Gravity = true;
         bool Delete = false;
 
+        
+
         void Setup(int16_t numpoints, Vector2DF *points);
         virtual void Move(float d);
 

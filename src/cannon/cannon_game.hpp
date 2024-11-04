@@ -15,17 +15,15 @@ class CannonGame : Game
     private:
         bool firstloop;
         RotaryEncoder *_rotary;
-        RotaryEncoder *_rotary2;
-
+      
         CannonBall *_cannonball = nullptr;
-        Cannon *_cannon;
-        Target *_target;
-        CannonGround *_ground;
-        GameWorld *_world;
-        
+        Cannon *_cannon = nullptr;
+        Target *_target = nullptr;
+        CannonGround *_ground = nullptr;
+        GameWorld *_world = nullptr;
+        float _stagetimer = 5;
         long _lastrotarycount;
-        long _lastrotarycount2;
-
+     
         int shots = 3;
         int score = 0;
         int level = 0;
@@ -35,6 +33,6 @@ class CannonGame : Game
         void HUD();
         void StartLevel(int l);
     public:
-        CannonGame(TFT_eSPI* screen, RotaryEncoder *player1, RotaryEncoder *player2);
+        CannonGame(TFT_eSPI* screen, RotaryEncoder *player1);
         void Loop();
 };

@@ -7,15 +7,15 @@
 class Cannon : public GameObject
 {
     public:
-        explicit Cannon(RotaryEncoder *playerpaddle,RotaryEncoder *playerpaddle2, Buzzer * buzzer);
+        explicit Cannon(RotaryEncoder *playerpaddle,Buzzer * buzzer);
         bool Control();
         float Power();
-
+        int Inputmode = 0;
     private:
         RotaryEncoder *_rotary;
-        RotaryEncoder *_rotary2;
+        
         int16_t _lastCount;
-        int16_t _lastCount2;
+      
         float _rotationspeed = 5;
         float angle = 45;
         float power = 10;

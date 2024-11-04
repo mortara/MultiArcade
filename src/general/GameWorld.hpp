@@ -29,14 +29,17 @@ class GameWorld
 
         int Width = 0;
         int Height = 0;
+         
         bool _gravityenabled = false;
         void SetGravity(Vector2DF grav);
 
+        bool _dragenabled = false;
+        void SetDrag(float drag);
     private:
         std::list<GameObject *>* _objects;
         TFT_eSPI* _tft;
         Vector2DF _gravity = Vector2DF(0,0);
-
+        float _drag = 1;
         unsigned long _lastCleanup;
 };
 

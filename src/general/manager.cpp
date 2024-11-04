@@ -70,7 +70,7 @@ void Manager::Loop()
 
                 case 6:
                     CurrentGame = 7;
-                    _cannon = new CannonGame(_screen, _rotary, _rotary2);
+                    _cannon = new CannonGame(_screen, _rotary);
                     break;
             }
         }

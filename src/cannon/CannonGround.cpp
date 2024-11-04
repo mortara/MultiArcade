@@ -1,35 +1,37 @@
 #include "CannonGround.hpp"
 
-CannonGround::CannonGround(int mountains, int mountain_height, int screen_width, int screen_height)
+CannonGround::CannonGround(int _peaks, int mountain_height, int screen_width, int screen_height)
 {
-    _peaks = mountains;
+   
+    
+    int _nodenum = _peaks + 4;
 
-    float w = screen_width / (_peaks+1);
-    int _nodenum = _peaks + 2;
+    float w = (screen_width - 2 * _platformSize) / (_peaks+1);
+
     Vector2DF *_nodes = new Vector2DF[_nodenum]();
 
     _nodes[0] = Vector2DF(screen_width + 50, screen_height - 10);
     _nodes[1] = Vector2DF(-50, screen_height + 100);
-    
-    int _platformindex = mountains - 1;
-    int last = 1;
+    _nodes[2] = Vector2DF(0, screen_height - random(mountain_height));
+    int _platformindex = _nodenum - 1;
+   
+    CannonPlatformLocation = Vector2DF(0 + _platformSize / 2, _nodes[2].Y);
+    _nodes[3] = Vector2DF(0 + _platformSize, _nodes[2].Y);
+    float cx = _platformSize;
 
-    TargetPlatformLocation = Vector2DF(_nodes[1].X + _platformSize / 2, _nodes[1].Y);
-    _nodes[2] = Vector2DF(_nodes[1].X + _platformSize, _nodes[1].Y);
-
-    for(int i = 1; i < _peaks; i++)
+    for(int i = 0; i < _peaks; i++)
     {
-       if(i == _platformindex)
-        {
-            TargetPlatformLocation = Vector2DF(_nodes[last].X + _platformSize, _nodes[last].Y);
-            _nodes[2 + i] = Vector2DF(_nodes[last].X + _platformSize, _nodes[last].Y);
-        }
+        if(i < (_peaks - 1))
+            cx += w;
         else
-        {
-            last = 2 + i;
-            _nodes[last] = Vector2DF(i*w, screen_height - 10 - random(50));
-        }
+            cx = screen_width - _platformSize;
+
+       _nodes[4 + i] = Vector2DF(cx, (float)(screen_height - 10 - (int)random(1, mountain_height)));
+       //Serial.print("Y:" + String(_nodes[4 + i].Y));
     }
 
+    TargetPlatformLocation = Vector2DF(cx + (float)random(_platformSize), _nodes[_nodenum-2].Y);
+    _nodes[_nodenum-1] = Vector2DF(cx + _platformSize * 2, _nodes[_nodenum-2].Y);
+  
     GameObject::Setup(_nodenum, _nodes);
 }

@@ -17,6 +17,12 @@ void GameWorld::SetGravity(Vector2DF grav)
     _gravityenabled = (_gravity.Length() != 0);
 }
 
+void GameWorld::SetDrag(float drag)
+{
+    _drag = drag;
+    _dragenabled = drag != 0;
+}
+
 bool GameWorld::AddObject(GameObject *go)
 {
     _objects->push_back(go);
@@ -54,6 +60,11 @@ void GameWorld::MoveObjects(float elapsed)
         if(_gravityenabled && obj->Gravity)
         {
             obj->Velocity = obj->Velocity + _gravity * elapsed;
+        }
+
+        if(_dragenabled)
+        {
+            obj->Velocity = obj->Velocity * pow(_drag , elapsed);
         }
              
         if(obj->OutOfBoundsCheck(_tft))

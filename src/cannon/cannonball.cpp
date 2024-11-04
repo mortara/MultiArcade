@@ -3,7 +3,7 @@
 CannonBall::CannonBall(GameObject *starter, float power)
 {
         ObjectType = 3;
-        OutOfBoundsMethod = 2;
+        OutOfBoundsMethod = 0;
         Size = Vector2DF(1,1);
         Radius = 1;
         Color = TFT_YELLOW;
