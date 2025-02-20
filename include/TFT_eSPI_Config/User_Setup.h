@@ -9,6 +9,7 @@
 //   Note that some sketches are designed for a particular TFT pixel width/height
 
 // #include <../../../../include/TFT_eSPI_Config/User_Setup.h>
+#include "hal/gpio_ll.h"
 
 // User defined information reported by "Read_User_Setup" test & diagnostics example
 #define USER_SETUP_INFO "User_Setup"
