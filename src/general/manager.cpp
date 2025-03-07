@@ -1,8 +1,9 @@
 #include "manager.hpp"
+#include "pmCommonLib.hpp"
 
 TFT_eSPI* Manager::Setup()
 {
-    randomSeed(analogRead(0)*analogRead(1));
+    randomSeed(analogRead(0));
 
     CurrentGame = 0;
 
@@ -20,7 +21,19 @@ TFT_eSPI* Manager::Setup()
 
     _menu = new Menu(_screen, _rotary);
 
+    pmCommonLib.Settings.RegisterSetting("numcontrollers", "2", "Controllers", pmSettingTypes::NUMERICSETTING);
+
     return _screen;
+}
+
+void Manager::Start()
+{
+    String controllers = pmCommonLib.Settings.GetSettingValue("numcontrollers");
+    if(controllers != "")
+    {
+        if(controllers == "1")
+            _secondControllerAvailable = false;
+    }
 }
 
 void Manager::Loop()

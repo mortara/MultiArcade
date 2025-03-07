@@ -28,10 +28,12 @@ class Manager
         LunarLanderGame *_lunarLander;
         CannonGame *_cannon;
         
+        bool _secondControllerAvailable = false;
     public:
         int16_t CurrentGame;
 
         TFT_eSPI* Setup();
+        void Start();
         void Loop();
         
 };
