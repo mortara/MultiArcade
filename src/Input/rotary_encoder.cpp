@@ -29,6 +29,11 @@ int64_t RotaryEncoder::GetCounter()
     return encoder.getCount();
 }
 
+int RotaryEncoder::ReadSwitch1()
+{
+    return digitalRead(_sw1);
+}
+
 void RotaryEncoder::Loop()
 {
     unsigned long now = millis();

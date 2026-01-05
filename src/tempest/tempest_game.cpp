@@ -84,7 +84,7 @@ void TempestGame::SpawnEnemy()
 {
     // Pick a random lane
     int lane = random(NUM_LANES);
-    float angle = (360.0f / NUM_LANES) * lane;
+    float angle = ((360.0f / NUM_LANES) * lane) + (360.0f / NUM_LANES / 2.0f);  // Offset by half lane to center between lines
     
     TempestEnemy *enemy = new TempestEnemy(angle, level);
     _world->AddObject(enemy);
