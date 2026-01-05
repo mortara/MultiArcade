@@ -14,15 +14,21 @@ struct BuzzerTask
 
 class Buzzer
 {
-    public:
+    private:
         std::list<BuzzerTask *>* Tasks;
         SemaphoreHandle_t taskMutex;
         TaskHandle_t taskHandle;
+
+    public:
 
     void Setup()
     {
         Tasks = new std::list<BuzzerTask *>();
         taskMutex = xSemaphoreCreateMutex();
+        if (taskMutex == NULL) {
+            Serial.println("Failed to create mutex!");
+            return;
+        }
         taskHandle = NULL;
 
         pinMode(BUZZER_PIN, OUTPUT);
@@ -35,6 +41,23 @@ class Buzzer
             0,  /* Priority of the task */
             &taskHandle,  /* Task handle. */
             0); /* Core where the task should run */
+    }
+
+    ~Buzzer()
+    {
+        if (taskHandle != NULL) {
+            vTaskDelete(taskHandle);
+        }
+        if (taskMutex != NULL) {
+            vSemaphoreDelete(taskMutex);
+        }
+        if (Tasks != NULL) {
+            // Clean up any remaining tasks
+            for (BuzzerTask *bt : *Tasks) {
+                delete bt;
+            }
+            delete Tasks;
+        }
     }
 
     static void Task1code(void *pvParameters) {
