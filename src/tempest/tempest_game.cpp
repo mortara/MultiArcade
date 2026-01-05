@@ -168,13 +168,13 @@ void TempestGame::ProcessBullets(float elapsed)
                     TempestEnemy *enemy = static_cast<TempestEnemy *>(other);
                     
                     // Check if they're in the same lane and close enough
-                    float angleDiff = abs(bullet->Angle - enemy->Angle);
+                    float angleDiff = fabs(bullet->Angle - enemy->Angle);
                     if (angleDiff > 180.0f)
                         angleDiff = 360.0f - angleDiff;
                     
                     if (angleDiff < (360.0f / NUM_LANES / 2.0f))  // Same lane
                     {
-                        float radiusDiff = abs(bullet->RadialDistance - enemy->RadialDistance);
+                        float radiusDiff = fabs(bullet->RadialDistance - enemy->RadialDistance);
                         if (radiusDiff < 5.0f)  // Close enough
                         {
                             bullet->Delete = true;
@@ -208,7 +208,7 @@ void TempestGame::ProcessEnemies(float elapsed)
             if (enemy->RadialDistance >= RIM_RADIUS - 2.0f)
             {
                 // Check if it hits the player
-                float angleDiff = abs(enemy->Angle - _player->Angle);
+                float angleDiff = fabs(enemy->Angle - _player->Angle);
                 if (angleDiff > 180.0f)
                     angleDiff = 360.0f - angleDiff;
                 
