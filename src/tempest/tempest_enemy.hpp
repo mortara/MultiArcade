@@ -11,13 +11,12 @@ class TempestEnemy : public GameObject
         
         float Angle;  // Which lane (0-360 degrees)
         float RadialDistance;  // Distance from center in pixels (CENTER_RADIUS to RIM_RADIUS)
+        float Speed;  // Pixels per second moving outward
         
     private:
         static constexpr float START_RADIUS = 5.0f;  // Start at center in pixels
         static constexpr float BASE_SPEED = 15.0f;
         static constexpr float SPEED_INCREASE_PER_LEVEL = 1.5f;
-        
-        float _speed = BASE_SPEED;
 };
 
 #endif

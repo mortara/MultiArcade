@@ -206,9 +206,8 @@ void TempestGame::ProcessEnemies(float elapsed)
         {
             TempestEnemy *enemy = static_cast<TempestEnemy *>(obj);
             
-            // Move enemy outward
-            float speed = 15.0f + (level * 1.5f);
-            enemy->RadialDistance += speed * elapsed;
+            // Move enemy outward using its calculated speed
+            enemy->RadialDistance += enemy->Speed * elapsed;
             
             // Check if enemy reached the rim (player position)
             if (enemy->RadialDistance >= RIM_RADIUS - 2.0f)

@@ -13,7 +13,7 @@ TempestEnemy::TempestEnemy(float angle, int level)
     Size = Vector2DF(3, 3);
     
     // Increase speed with level
-    _speed = BASE_SPEED + (level * SPEED_INCREASE_PER_LEVEL);
+    Speed = BASE_SPEED + (level * SPEED_INCREASE_PER_LEVEL);
     
     // Enemies don't use velocity in the traditional sense
     // They move along their lane radially outward
