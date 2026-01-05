@@ -11,6 +11,7 @@
 #include "../spaceinvaders/space_invaders_game.hpp"
 #include "../lunarlander/lunarlander_game.hpp"
 #include "../cannon/cannon_game.hpp"
+#include "../tempest/tempest_game.hpp"
 
 class Manager
 {
@@ -27,6 +28,7 @@ class Manager
         SpaceInvadersGame *_spaceInvaders;
         LunarLanderGame *_lunarLander;
         CannonGame *_cannon;
+        TempestGame *_tempest;
         
         bool _secondControllerAvailable = false;
     public:
