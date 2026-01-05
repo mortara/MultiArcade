@@ -23,7 +23,7 @@ TempestPlayer::TempestPlayer(RotaryEncoder *rotary)
     });
 }
 
-void TempestPlayer::Control()
+bool TempestPlayer::Control()
 {
     int paddleCounter = _rotary->GetCounter();
     int diff = paddleCounter - _lastCount;
@@ -39,14 +39,16 @@ void TempestPlayer::Control()
         while (Angle < 0.0f)
             Angle += 360.0f;
     }
+
+    return (_rotary->SW2 == 0);
 }
 
 bool TempestPlayer::FirePressed()
 {
-    return (_rotary->ReadSwitch1() == 0);  // Read current state directly for continuous firing
+    return (_rotary->SW == 0);  // Read current state directly for continuous firing
 }
 
 bool TempestPlayer::SuperZapperPressed()
 {
-    return _rotary->Switch2Pressed;  // Use debounced value for one-time action
+    return (_rotary->SW2 == 0);  // Use debounced value for one-time action
 }

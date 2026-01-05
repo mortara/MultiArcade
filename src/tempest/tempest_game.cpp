@@ -115,10 +115,10 @@ void TempestGame::UpdateObjectPositions()
 
 void TempestGame::ProcessPlayer(float elapsed)
 {
-    _player->Control();
+    bool fired = _player->Control();
     
     // Check for shooting
-    if (_player->FirePressed() && _lastShot >= _reloadTime)
+    if (fired && _lastShot >= _reloadTime)
     {
         TempestBullet *bullet = new TempestBullet(_player->Angle, RIM_RADIUS - 5.0f);
         _world->AddObject(bullet);

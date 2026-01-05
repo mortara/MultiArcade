@@ -10,7 +10,7 @@ class TempestPlayer : public GameObject
     public:
         TempestPlayer(RotaryEncoder *rotary);
         
-        void Control();
+        bool Control();
         bool FirePressed();
         bool SuperZapperPressed();
         
