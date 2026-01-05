@@ -43,7 +43,7 @@ void TempestPlayer::Control()
 
 bool TempestPlayer::FirePressed()
 {
-    return (_rotary->SW == 0);  // Use raw value for continuous firing
+    return (_rotary->ReadSwitch1() == 0);  // Read current state directly for continuous firing
 }
 
 bool TempestPlayer::SuperZapperPressed()

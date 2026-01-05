@@ -16,6 +16,7 @@ class RotaryEncoder
         bool Switch2Pressed = false;
 
         int64_t GetCounter();
+        int ReadSwitch1();  // Read current switch 1 state directly
 
     private:
     

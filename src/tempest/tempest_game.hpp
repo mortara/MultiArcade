@@ -32,6 +32,8 @@ class TempestGame : public Game
         const int NUM_LANES = 16;
         const float RIM_RADIUS = 55.0f;
         const float CENTER_RADIUS = 5.0f;
+        const float LANE_WIDTH_DEGREES = 360.0f / NUM_LANES;
+        const float HALF_LANE_OFFSET_DEGREES = LANE_WIDTH_DEGREES / 2.0f;
         
         static constexpr float BASE_SPAWN_INTERVAL = 2.0f;
         static constexpr float SPAWN_DECREASE_PER_LEVEL = 0.1f;

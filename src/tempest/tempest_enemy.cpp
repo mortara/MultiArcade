@@ -9,8 +9,8 @@ TempestEnemy::TempestEnemy(float angle, int level)
     RadialDistance = START_RADIUS;  // Start near center
     
     Color = TFT_RED;
-    Radius = 3;
-    Size = Vector2DF(3, 3);
+    Radius = 4;
+    Size = Vector2DF(4, 4);
     
     // Increase speed with level
     Speed = BASE_SPEED + (level * SPEED_INCREASE_PER_LEVEL);
