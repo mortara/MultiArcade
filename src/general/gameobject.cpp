@@ -40,13 +40,13 @@ void GameObject::Setup(int16_t num, Vector2DF *points)
 GameObject::~GameObject()
 {
     if(_points != NULL)
-        delete _points;
+        delete[] _points;
 
     if(_rotatedpoints != NULL)
-        delete _rotatedpoints;
+        delete[] _rotatedpoints;
 
     if(_rendered_points != NULL)
-        delete _rendered_points;    
+        delete[] _rendered_points;    
 }
 
 void GameObject::SetOrientation(float d)

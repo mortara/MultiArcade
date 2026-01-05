@@ -14,14 +14,22 @@ struct BuzzerTask
 
 class Buzzer
 {
-    public:
+    private:
         std::list<BuzzerTask *>* Tasks;
-        volatile bool lock;
+        SemaphoreHandle_t taskMutex;
+        TaskHandle_t taskHandle;
+
+    public:
 
     void Setup()
     {
         Tasks = new std::list<BuzzerTask *>();
-        TaskHandle_t xHandle = NULL;
+        taskMutex = xSemaphoreCreateMutex();
+        if (taskMutex == NULL) {
+            Serial.println("Failed to create mutex!");
+            return;
+        }
+        taskHandle = NULL;
 
         pinMode(BUZZER_PIN, OUTPUT);
         
@@ -31,8 +39,25 @@ class Buzzer
             10000,  /* Stack size in words */
             this,  /* Task input parameter */
             0,  /* Priority of the task */
-            &xHandle,  /* Task handle. */
+            &taskHandle,  /* Task handle. */
             0); /* Core where the task should run */
+    }
+
+    ~Buzzer()
+    {
+        if (taskHandle != NULL) {
+            vTaskDelete(taskHandle);
+        }
+        if (taskMutex != NULL) {
+            vSemaphoreDelete(taskMutex);
+        }
+        if (Tasks != NULL) {
+            // Clean up any remaining tasks
+            for (BuzzerTask *bt : *Tasks) {
+                delete bt;
+            }
+            delete Tasks;
+        }
     }
 
     static void Task1code(void *pvParameters) {
@@ -46,12 +71,9 @@ class Buzzer
             }
             else
             {
-                while(l_pThis->lock)
-                    delay(1);
-
-                l_pThis->lock = true;
+                xSemaphoreTake(l_pThis->taskMutex, portMAX_DELAY);
                 BuzzerTask *bt = l_pThis->Tasks->front();
-                l_pThis->lock = false;
+                xSemaphoreGive(l_pThis->taskMutex);
                 switch(bt->Type)
                 {
                     case 1:
@@ -66,9 +88,9 @@ class Buzzer
                         }     
                         noTone(BUZZER_PIN);
                 }
-                l_pThis->lock = true;
+                xSemaphoreTake(l_pThis->taskMutex, portMAX_DELAY);
                 l_pThis->Tasks->remove(bt);
-                l_pThis->lock = false;
+                xSemaphoreGive(l_pThis->taskMutex);
                 delete bt;
             }
         }
@@ -81,12 +103,9 @@ class Buzzer
         bt->Duration = duration;
         bt->Frequency = frequency;
 
-        while(lock)
-            delay(5);
-
-        lock = true;
+        xSemaphoreTake(taskMutex, portMAX_DELAY);
         Tasks->push_back(bt);
-        lock = false;
+        xSemaphoreGive(taskMutex);
     }
 
     void PlayNoise(unsigned long duration)  {
@@ -96,12 +115,9 @@ class Buzzer
         bt->Duration = duration;
         bt->Frequency = 0;
 
-        while(lock)
-            delay(1);
-
-        lock = true;
+        xSemaphoreTake(taskMutex, portMAX_DELAY);
         Tasks->push_back(bt);
-        lock = false;
+        xSemaphoreGive(taskMutex);
     }
 
     void StopSound()

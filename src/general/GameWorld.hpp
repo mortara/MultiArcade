@@ -12,6 +12,7 @@ class GameWorld
     public:
 
         GameWorld(TFT_eSPI* tft);
+        ~GameWorld();
 
         bool AddObject(GameObject *obj);
         bool RemoveObject(GameObject *obj);

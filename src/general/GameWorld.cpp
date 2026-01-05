@@ -11,6 +11,12 @@ GameWorld::GameWorld(TFT_eSPI* tft)
     _objects = new std::list<GameObject *>();
 }
 
+GameWorld::~GameWorld()
+{
+    Clear();
+    delete _objects;
+}
+
 void GameWorld::SetGravity(Vector2DF grav)
 {
     _gravity = grav;
