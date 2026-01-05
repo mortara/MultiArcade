@@ -43,10 +43,10 @@ void TempestPlayer::Control()
 
 bool TempestPlayer::FirePressed()
 {
-    return (_rotary->Switch1Pressed || _rotary->SW == 0);
+    return (_rotary->SW == 0);  // Use raw value for continuous firing
 }
 
 bool TempestPlayer::SuperZapperPressed()
 {
-    return (_rotary->Switch2Pressed || _rotary->SW2 == 0);
+    return _rotary->Switch2Pressed;  // Use debounced value for one-time action
 }
