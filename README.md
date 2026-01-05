@@ -6,7 +6,7 @@ A retro arcade gaming console built with ESP32, featuring classic arcade games c
 
 ## 🎮 Features
 
-MultiArcade brings classic arcade gaming to an ESP32 microcontroller with a TFT display. The console includes **8 playable games**:
+MultiArcade brings classic arcade gaming to an ESP32 microcontroller with a TFT display. The console includes **7 playable games**:
 
 - **Asteroids** - Navigate your ship through an asteroid field
 - **Pong** - Classic paddle game (1 or 2 player modes)
@@ -15,12 +15,6 @@ MultiArcade brings classic arcade gaming to an ESP32 microcontroller with a TFT 
 - **Lunar Lander** - Carefully land your spacecraft
 - **Cannon** - Artillery physics-based game
 - **Tempest** - Tube shooter action
-
-All games feature:
-- Smooth vector-style graphics
-- Sound effects via piezo buzzer
-- Score tracking and level progression
-- Responsive rotary encoder controls
 
 ## 🔧 Hardware Requirements
 
