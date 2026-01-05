@@ -85,6 +85,10 @@ void Manager::Loop()
                     CurrentGame = 7;
                     _cannon = new CannonGame(_screen, _rotary);
                     break;
+                case 7:
+                    CurrentGame = 8;
+                    _tempest = new TempestGame(_screen, _rotary);
+                    break;
             }
         }
         return;
@@ -113,5 +117,9 @@ void Manager::Loop()
     else if(CurrentGame == 7)
     {
         _cannon->Loop();
+    }
+    else if(CurrentGame == 8)
+    {
+        _tempest->Loop();
     }
 }
