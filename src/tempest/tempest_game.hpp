@@ -36,12 +36,17 @@ class TempestGame : public Game
         static constexpr float BASE_SPAWN_INTERVAL = 2.0f;
         static constexpr float SPAWN_DECREASE_PER_LEVEL = 0.1f;
         static constexpr float MIN_SPAWN_INTERVAL = 0.5f;
+        static constexpr int INITIAL_ENEMIES = 3;
+        static constexpr int ENEMIES_PER_LEVEL = 2;
+        static constexpr int MAX_ENEMIES = 12;
+        static constexpr float COLLISION_DISTANCE = 5.0f;
         
         Vector2DF _centerPos;
         
         void DrawWeb();
         void UpdateScore();
         void StartLevel(int l);
+        int CalculateMaxEnemies(int level);
         void ProcessPlayer(float elapsed);
         void ProcessBullets(float elapsed);
         void ProcessEnemies(float elapsed);

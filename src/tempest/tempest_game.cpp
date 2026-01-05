@@ -46,6 +46,14 @@ void TempestGame::UpdateScore()
     _tft->drawString("Lvl:" + String(level) + " Score:" + String(score) + " Lives:" + String(lives) + " SZ:" + String(superZappers), 2, 1, 1);
 }
 
+int TempestGame::CalculateMaxEnemies(int level)
+{
+    int maxEnemies = INITIAL_ENEMIES + (level - 1) * ENEMIES_PER_LEVEL;
+    if (maxEnemies > MAX_ENEMIES)
+        maxEnemies = MAX_ENEMIES;
+    return maxEnemies;
+}
+
 void TempestGame::StartLevel(int l)
 {
     level = l;
@@ -62,9 +70,7 @@ void TempestGame::StartLevel(int l)
     _world->Clear();
     
     // Spawn initial enemies
-    int numEnemies = 3 + (level - 1) * 2;
-    if (numEnemies > 12)
-        numEnemies = 12;
+    int numEnemies = CalculateMaxEnemies(level);
         
     for (int i = 0; i < numEnemies; i++)
     {
@@ -175,7 +181,7 @@ void TempestGame::ProcessBullets(float elapsed)
                     if (angleDiff < (360.0f / NUM_LANES / 2.0f))  // Same lane
                     {
                         float radiusDiff = fabs(bullet->RadialDistance - enemy->RadialDistance);
-                        if (radiusDiff < 5.0f)  // Close enough
+                        if (radiusDiff < COLLISION_DISTANCE)  // Close enough
                         {
                             bullet->Delete = true;
                             enemy->Delete = true;
@@ -248,9 +254,7 @@ void TempestGame::ProcessEnemies(float elapsed)
     {
         _enemySpawnTimer = 0;
         int currentEnemies = _world->CountObjects(8);
-        int maxEnemies = 3 + level * 2;
-        if (maxEnemies > 12)
-            maxEnemies = 12;
+        int maxEnemies = CalculateMaxEnemies(level);
             
         if (currentEnemies < maxEnemies)
         {

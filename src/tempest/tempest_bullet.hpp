@@ -10,7 +10,7 @@ class TempestBullet : public GameObject
         TempestBullet(float angle, float startRadius);
         
         float Angle;  // Which lane (0-360 degrees)
-        float RadialDistance;  // Distance from center (0-1, where 1 is rim)
+        float RadialDistance;  // Distance from center in pixels (CENTER_RADIUS to RIM_RADIUS)
         
     private:
         float _speed = 100.0f;  // Pixels per second moving inward
