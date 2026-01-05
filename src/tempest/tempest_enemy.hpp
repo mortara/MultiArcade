@@ -13,7 +13,11 @@ class TempestEnemy : public GameObject
         float RadialDistance;  // Distance from center (0-1, where 1 is rim)
         
     private:
-        float _speed = 15.0f;  // Base speed - pixels per second moving outward
+        static constexpr float START_RADIUS = 0.1f;
+        static constexpr float BASE_SPEED = 15.0f;
+        static constexpr float SPEED_INCREASE_PER_LEVEL = 1.5f;
+        
+        float _speed = BASE_SPEED;
 };
 
 #endif

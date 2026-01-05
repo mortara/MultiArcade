@@ -3,7 +3,7 @@
 
 TempestBullet::TempestBullet(float angle, float startRadius)
 {
-    ObjectType = 4;  // 4 = Tempest Bullet
+    ObjectType = 7;  // 7 = Tempest Bullet
     OutOfBoundsMethod = 2;  // Delete when out of bounds
     Angle = angle;
     RadialDistance = startRadius;

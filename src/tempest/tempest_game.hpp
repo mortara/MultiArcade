@@ -33,6 +33,10 @@ class TempestGame : public Game
         const float RIM_RADIUS = 55.0f;
         const float CENTER_RADIUS = 5.0f;
         
+        static constexpr float BASE_SPAWN_INTERVAL = 2.0f;
+        static constexpr float SPAWN_DECREASE_PER_LEVEL = 0.1f;
+        static constexpr float MIN_SPAWN_INTERVAL = 0.5f;
+        
         Vector2DF _centerPos;
         
         void DrawWeb();

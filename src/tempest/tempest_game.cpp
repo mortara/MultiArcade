@@ -51,9 +51,9 @@ void TempestGame::StartLevel(int l)
     level = l;
     superZappers = 2;  // Give 2 super zappers per level
     _enemySpawnTimer = 0;
-    _enemySpawnInterval = 2.0f - (level * 0.1f);  // Faster spawning at higher levels
-    if (_enemySpawnInterval < 0.5f)
-        _enemySpawnInterval = 0.5f;
+    _enemySpawnInterval = BASE_SPAWN_INTERVAL - (level * SPAWN_DECREASE_PER_LEVEL);
+    if (_enemySpawnInterval < MIN_SPAWN_INTERVAL)
+        _enemySpawnInterval = MIN_SPAWN_INTERVAL;
     
     _tft->fillScreen(DEFAULT_BG_COLOR);
     DrawWeb();
@@ -90,12 +90,12 @@ void TempestGame::UpdateObjectPositions()
     
     for (GameObject *obj : *objects)
     {
-        if (obj->ObjectType == 4)  // Bullet
+        if (obj->ObjectType == 7)  // Bullet
         {
             TempestBullet *bullet = static_cast<TempestBullet *>(obj);
             obj->Position = GetPositionFromPolar(bullet->Angle, bullet->RadialDistance);
         }
-        else if (obj->ObjectType == 5)  // Enemy
+        else if (obj->ObjectType == 8)  // Enemy
         {
             TempestEnemy *enemy = static_cast<TempestEnemy *>(obj);
             obj->Position = GetPositionFromPolar(enemy->Angle, enemy->RadialDistance);
@@ -130,7 +130,7 @@ void TempestGame::ProcessPlayer(float elapsed)
         std::list<GameObject *> *objects = _world->GetObjects();
         for (GameObject *obj : *objects)
         {
-            if (obj->ObjectType == 5)  // Enemy
+            if (obj->ObjectType == 8)  // Enemy
             {
                 obj->Delete = true;
                 score += 25;
@@ -147,7 +147,7 @@ void TempestGame::ProcessBullets(float elapsed)
     
     for (GameObject *obj : *objects)
     {
-        if (obj->ObjectType == 4 && !obj->Delete)  // Bullet
+        if (obj->ObjectType == 7 && !obj->Delete)  // Bullet
         {
             TempestBullet *bullet = static_cast<TempestBullet *>(obj);
             
@@ -163,7 +163,7 @@ void TempestGame::ProcessBullets(float elapsed)
             // Check collision with enemies
             for (GameObject *other : *objects)
             {
-                if (other->ObjectType == 5 && !other->Delete)  // Enemy
+                if (other->ObjectType == 8 && !other->Delete)  // Enemy
                 {
                     TempestEnemy *enemy = static_cast<TempestEnemy *>(other);
                     
@@ -196,7 +196,7 @@ void TempestGame::ProcessEnemies(float elapsed)
     
     for (GameObject *obj : *objects)
     {
-        if (obj->ObjectType == 5 && !obj->Delete)  // Enemy
+        if (obj->ObjectType == 8 && !obj->Delete)  // Enemy
         {
             TempestEnemy *enemy = static_cast<TempestEnemy *>(obj);
             
@@ -247,7 +247,7 @@ void TempestGame::ProcessEnemies(float elapsed)
     if (_enemySpawnTimer >= _enemySpawnInterval)
     {
         _enemySpawnTimer = 0;
-        int currentEnemies = _world->CountObjects(5);
+        int currentEnemies = _world->CountObjects(8);
         int maxEnemies = 3 + level * 2;
         if (maxEnemies > 12)
             maxEnemies = 12;
@@ -308,7 +308,7 @@ void TempestGame::Loop()
         UpdateScore();
         
         // Check for level complete
-        int enemiesLeft = _world->CountObjects(5);
+        int enemiesLeft = _world->CountObjects(8);
         if (enemiesLeft == 0 && _enemySpawnTimer > 3.0f)  // No enemies and no recent spawns
         {
             score += 500 * level;

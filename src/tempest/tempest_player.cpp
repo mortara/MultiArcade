@@ -6,7 +6,7 @@ TempestPlayer::TempestPlayer(RotaryEncoder *rotary)
     _rotary = rotary;
     _lastCount = _rotary->GetCounter();
     
-    ObjectType = 6;  // 6 = Tempest Player
+    ObjectType = 9;  // 9 = Tempest Player
     OutOfBoundsMethod = 0;  // Don't use standard bounds checking
     Angle = 0.0f;  // Start at top
     
