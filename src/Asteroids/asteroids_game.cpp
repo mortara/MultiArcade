@@ -107,7 +107,7 @@ void AsteroidsGame::ProcessObjects(float elapsed)
                     {
                         Asteroid *asn = new Asteroid(s-1, ScreenWidth, ScreenHeight);
                         asn->Position = ast->Position;
-                        asn->Velocity = ast->Velocity * (double)1.5;
+                        asn->Velocity = asn->Velocity * (double)1.5;
                         _world->AddObject(asn);
                     }
                     _buzz->PlayNoise(300);
