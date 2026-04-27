@@ -8,7 +8,7 @@ MultiArcade is an ESP32-based arcade console featuring multiple classic games (P
 
 - **Platform**: ESP32 (espressif32)
 - **Framework**: Arduino
-- **Build System**: PlatformIO
+- **Build System**: pioarduino (PlatformIO)
 - **Display**: TFT_eSPI library
 - **Key Dependencies**:
   - pmCommonLib (custom library from mortara/pmCommonLib.git)
