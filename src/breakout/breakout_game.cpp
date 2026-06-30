@@ -89,7 +89,9 @@ void BreakoutGame::StartLevel(int l)
 
 void BreakoutGame::scores()
 {
-    _tft->drawString("Lives: " + String(lives) + " Score: " + String(score) , 10, 1 , 1); 
+    char buf[32];
+    snprintf(buf, sizeof(buf), "Lives: %d Score: %d", lives, score);
+    _tft->drawString(buf, 10, 1 , 1); 
 }
 
 void BreakoutGame::ball(float elapsed) 

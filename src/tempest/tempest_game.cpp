@@ -43,7 +43,9 @@ void TempestGame::DrawWeb()
 
 void TempestGame::UpdateScore()
 {
-    _tft->drawString("Lvl:" + String(level) + " Score:" + String(score) + " Lives:" + String(lives) + " SZ:" + String(superZappers), 2, 1, 1);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "Lvl:%d Score:%d Lives:%d SZ:%d", level, score, lives, superZappers);
+    _tft->drawString(buf, 2, 1, 1);
 }
 
 int TempestGame::CalculateMaxEnemies(int level)

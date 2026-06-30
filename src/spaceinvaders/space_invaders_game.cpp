@@ -12,7 +12,9 @@ SpaceInvadersGame::SpaceInvadersGame(TFT_eSPI* screen, RotaryEncoder *player1pad
 
 void SpaceInvadersGame::scores()
 {
-    _tft->drawString("Lvl: " + String(level) + " Score: " + String(score) + " Lives: " + String(lives), 1, 1 , 1);
+    char buf[48];
+    snprintf(buf, sizeof(buf), "Lvl: %d Score: %d Lives: %d", level, score, lives);
+    _tft->drawString(buf, 1, 1 , 1);
 }
 
 void SpaceInvadersGame::StartLevel(int l)

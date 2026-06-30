@@ -41,7 +41,7 @@ void CannonGame::Loop()
         {
             bool fire = _cannon->Control();
 
-            if(fire && shots > 0)
+            if(fire && shots > 0 && _cannonball == nullptr)
             {
                 _cannonball = new CannonBall(_cannon, _cannon->Power());
                 _world->AddObject(_cannonball);
@@ -50,13 +50,14 @@ void CannonGame::Loop()
                 shots--;
             }
         }
-        else if(GameStage == 2)
+        else if(GameStage == 2 && _cannonball != nullptr)
         {
             GameObject *coll = _world->CollisionCheck(_cannonball, 2);
             if(coll == _target)
             {
                 coll->Delete = true;
                 _cannonball->Delete = true;
+                _cannonball = nullptr;
                 score += (shots + 1 + level);
                 _world->Explode(_target);
                 _buzz->PlayNoise(300);
@@ -65,6 +66,7 @@ void CannonGame::Loop()
             else if(_cannonball->CollidesWith(_ground))
             {
                 _cannonball->Delete = true;
+                _cannonball = nullptr;
                 _buzz->PlayNoise(300);
 
                 if(shots == 0)
@@ -82,7 +84,9 @@ void CannonGame::Loop()
     {
         _stagetimer -= elapsed;
         _tft->drawString("HIT!", ScreenWidth / 2 - 25, ScreenHeight / 2 - 20, 1);
-        _tft->drawString("Next level in " + String(_stagetimer,1) + "s ", ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
+        char buf[32];
+        snprintf(buf, sizeof(buf), "Next level in %.1fs ", _stagetimer);
+        _tft->drawString(buf, ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
         if(_stagetimer <= 0)
         {
             StartLevel(level+1);
@@ -111,20 +115,26 @@ void CannonGame::HUD()
         _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Power:" + String(altitude,1) + "% ", left, 10, 1);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "Power:%.1f%% ", altitude);
+    _tft->drawString(buf, left, 10, 1);
 
     float angle = _cannon->GetOrientation() - 180;
     if(_cannon->Inputmode != 0)
         _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Angle:" + String((int)angle)+ "  ", left, 20, 1);
+    
+    snprintf(buf, sizeof(buf), "Angle:%d  ", (int)angle);
+    _tft->drawString(buf, left, 20, 1);
 }
 
 void CannonGame::scores()
 {
     _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Lvl:" + String(level) + " Score:" + String(score) + " Shots:" + String(shots) , 5, 1 , 1);
+    char buf[48];
+    snprintf(buf, sizeof(buf), "Lvl:%d Score:%d Shots:%d", level, score, shots);
+    _tft->drawString(buf, 5, 1 , 1);
 }
 
 void CannonGame::StartLevel(int l)

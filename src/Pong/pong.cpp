@@ -165,14 +165,18 @@ void Pong::ball(float elapsed) {
 
 void Pong::scores()
 {
+    char buf[16];
     if(singleplayer)
     {
-        _tft->drawString("Level: " + String(rscore) , 90, 2 , 2);
+        snprintf(buf, sizeof(buf), "Level: %d", rscore);
+        _tft->drawString(buf, 90, 2 , 2);
     }
     else
     {
-        _tft->drawString("P1: " + String(lscore) , 10, 2 , 2);
-        _tft->drawString("P2: " + String(rscore) , 120, 2 , 2);
+        snprintf(buf, sizeof(buf), "P1: %d", lscore);
+        _tft->drawString(buf, 10, 2 , 2);
+        snprintf(buf, sizeof(buf), "P2: %d", rscore);
+        _tft->drawString(buf, 120, 2 , 2);
 
     }
 }

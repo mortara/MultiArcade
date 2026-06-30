@@ -40,7 +40,9 @@ void AsteroidsGame::StartLevel(int l)
 
 void AsteroidsGame::scores()
 {
-    _tft->drawString("Lvl:" + String(level) + " Score:" + String(score) + " Ships:" + String(lives) , 5, 1 , 1);
+    char buf[48];
+    snprintf(buf, sizeof(buf), "Lvl:%d Score:%d Ships:%d", level, score, lives);
+    _tft->drawString(buf, 5, 1 , 1);
 }
 
 void AsteroidsGame::ProcessShip(float elapsed)

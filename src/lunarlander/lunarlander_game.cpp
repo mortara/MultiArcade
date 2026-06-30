@@ -31,13 +31,15 @@ void LunarLanderGame::StartLevel(int l)
 void LunarLanderGame::HUD()
 {
     int left = ScreenWidth - 70;
+    char buf[32];
 
     float fuelp = (_ship->Fuel / _ship->FuelMax) * 100.0;
     if(fuelp > 10)
         _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Fuel :" + String((int)fuelp) + "% ", 5, 5, 1);
+    snprintf(buf, sizeof(buf), "Fuel :%d%% ", (int)fuelp);
+    _tft->drawString(buf, 5, 5, 1);
 
     float speed = _ship->Speed();
     if(speed < 5)
@@ -45,21 +47,24 @@ void LunarLanderGame::HUD()
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
 
-    _tft->drawString("Speed:" + String(speed,1) + "m/s ", 5, 15, 1);
+    snprintf(buf, sizeof(buf), "Speed:%.1fm/s ", speed);
+    _tft->drawString(buf, 5, 15, 1);
 
     float altitude = _ship->Altitude(_ground);
     if(altitude > 10)
         _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Alt:" + String(altitude,1) + "m ", left, 5, 1);
+    snprintf(buf, sizeof(buf), "Alt:%.1fm ", altitude);
+    _tft->drawString(buf, left, 5, 1);
 
     float angle = _ship->GetOrientation() - 180;
     if(abs(angle) < 5)
         _tft->setTextColor(DEFAULT_TEXT_COLOR, DEFAULT_BG_COLOR, true);
     else
         _tft->setTextColor(TFT_RED, DEFAULT_BG_COLOR, true);
-    _tft->drawString("Ang:" + String((int)angle)+ "  ", left, 15, 1);
+    snprintf(buf, sizeof(buf), "Ang:%d  ", (int)angle);
+    _tft->drawString(buf, left, 15, 1);
 }
 
 void LunarLanderGame::Loop()
@@ -116,7 +121,9 @@ void LunarLanderGame::Loop()
     {
         _stagetimer -= elapsed;
         _tft->drawString("LANDED!", ScreenWidth / 2 - 25, ScreenHeight / 2 - 20, 1);
-        _tft->drawString("Next level in " + String(_stagetimer,1) + "s ", ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
+        char buf[32];
+        snprintf(buf, sizeof(buf), "Next level in %.1fs ", _stagetimer);
+        _tft->drawString(buf, ScreenWidth / 2 - 55, ScreenHeight / 2 - 10, 1);
         if(_stagetimer <= 0)
         {
             StartLevel(_level);
